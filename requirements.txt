@@ -1,0 +1,5 @@
+jsonschema>=4.20
+# 아래는 모델 단계에서 필요할 때 추가
+# torch
+# transformers
+# pandas

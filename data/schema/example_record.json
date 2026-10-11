@@ -1,0 +1,31 @@
+{
+  "id": "example_01",
+  "annotator": "example",
+  "product_type": "sauce_seasoning",
+  "package_material": "plastic_film",
+  "report_number": null,
+  "image_files": ["example_01_앞.jpg", "example_01_뒤.jpg"],
+  "ingredients_text": "정제수, 혼합조미분말(멸치분말, 정제소금), 참기름 3%, 간장(대두, 밀)",
+  "kr_declared_allergens": ["대두", "밀"],
+  "annotations": [
+    {
+      "home_standard": "US",
+      "allergen": "sesame",
+      "verdict": "confirmed",
+      "evidence_ingredient": "참기름",
+      "legal_basis": "FASTER Act (참깨를 주요 알레르겐으로 지정)",
+      "exception_note": null,
+      "annotator_agreement": null
+    },
+    {
+      "home_standard": "US",
+      "allergen": "fish",
+      "verdict": "confirmed",
+      "evidence_ingredient": "멸치분말",
+      "legal_basis": "FALCPA (생선)",
+      "exception_note": null,
+      "annotator_agreement": null
+    }
+  ],
+  "notes": "가상의 예시이며 실제 제품이 아님"
+}

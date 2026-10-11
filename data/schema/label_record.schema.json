@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LabelRecord",
+  "description": "한국 포장식품 라벨 한 건의 전사와 정답",
+  "type": "object",
+  "required": ["id", "product_type", "package_material", "ingredients_text", "kr_declared_allergens", "annotations"],
+  "properties": {
+    "id": { "type": "string", "description": "이름_제품번호 (예: jy_07)" },
+    "annotator": { "type": "string" },
+    "product_type": {
+      "enum": ["snack", "sauce_seasoning", "instant", "frozen", "beverage_dairy", "other"]
+    },
+    "package_material": { "enum": ["foil", "plastic_film", "paper", "can_bottle", "other"] },
+    "report_number": { "type": ["string", "null"], "description": "품목보고번호 (API 조인 키)" },
+    "image_files": { "type": "array", "items": { "type": "string" } },
+    "ingredients_text": { "type": "string", "description": "원재료명 전문을 보이는 그대로 (오타·줄바꿈 포함)" },
+    "kr_declared_allergens": {
+      "type": "array",
+      "description": "한국 표시란에 적힌 항목 그대로",
+      "items": { "type": "string" }
+    },
+    "annotations": {
+      "type": "array",
+      "description": "본국 기준 알레르겐 판정. 한국 19개 밖 항목만 대상",
+      "items": {
+        "type": "object",
+        "required": ["home_standard", "allergen", "verdict", "evidence_ingredient", "legal_basis"],
+        "properties": {
+          "home_standard": { "enum": ["US", "EU"] },
+          "allergen": { "type": "string", "description": "예: sesame, fish, crustacean, tree_nut" },
+          "verdict": { "enum": ["confirmed", "inferable", "undecidable"] },
+          "evidence_ingredient": { "type": "string", "description": "근거가 된 원재료 표기 그대로" },
+          "legal_basis": { "type": "string", "description": "근거 조항 또는 지침" },
+          "exception_note": { "type": ["string", "null"] },
+          "annotator_agreement": { "type": ["string", "null"], "description": "교차 검수 결과 메모" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "notes": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}
