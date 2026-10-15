@@ -1,3 +1,7 @@
+# OpenSesame — 미국인 관광객을 위한 한국 식품 알레르겐 사전 경고
+
+자연어처리 수업 팀 프로젝트 (중간고사 영상 제출 2026-10-31, 발표 11/3 또는 11/5)
+
 ## 주제
 
 한국 포장식품 라벨의 **원재료명**을 읽어, 미국인 관광객이 사전에 입력한
@@ -46,3 +50,57 @@
 1. **제품**: 알레르기를 선택하고 라벨을 찍으면 영어 경고가 나오는 웹앱
 2. **모델**: 겹괄호와 '유래·추출물' 같은 표현 속 성분을 9개 알레르겐과 연결
 3. **평가**: 놓친 알레르겐에 가중치를 둔 지표로 측정하고, 모르면 '판정 불가'로 답함
+
+## 팀 원칙
+
+- 놓치는 것(누락)이 과잉 경고보다 나쁘다. 평균 정확도는 주 지표로 쓰지 않는다.
+- 방향·범위를 바꿀 때는 **팀 합의 → `docs/decisions/` 기록 → 숙제 공지** 순서를 지킨다.
+
+## 현재 상태
+
+- [x] 주제 변경 확정 (2026-10-15, [결정 0002](docs/decisions/0002-topic-personal-profile.md))
+- [ ] 통과 조건 ① 숨은·유래 표현이 든 라벨의 비율
+- [ ] 통과 조건 ② LLM 베이스라인 (어려운 원재료 10줄)
+- [ ] 미국 9개 항목 법령·FDA 지침 원문 확인
+- [ ] 제품 첫 버전 (끝에서 끝까지 도는 얇은 버전)
+- [ ] 중간고사 영상 제출 (10/31)
+
+## 문서 지도
+
+| 문서 | 내용 |
+|---|---|
+| [docs/01_MCS.md](docs/01_MCS.md) | 동기·주장·기여 (중간고사 ① 개요) |
+| [docs/02_architecture.md](docs/02_architecture.md) | 파이프라인·기술 스택 (중간고사 ② 개발) |
+| [docs/03_milestones.md](docs/03_milestones.md) | 일정 |
+| [docs/04_team.md](docs/04_team.md) | 역할·협업·의사결정 (중간고사 ③ 팀 운영) |
+| [docs/05_allergen_lists.md](docs/05_allergen_lists.md) | 미국 9개 항목과 한국 19개 항목 비교 |
+| [docs/06_photo_guide.md](docs/06_photo_guide.md) | 라벨 촬영 규칙 |
+| [docs/07_product.md](docs/07_product.md) | 제품 명세·사용 흐름·개인정보 |
+| [docs/decisions/](docs/decisions/) | 결정 기록 |
+| [docs/meeting-notes/](docs/meeting-notes/) | 회의록 |
+| [experiments/](experiments/) | 실험 기록 |
+| [data/schema/](data/schema/) | 데이터 스키마 |
+
+## 폴더 구조
+
+```
+.github/        이슈·PR 템플릿
+docs/           기획·설계·결정·회의록
+data/schema/    JSON 스키마 (데이터 자체는 공유 드라이브)
+experiments/    실험 기록
+src/            ocr / parser / model / eval / app
+```
+
+## 시작하기
+
+```bash
+git clone https://github.com/enoziwon/OpenSesame.git
+cd OpenSesame
+cp .env.example .env   # 키는 각자 발급해서 입력
+```
+
+사진·원본 데이터는 **저장소에 올리지 않는다.** 공유 드라이브를 쓰고 파일명 규칙은 [촬영 가이드](docs/06_photo_guide.md)를 따른다.
+
+## 주의
+
+이 프로젝트는 연구·수업용이다. 알레르기 판단에 단독으로 사용하면 안 된다.
