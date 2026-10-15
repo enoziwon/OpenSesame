@@ -9,19 +9,41 @@
   "kr_declared_allergens": ["대두", "밀"],
   "annotations": [
     {
-      "home_standard": "US",
+      "allergen": "soy",
+      "verdict": "confirmed",
+      "evidence_ingredient": "간장(대두, 밀)",
+      "hidden_or_derived": false,
+      "declared_in_kr": true,
+      "legal_basis": "FALCPA (대두)",
+      "exception_note": null,
+      "annotator_agreement": null
+    },
+    {
+      "allergen": "wheat",
+      "verdict": "confirmed",
+      "evidence_ingredient": "간장(대두, 밀)",
+      "hidden_or_derived": false,
+      "declared_in_kr": true,
+      "legal_basis": "FALCPA (밀)",
+      "exception_note": null,
+      "annotator_agreement": null
+    },
+    {
       "allergen": "sesame",
       "verdict": "confirmed",
       "evidence_ingredient": "참기름",
+      "hidden_or_derived": false,
+      "declared_in_kr": false,
       "legal_basis": "FASTER Act (참깨를 주요 알레르겐으로 지정)",
       "exception_note": null,
       "annotator_agreement": null
     },
     {
-      "home_standard": "US",
       "allergen": "fish",
       "verdict": "confirmed",
-      "evidence_ingredient": "멸치분말",
+      "evidence_ingredient": "혼합조미분말(멸치분말, 정제소금)",
+      "hidden_or_derived": true,
+      "declared_in_kr": false,
       "legal_basis": "FALCPA (생선)",
       "exception_note": null,
       "annotator_agreement": null

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "LabelRecord",
-  "description": "한국 포장식품 라벨 한 건의 전사와 정답",
+  "description": "한국 포장식품 라벨 한 건의 전사와 정답 (미국 의무 표시 알레르겐 9개 기준)",
   "type": "object",
   "required": ["id", "product_type", "package_material", "ingredients_text", "kr_declared_allergens", "annotations"],
   "properties": {
@@ -16,20 +16,30 @@
     "ingredients_text": { "type": "string", "description": "원재료명 전문을 보이는 그대로 (오타·줄바꿈 포함)" },
     "kr_declared_allergens": {
       "type": "array",
-      "description": "한국 표시란에 적힌 항목 그대로",
+      "description": "한국 표시란에 적힌 항목 그대로 (참고 정보. 판정 기준이 아님)",
       "items": { "type": "string" }
     },
     "annotations": {
       "type": "array",
-      "description": "본국 기준 알레르겐 판정. 한국 19개 밖 항목만 대상",
+      "description": "미국 9개 알레르겐 판정. 목록에 없는 알레르겐은 '해당 없음'으로 본다. 판단이 불가능하면 undecidable로 적는다",
       "items": {
         "type": "object",
-        "required": ["home_standard", "allergen", "verdict", "evidence_ingredient", "legal_basis"],
+        "required": ["allergen", "verdict", "evidence_ingredient", "legal_basis"],
         "properties": {
-          "home_standard": { "enum": ["US", "EU"] },
-          "allergen": { "type": "string", "description": "예: sesame, fish, crustacean, tree_nut" },
+          "allergen": {
+            "enum": ["milk", "egg", "fish", "crustacean", "tree_nut", "peanut", "wheat", "soy", "sesame"],
+            "description": "미국 의무 표시 알레르겐 9개"
+          },
           "verdict": { "enum": ["confirmed", "inferable", "undecidable"] },
           "evidence_ingredient": { "type": "string", "description": "근거가 된 원재료 표기 그대로" },
+          "hidden_or_derived": {
+            "type": "boolean",
+            "description": "복합 원재료·추출물·유래 표현 속에 든 경우 true (통과 조건 ① 집계용)"
+          },
+          "declared_in_kr": {
+            "type": "boolean",
+            "description": "한국 표시란에 이미 표시되었는지 (참고 정보)"
+          },
           "legal_basis": { "type": "string", "description": "근거 조항 또는 지침" },
           "exception_note": { "type": ["string", "null"] },
           "annotator_agreement": { "type": ["string", "null"], "description": "교차 검수 결과 메모" }
