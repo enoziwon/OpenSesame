@@ -1,0 +1,115 @@
+{
+  "ingredients_text": "원재료명: 소맥분(밀:미국산), 설탕, 식물성유지(팜유), 혼합조미분말[멸치분말, 정제소금, 효모추출물], 탈지분유, 참기름 3%, 간장, 대두레시틴, 향료(바닐라향)",
+  "ingredients": [
+    {
+      "name": "소맥분",
+      "children": [
+        {
+          "name": "밀:미국산",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "설탕",
+      "children": []
+    },
+    {
+      "name": "식물성유지",
+      "children": [
+        {
+          "name": "팜유",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "혼합조미분말",
+      "children": [
+        {
+          "name": "멸치분말",
+          "children": []
+        },
+        {
+          "name": "정제소금",
+          "children": []
+        },
+        {
+          "name": "효모추출물",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "탈지분유",
+      "children": []
+    },
+    {
+      "name": "참기름",
+      "children": []
+    },
+    {
+      "name": "간장",
+      "children": []
+    },
+    {
+      "name": "대두레시틴",
+      "children": []
+    },
+    {
+      "name": "향료",
+      "children": [
+        {
+          "name": "바닐라향",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "allergens": [
+    {
+      "allergen": "milk",
+      "verdict": "confirmed",
+      "evidence_ingredient": "탈지분유",
+      "other_evidence": []
+    },
+    {
+      "allergen": "fish",
+      "verdict": "confirmed",
+      "evidence_ingredient": "멸치분말",
+      "other_evidence": []
+    },
+    {
+      "allergen": "wheat",
+      "verdict": "confirmed",
+      "evidence_ingredient": "소맥분",
+      "other_evidence": [
+        "간장"
+      ]
+    },
+    {
+      "allergen": "soy",
+      "verdict": "confirmed",
+      "evidence_ingredient": "대두레시틴",
+      "other_evidence": [
+        "간장"
+      ]
+    },
+    {
+      "allergen": "sesame",
+      "verdict": "confirmed",
+      "evidence_ingredient": "참기름",
+      "other_evidence": []
+    }
+  ],
+  "undecidable_ingredients": [
+    "효모추출물",
+    "향료"
+  ],
+  "warnings": [],
+  "meta": {
+    "ocr_engine": "mock",
+    "classifier": "mock",
+    "prompt_version": null
+  }
+}
