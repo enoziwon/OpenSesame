@@ -1,5 +1,6 @@
 ﻿import { test, expect } from "@playwright/test";
 import fs from "node:fs";
+import { chromium } from "@playwright/test";
 const sample = JSON.parse(
   fs.readFileSync("../src/app/sample_response.json", "utf8"),
 );
@@ -61,7 +62,9 @@ for (const [width, height] of [
       4,
     );
     await expect(page.getByText(/Demo analysis/)).toBeVisible();
-    await expect(page.getByText("탈지분유", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Evidence: 탈지분유", { exact: true }),
+    ).toBeVisible();
     await page.screenshot({
       path: `test-results/results-${width}.png`,
       fullPage: true,
@@ -122,9 +125,10 @@ test("optional fields, uncertain results, errors and request locking", async ({
   });
   await page.getByRole("button", { name: "Analyze" }).click();
   await expect(page.getByRole("button", { name: "Analyzing…" })).toBeDisabled();
-  await expect(
-    page.getByText("Cannot determine", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
+    9,
+  );
+  await expect(page.getByText("Not detected", { exact: true })).toHaveCount(0);
   await expect(
     page.getByText("Classification incomplete", { exact: true }),
   ).toBeVisible();
@@ -132,15 +136,203 @@ test("optional fields, uncertain results, errors and request locking", async ({
   await expect(page.getByText(/Demo analysis/)).toHaveCount(0);
 });
 test("real FastAPI mock endpoint", async ({ page }) => {
+  let uploadedBody = "";
+  await page.route("**/analyze", async (route) => {
+    uploadedBody = route.request().postDataBuffer()!.toString();
+    await route.continue();
+  });
   await page.goto("/allergies");
   await page.getByRole("checkbox", { name: "Milk", exact: true }).check();
   await page.getByRole("button", { name: "Next" }).click();
   await page.locator("input[type=file]").nth(1).setInputFiles(image);
   const response = page.waitForResponse((r) => r.url().endsWith("/analyze"));
   await page.getByRole("button", { name: "Analyze" }).click();
-  expect((await response).status()).toBe(200);
+  const actual = await response;
+  expect(actual.status()).toBe(200);
+  expect((await actual.json()).meta).toMatchObject({
+    ocr_engine: "mock",
+    classifier: "mock",
+  });
+  expect(uploadedBody.match(/Content-Disposition: form-data; name="/g)).toHaveLength(1);
+  expect(uploadedBody).toContain('name="file"');
+  expect(uploadedBody).not.toContain("opensesame.allergies");
   await expect(page.getByText(/Demo analysis/)).toBeVisible();
-  await expect(page.getByText("탈지분유", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Evidence: 탈지분유", { exact: true }),
+  ).toBeVisible();
+});
+
+test("persistent profile and invalid storage", async ({ page, browser }) => {
+  await page.goto("/allergies");
+  for (const invalid of ["not json", "null", "{}", '"milk"']) {
+    await page.evaluate(
+      (value) => localStorage.setItem("opensesame.allergies", value),
+      invalid,
+    );
+    await page.reload();
+    await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
+  }
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "opensesame.allergies",
+      JSON.stringify(["sesame", "peanut", "sesame", "unknown", null, 42]),
+    ),
+  );
+  await page.reload();
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(2);
+  await page.getByRole("checkbox", { name: "Milk", exact: true }).check();
+  expect(
+    await page.evaluate(() =>
+      JSON.parse(localStorage.getItem("opensesame.allergies")!),
+    ),
+  ).toEqual(["sesame", "peanut", "milk"]);
+  await page.reload();
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(3);
+  // A new isolated context with restored disk storage simulates a returning session.
+  const state = await page.context().storageState();
+  const returning = await browser.newContext({ storageState: state });
+  const returned = await returning.newPage();
+  await returned.goto("/allergies");
+  await expect(returned.getByRole("checkbox", { checked: true })).toHaveCount(
+    3,
+  );
+  await returning.close();
+});
+
+test("localStorage survives closing and relaunching Chromium", async () => {
+  test.setTimeout(180000);
+  fs.mkdirSync("test-results", { recursive: true });
+  const directory = fs.mkdtempSync("test-results/persistent-profile-");
+  let context = await test.step("Launch the first persistent browser", () =>
+    chromium.launchPersistentContext(directory, { headless: true, timeout: 45000 }),
+  );
+  try {
+    let page = await context.newPage();
+    await page.goto("http://127.0.0.1:5173/allergies");
+    await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
+    await page.getByRole("checkbox", { name: "Sesame", exact: true }).check();
+    await test.step("Close the first browser", () => context.close(), { timeout: 45000 });
+    context = await test.step("Relaunch with the same disk profile", () =>
+      chromium.launchPersistentContext(directory, { headless: true, timeout: 45000 }),
+    );
+    page = await context.newPage();
+    await page.goto("http://127.0.0.1:5173/allergies");
+    await expect(
+      page.getByRole("checkbox", { name: "Peanuts", exact: true }),
+    ).toBeChecked();
+    await expect(
+      page.getByRole("checkbox", { name: "Sesame", exact: true }),
+    ).toBeChecked();
+  } finally {
+    await test.step("Close the returning browser", () => context.close(), { timeout: 45000 });
+  }
+});
+
+test("selected warnings, evidence, enum labels and editing profile", async ({
+  page,
+}) => {
+  await page.goto("/allergies");
+  await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Sesame", exact: true }).check();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.locator("input[type=file]").nth(1).setInputFiles(image);
+  await page.route("**/analyze", (route) =>
+    route.fulfill({
+      json: {
+        ...sample,
+        undecidable_ingredients: undefined,
+        meta: undefined,
+        allergens: [
+          ...sample.allergens,
+          {
+            allergen: "egg",
+            verdict: "inferable",
+            evidence_ingredient: "test evidence from server",
+          },
+          {
+            allergen: "tree_nut",
+            verdict: "undecidable",
+            evidence_ingredient: "unknown source",
+          },
+        ],
+      },
+    }),
+  );
+  await page.getByRole("button", { name: "Analyze" }).click();
+  await expect(page.locator(".highlighted")).toHaveCount(1);
+  await expect(page.locator(".highlighted")).toContainText("Sesame");
+  await expect(
+    page.locator(".result-row").filter({ hasText: "Peanuts" }),
+  ).toContainText("Not detected");
+  await expect(
+    page.locator(".result-row").filter({ hasText: "Milk" }),
+  ).not.toHaveClass(/highlighted/);
+  await expect(page.getByText("Likely", { exact: true })).toBeVisible();
+  await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
+    1,
+  );
+  await expect(
+    page.getByText("Evidence: 참기름", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/Not detected does not mean safe/)).toBeVisible();
+  await page.getByRole("button", { name: "Edit My Allergies" }).click();
+  await page.getByRole("checkbox", { name: "Sesame", exact: true }).uncheck();
+  await page.getByRole("checkbox", { name: "Egg", exact: true }).check();
+  await page.goto("/scan");
+  await page.locator("input[type=file]").nth(1).setInputFiles(image);
+  await page.getByRole("button", { name: "Analyze" }).click();
+  await expect(page.locator(".highlighted")).toHaveCount(1);
+  await expect(page.locator(".highlighted")).toContainText("Egg");
+  await expect(
+    page.getByText(/Your selected allergens have uncertain findings/),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Allergen Match Detected", { exact: true }),
+  ).toHaveCount(0);
+});
+
+test("camera and gallery buttons, replacement, network and OCR failures", async ({
+  page,
+}) => {
+  await page.goto("/scan");
+  await expect(page.getByRole("button", { name: "Analyze" })).toBeDisabled();
+  let chooser = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Take Photo" }).click();
+  const camera = await chooser;
+  expect(await camera.element().getAttribute("capture")).toBe("environment");
+  await camera.setFiles(image);
+  await expect(page.getByAltText("Selected ingredient label")).toBeVisible();
+  const first = await page
+    .getByAltText("Selected ingredient label")
+    .getAttribute("src");
+  chooser = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Upload Photo" }).click();
+  const gallery = await chooser;
+  expect(await gallery.element().getAttribute("capture")).toBeNull();
+  await gallery.setFiles({ ...image, name: "replacement.svg" });
+  await expect(
+    page.getByAltText("Selected ingredient label"),
+  ).not.toHaveAttribute("src", first!);
+  await page.route("**/analyze", (route) => route.abort());
+  await page.getByRole("button", { name: "Analyze" }).click();
+  await expect(page.getByRole("alert")).toContainText("Unable to reach");
+  await page.unroute("**/analyze");
+  await page.route("**/analyze", (route) =>
+    route.fulfill({
+      json: {
+        ingredients_text: "",
+        ingredients: [],
+        allergens: [],
+        warnings: ["OCR failed"],
+      },
+    }),
+  );
+  await page.getByRole("button", { name: "Analyze" }).click();
+  await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
+    9,
+  );
+  await expect(page.getByText("Not detected", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("OCR failed", { exact: true })).toBeVisible();
 });
 
 test("file limits, drag and drop, malformed responses and local assets", async ({

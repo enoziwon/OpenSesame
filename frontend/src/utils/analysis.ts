@@ -46,6 +46,12 @@ export function normalizeAnalysis(value: unknown): Analysis {
 export function isMock(a: Analysis) {
   return a.meta?.ocr_engine === "mock" || a.meta?.classifier === "mock";
 }
+// A missing match is not a negative finding when reading/classification failed.
+export function hasIncompleteAnalysis(a: Analysis) {
+  return (
+    !!a.warnings.length || !a.ingredients_text.trim() || !a.ingredients.length
+  );
+}
 export function validateImage(file: File) {
   if (!file.type.startsWith("image/")) return "Choose an image file.";
   if (!file.size) return "This image is empty.";

@@ -1,21 +1,43 @@
-﻿# Verification — 2026-11-11
+# 프론트엔드 검증 보고서 — 2026-11-11
 
-- `npm.cmd run build`: PASS (TypeScript noEmit check and Vite production build).
-- `npm.cmd test`: PASS, 6 Chromium browser tests, 40.1 seconds.
-- Existing backend `.venv\Scripts\python.exe -X utf8 -m pytest -q`: PASS, 14 tests.
-- Dependency installation: successful; npm audit reported 0 vulnerabilities at installation.
-- 375×812, 360×800 and 393×852: all flows pass, no horizontal document overflow on all four routes.
-- All nine checkbox selections/toggle-off; route changes and page reload preserve the temporary session profile.
-- Upload, preview, remove/reselect, drag-and-drop, empty/non-image/over-10MB rejection verified.
-- Camera input has `accept="image/*"` and `capture="environment"`; physical camera behavior is not verified.
-- HTTP error, malformed response, absent optional fields, cannot-determine verdict, incomplete analysis warning and duplicate-request locking verified.
-- Multipart browser request has only `file` and its filename; no allergy profile field.
-- Live existing FastAPI mock server on port 8000: browser POST `/analyze` returned 200, actual JSON populated Results, Korean evidence displayed, mock banner visible.
-- Figma MCP read all four requested frames including screenshots. Original SVG assets downloaded locally; selection icons are loaded and rendered at 35×35. Result-specific icons retain their original 29×29 size; additional result rows reuse 35×35 selection icons. Captures compared with Figma for landing, allergies, scan and results. No remote Figma URLs are used at runtime.
-- Captures are local ignored artifacts in `frontend/test-results/` (landing, allergies, scan, results for each width). Test input is a generated in-memory SVG, not user label data.
+## 작업 범위와 기존 구현
 
-Intentional differences: KO switch omitted pending scope approval; photo preview uses actual selection; all nine result rows are visible and backend enum labels replace Figma placeholder wording; warnings and demo indicators extend the results page. The static example's preselected allergies are not assumed for real users.
+- 작업 브랜치: `feat/frontend-figma-ui`. 작업 시작 시 Git 변경 사항은 없었습니다. 커밋·push·merge는 하지 않았습니다.
+- 요청한 API 문서·스키마·백엔드·샘플 응답 파일 4개를 확인했습니다. Python, 평가 코드, API 계약, CSS, 에셋, 라우팅, Figma는 변경하지 않았습니다.
+- 기존 코드에는 9개 복수 선택 카드, 카메라·갤러리 입력 분리, 미리보기·삭제, 이미지 MIME 형식·빈 파일·10MB 검사, 로딩·오류 안내, 중복 요청 방지, 실제 FastAPI POST, 브라우저 내 프로필 대조, 판정 문구, 근거 성분, 선택 필드 처리, 안전·검사 범위 안내가 구현되어 있었습니다. 저장에는 sessionStorage를 사용했습니다.
 
-Initial checks found a cold Vite startup timeout and broken arrow/ellipsis glyphs caused by Windows shell encoding. Source encoding and the timeout were corrected; the full final run passed. Python pip initially failed to decode the UTF-8 requirements file under cp949; `-X utf8` resolved it. No backend source changes were needed.
+## 변경 내용
 
-Remaining manual checks: iOS Safari and Android Chrome on real devices, physical camera permissions/capture, actual OCR/classifier quality outside backend mock mode, and team confirmation of profile persistence and the three provisional response fields. Production TLS/CORS/deployment is outside this frontend change.
+- `src/utils/profileStorage.ts`: 기존 Hook을 유지하면서 localStorage의 `opensesame.allergies` 키로 전환했습니다. 선택 즉시 저장합니다. 잘못된 JSON과 배열이 아닌 데이터는 빈 프로필로 처리하고, 중복 값과 허용되지 않은 ID는 무시합니다. 저장소 접근이 차단되면 메모리 상태만 사용하며 영구 저장은 불가능합니다.
+- `src/utils/analysis.ts`: 불완전한 분석을 판별하는 로직을 분리했습니다.
+- `src/pages/ResultsPage.tsx`: 사용자가 선택한 항목 중 확정 판정이 있을 때 검출 제목을 표시합니다. 불확실한 개인 결과에는 주의 안내를 표시합니다. 경고가 있거나 OCR 텍스트·원재료가 누락되면, 결과가 없는 항목도 Cannot determine으로 표시합니다. 근거에는 Evidence를 명시하며 서버 응답만 사용합니다.
+- `tests/flow.spec.ts`: 사용자 동작과 통합 테스트 범위를 확대했습니다.
+- `README.md`, `VERIFICATION.md`: 현재 동작과 검증 내용을 문서화했습니다.
+- 기존 네이비·오렌지·크림색 디자인, 3×3 카드, 모바일 레이아웃, 라우팅, 공통 컴포넌트를 유지했습니다.
+
+## 검증 결과
+
+- `npm.cmd run typecheck`: 통과.
+- `npm.cmd run build`: 통과. TypeScript의 noEmit 검사와 Vite 프로덕션 빌드를 포함합니다.
+- 전체 `npm.cmd test` 재실행: 9개 통과, 1개 시간 초과. 시간 초과 항목은 영구 프로필을 사용하는 Chromium 재시작 테스트였으며 당시 제한 시간은 120초였습니다. 나머지 9개에는 실제 FastAPI HTTP 테스트가 포함됩니다.
+- 재시작 테스트를 이름이 있는 실행·종료 단계로 나누고 단계별 대기 제한과 전체 180초 제한을 적용했습니다. `npm.cmd test -- --grep localStorage`: 1개 통과, 전체 55.4초, 테스트 본문 49.5초. 10개 시나리오 각각의 통과는 확인했지만, 전체 테스트가 한 번에 모두 통과한 것은 아닙니다. 재시작 시간 초과 이력은 실행 환경에 민감한 테스트의 제한 사항으로 남깁니다.
+- 9개 카드 선택·해제, 복수 선택, 선택 직후 localStorage 내용, 화면 이동·새로고침 후 유지를 확인했습니다.
+- 잘못된 JSON, null·객체·스칼라 형태의 프로필, 중복·알 수 없는 ID, 문자열이 아닌 값을 확인했습니다.
+- 영구 프로필을 사용하는 Chromium을 종료한 뒤 같은 디스크 프로필로 재실행하여 Peanuts·Sesame 선택이 유지되는 것을 확인했습니다. 저장 상태를 복사하는 모의 검증과 별개로 실제 브라우저 프로세스를 재실행했습니다.
+- 375×812, 360×800, 393×852 화면 흐름과 모든 경로의 가로 넘침 여부를 확인했습니다. 스크린샷은 Git에서 제외된 `test-results/`에 있으며 Results 스크린샷을 검토했습니다.
+- 카메라·갤러리 버튼이 서로 다른 파일 선택 입력에 연결되는 것을 확인했습니다. 카메라 입력에만 `capture="environment"`가 있습니다. 업로드·미리보기·교체·삭제, 드래그 앤 드롭, 이미지 미선택 시 분석 차단, 비이미지·빈 파일·10MB 초과 파일 거부를 확인했습니다.
+- 로딩·버튼 비활성화, 요청 1회 처리, HTTP 500·네트워크 오류, 비정상 응답, 선택 필드 누락, OCR 실패 처리를 확인했습니다.
+- Peanuts·Sesame 선택 시 Sesame만 개인 경고로 강조되고 Peanuts는 Not detected로 표시되며 Milk는 개인 경고로 강조되지 않는 것을 확인했습니다. 선택 변경에 따라 강조 항목도 바뀝니다. Confirmed·Likely·Cannot determine을 구분하며 개인별 불확실성에는 주의 안내를 표시합니다.
+- 불완전한 분석에서 결과가 없는 항목은 Cannot determine으로 표시하며 안전을 보장하지 않습니다. 필수 문구 "Not detected does not mean safe."와 미국 9대 알레르겐만 검사한다는 안내를 유지했습니다.
+- 기존 `/health`에서 OCR·분류기 모두 Mock 모드임을 확인했습니다. 실제 브라우저의 POST `/analyze`가 200을 반환했고, Results에 한글 근거와 데모 안내가 표시되었습니다.
+- 실제 multipart 요청을 전송 전에 검사한 다음 테스트 Mock으로 응답하지 않고 FastAPI로 전달했습니다. 폼 필드는 `file` 하나뿐이며 알레르기 프로필은 없습니다. 소스 검사에서도 프로필 로깅·분석 도구 호출은 발견되지 않았습니다.
+- 초기 샌드박스 빌드·테스트·포맷터 실행은 EPERM 오류로 중단되어 승인된 권한으로 재실행했습니다. 첫 확장 테스트 실행은 9개 통과, 테스트 검증 코드 오류 1개였습니다. Chromium이 응답 후 업로드 본문을 제공하지 않아 발생했으며, 본문 검사 시점을 요청 가로채기 단계로 옮겼습니다. 앱·API 코드를 고칠 필요는 없었습니다.
+- 이번 작업에서 Python 테스트는 재실행하지 않았으며 백엔드·평가 파일은 변경하지 않았습니다.
+
+## 미검증 항목과 남은 작업
+
+- 실제 iOS Safari·Android Chrome의 카메라 촬영, 권한, 파일 선택창 동작, HEIC/HEIF는 미검증입니다. 데스크톱 파일 선택창 테스트로 실제 기기 동작을 검증한 것은 아닙니다. 미리보기를 지원하지 않는 형식에는 기존 JPEG/PNG 안내를 표시합니다.
+- 운영체제 재시작, 비공개 탐색, 사용자의 저장 데이터 삭제·저장소 차단까지 유지가 보장되지는 않습니다. 일반적인 영구 프로필을 사용하는 Chromium 프로세스 재시작은 검증했습니다.
+- 사진·분석 결과는 메모리에만 있으므로 Results를 새로고침하면 다시 분석해야 합니다. 알레르기 선택 정보는 유지됩니다.
+- `other_evidence`, `undecidable_ingredients`, `meta`는 팀 확인 전까지 선택 필드로 방어적으로 처리합니다. 메타데이터가 없으면 Mock 모드인지 확정할 수 없습니다.
+- 실제 OCR/NLP 정확도 검증은 작업 범위 밖입니다. 추후 API 계약을 유지하면서 엔드포인트·CORS·HTTPS를 설정하고, 계약·실제 라벨·실제 기기 테스트를 수행해야 합니다. API 호출과 응답 정규화가 분리되어 있어 프론트엔드 재작성은 필요하지 않습니다.

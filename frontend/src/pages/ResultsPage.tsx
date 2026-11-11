@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
 import { AllergenIcon } from "../components/AllergenCard";
 import { allergens, verdictLabels } from "../constants/allergens";
-import { isMock } from "../utils/analysis";
+import { hasIncompleteAnalysis, isMock } from "../utils/analysis";
 import type { Analysis, Allergen } from "../types/analysis";
 export default function ResultsPage({
   result,
@@ -27,6 +27,9 @@ export default function ResultsPage({
       </Layout>
     );
   const matches = result.allergens.filter((a) => selected.includes(a.allergen));
+  const incomplete = hasIncompleteAnalysis(result);
+  const confirmedMatches = matches.filter((a) => a.verdict === "confirmed");
+  const uncertainMatches = matches.some((a) => a.verdict !== "confirmed");
   const uncertain =
     !!result.undecidable_ingredients?.length ||
     result.allergens.some((a) => a.verdict === "undecidable") ||
@@ -48,9 +51,9 @@ export default function ResultsPage({
           <AlertTriangle size={26} />
           <div>
             <strong>
-              {matches.length
+              {confirmedMatches.length
                 ? "Allergen Match Detected"
-                : uncertain
+                : uncertain || uncertainMatches
                   ? "Analysis needs review"
                   : "No selected allergens detected"}
             </strong>
@@ -59,6 +62,12 @@ export default function ResultsPage({
                 ? `${matches.length} of your selected allergens have a result. Review the verdicts below.`
                 : "Review all results and the original label before deciding."}
             </p>
+            {uncertainMatches && (
+              <p>
+                Your selected allergens have uncertain findings. Use caution and
+                check the original label.
+              </p>
+            )}
           </div>
         </div>
         <div className="result-table">
@@ -75,11 +84,18 @@ export default function ResultsPage({
                   {a.label || a.name}
                   {highlighted && <small>Your allergen</small>}
                 </span>
-                <span className={`badge ${found?.verdict || "absent"}`}>
-                  {found ? verdictLabels[found.verdict] : "Not detected"}
+                <span
+                  className={`badge ${found?.verdict || (incomplete ? "undecidable" : "absent")}`}
+                >
+                  {found
+                    ? verdictLabels[found.verdict]
+                    : incomplete
+                      ? "Cannot determine"
+                      : "Not detected"}
                 </span>
                 {found && (
                   <p className="evidence">
+                    Evidence:{" "}
                     {[
                       found.evidence_ingredient,
                       ...(found.other_evidence || []),
