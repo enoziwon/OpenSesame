@@ -104,3 +104,7 @@ cp .env.example .env   # 키는 각자 발급해서 입력
 ## 주의
 
 이 프로젝트는 연구·수업용이다. 알레르기 판단에 단독으로 사용하면 안 된다.
+
+## 프론트엔드
+
+Figma 기반 모바일 웹앱은 [`frontend/`](frontend/README.md)에 있습니다. React · TypeScript · Vite를 사용하며 기존 FastAPI `/analyze`와 연결됩니다. 실행 방법, 임시 프로필 저장 정책과 검증 범위는 프론트엔드 README를 참고하세요.
