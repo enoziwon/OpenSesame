@@ -78,10 +78,9 @@ header {
   border-radius: 7px;
 }
 .steps {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr));
   align-items: center;
-  justify-content: space-between;
-  gap: 4px;
   margin: 15px 19px 0;
   height: 34px;
   font-size: 12px;
@@ -89,11 +88,16 @@ header {
 }
 .steps > span {
   display: flex;
+  justify-self: start;
   align-items: center;
   gap: 5px;
   padding: 5px;
   border-radius: 20px;
   white-space: nowrap;
+}
+.steps > span > b,
+.steps > span > img {
+  flex-shrink: 0;
 }
 .steps .active {
   background: #fff6ee;
@@ -219,14 +223,8 @@ h1 {
   cursor: pointer;
 }
 .allergen-card input:checked {
-  background: #e58a44;
-  border-color: #e58a44;
-}
-.allergen-card input:checked:after {
-  content: "✓";
-  font-size: 17px;
-  font-weight: 700;
-  color: white;
+  background: url("./assets/checkbox.svg") center / 22px 22px no-repeat;
+  border: 0;
 }
 .landing {
   align-items: center;

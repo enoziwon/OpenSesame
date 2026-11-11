@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import doneCircle from "../assets/donecircle.svg";
 import type { ReactNode, ButtonHTMLAttributes } from "react";
 export function Layout({
   step,
@@ -26,9 +27,13 @@ export function Layout({
               className={step === i + 1 ? "active" : ""}
               aria-current={step === i + 1 ? "step" : undefined}
             >
-              <b className={step >= i + 1 ? "filled" : ""}>
-                {step > i + 1 ? "✓" : i + 1}
-              </b>
+              {step > i + 1 ? (
+                <img src={doneCircle} alt="Completed" />
+              ) : (
+                <b className={step === i + 1 ? "filled" : ""}>
+                  {i + 1}
+                </b>
+              )}
               {i < 2 ? (
                 <Link to={i === 0 ? "/allergies" : "/scan"}>{label}</Link>
               ) : (
