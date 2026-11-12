@@ -21,11 +21,43 @@ npm.cmd run dev
 
 `VITE_API_BASE_URL`의 기본값은 `http://localhost:8000`입니다. 값을 변경하면 Vite를 다시 실행해야 합니다. 휴대전화에서는 localhost 대신 기기에서 접근할 수 있는 백엔드 주소, 허용된 CORS 출처, 적절한 HTTPS 배포 환경이 필요합니다. 카메라 동작은 기기와 브라우저에 따라 다르며, 데스크톱 파일 선택창 테스트만으로 실제 촬영 동작을 검증할 수는 없습니다. 운영 환경의 호스팅 서버는 클라이언트 라우팅 경로에도 `index.html`을 제공해야 합니다.
 
+## 실행 방법 (Mac/Linux)
+
+```bash
+# 저장소 루트에서 백엔드 준비 및 데모 실행
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+cp .env.example .env
+OPENSESAME_OCR=mock OPENSESAME_CLASSIFIER=mock .venv/bin/python -m uvicorn src.app.main:app --host 127.0.0.1 --port 8000
+
+# 별도 터미널에서 프론트엔드 실행
+cd frontend
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+`.env`가 이미 있다면 복사 단계를 건너뛰세요. 루트 `.env`는 백엔드 설정이고 `frontend/.env`는 프론트엔드 설정입니다.
+
+## 실제 LLM 응답 확인
+
+**선행 조건:** BAZE 연결 구현은 아직 미머지 상태인 [백엔드 PR #7](https://github.com/enoziwon/OpenSesame/pull/7)에 있습니다(2026-11-12 확인). 현재 프론트엔드 브랜치의 백엔드는 Anthropic 직접 연결 방식이므로 BAZE 키만 넣어서는 해당 검증을 할 수 없습니다. PR #7을 별도 통합 테스트 브랜치에 반영하거나, 머지 후 최신 백엔드를 받은 다음 진행합니다. PR #7의 `.env.example`에 따라 `LLM_PROVIDER`, `LLM_BASE_URL`, `LLM_MODEL` 등도 설정하고 갱신된 `requirements.txt`를 설치해야 합니다.
+
+루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`과 BAZE에서 각자 발급한 `LLM_API_KEY`를 설정하고 백엔드를 다시 실행합니다. 키는 프론트엔드 환경 변수나 Git에 넣지 않습니다. 위 데모 명령의 `OPENSESAME_CLASSIFIER=mock` 환경 변수도 해제하거나 `llm`으로 변경해야 합니다. 환경 변수가 `.env`보다 우선합니다.
+
+OCR을 `mock`으로 유지하면 고정된 OCR 원재료에 대한 실제 LLM 분류만 확인합니다. 사진을 실제로 읽는 검증과는 구분합니다. 결과 화면에서 `confirmed` → `Confirmed`, `inferable` → `Likely`, `undecidable` → `Cannot determine` 표시와 근거 성분, 선택 항목의 주의 안내를 확인합니다. 판정 배지에는 `Safe`를 사용하지 않고, 결과가 없는 항목은 `Not detected`, 분석이 불완전하면 `Cannot determine`으로 표시합니다. 안전 안내의 `Not detected does not mean safe.`는 유지합니다.
+
+## 카메라 입력
+
+카메라는 `<input type="file" accept="image/*" capture="environment">` 방식입니다. `getUserMedia`를 사용하지 않습니다. 촬영 UI 제공 여부는 모바일 브라우저에 따라 다르므로 실제 기기 확인이 필요합니다.
+
 ## 데이터와 개인정보
 
 기존 `POST /analyze`에는 multipart 필드 `file` 하나만 전송합니다. 알레르기 선택 정보는 브라우저에서 대조하며 서버로 보내거나 로그에 기록하지 않습니다. `utils/profileStorage.ts`는 localStorage의 `opensesame.allergies` 키를 사용해 새로고침과 브라우저 재시작 후에도 선택을 유지합니다. 잘못된 JSON이나 배열이 아닌 데이터는 빈 프로필로 처리하고, 허용되지 않은 ID와 중복 값은 무시합니다. 저장소 접근이 차단되어도 현재 React 상태는 사용할 수 있지만 영구 저장은 불가능합니다. 사진과 분석 결과는 메모리에만 보관하고, 미리보기용 객체 URL은 해제합니다. Results 화면을 새로고침하면 다시 분석해야 합니다.
 
 `types/analysis.ts`는 백엔드의 알레르겐 ID와 판정 enum을 그대로 사용합니다. `utils/analysis.ts`에는 응답 검증과 정규화 로직을 분리했습니다. `undecidable_ingredients`, `other_evidence`, `meta`는 팀 확인 전까지 선택 필드로 방어적으로 처리합니다. 응답 메타데이터에 Mock 모드가 명시되어 있으면 데모 안내를 표시합니다. API 오류 시 프론트엔드 Mock으로 자동 대체하지 않습니다. 메타데이터가 없으면 어떤 서버 엔진이 실행되었는지 확정할 수 없습니다.
+
+저장 방식은 팀 합의 전의 현재 구현입니다. 최종 저장 방식, 삭제 기능과 저장 안내는 [PR 리뷰 및 회의 안건](PR_REVIEW.md)에서 논의합니다.
 
 ## 디자인과 화면 동작
 
@@ -36,6 +68,8 @@ Figma 원본 SVG는 `src/assets`에 있습니다. 랜딩 화면의 일러스트�
 Results의 9개 행은 항상 유지합니다. 사용자가 선택한 알레르겐에 서버 판정이 있을 때만 개인 경고로 강조합니다. Confirmed에 해당하는 개인 결과가 있으면 검출 제목을 표시하고, 선택한 항목이 Likely 또는 Cannot determine이면 주의 안내를 표시합니다. 결과가 없는 항목은 Not detected로 표시하며 안전 보장으로 해석하지 않도록 안내합니다. 경고가 있거나 OCR 텍스트·원재료가 누락되어 분석이 불완전하면, 결과가 없는 항목도 Cannot determine으로 표시합니다. 출처 불명 원재료는 별도로 안내하며 미검출을 안전 보장으로 해석하지 않습니다.
 
 ## 검증 방법
+
+Mac/Linux에서는 아래 명령의 `npm.cmd`, `npx.cmd`를 각각 `npm`, `npx`로 실행합니다.
 
 ```powershell
 npm.cmd run typecheck
