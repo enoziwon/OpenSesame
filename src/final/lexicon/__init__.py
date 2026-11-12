@@ -16,11 +16,12 @@ import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Tuple
+from typing import Dict, List, NamedTuple, Pattern, Tuple
 
 HERE = Path(__file__).parent
 ORDER = {"C": 5, "I": 4, "P": 3, "R": 2, "F": 1}      # R(이름에 대두유)이 F(종류 모를 유지)보다 구체적이다
 GRADES = frozenset(ORDER)
+SPECIAL = ("OPAQUE", "FLAVOR", "FLAVOR_END", "BENIGN", "BENIGN_END", "STATEMENT", "ORIGIN", "ORIGIN_WORD")   # rules.tsv의 낱말 줄
 
 
 @dataclass(frozen=True)
@@ -47,10 +48,34 @@ class Lookup:
         return out
 
 
+class Rule(NamedTuple):
+    id: str
+    source: str
+    grade: str
+    include: Tuple[str, ...]
+    exclude: Tuple[str, ...]      # 이름에서 먼저 지우는 말 ('땅콩버터'의 버터는 우유가 아니다)
+    unless: Tuple[str, ...]       # 이름 어디에든 있으면 이 규칙을 쓰지 않는 말 ('사골…육수'는 생선 육수가 아니다)
+
+
+class RuleSet(NamedTuple):
+    rules: Tuple[Rule, ...]
+    words: Dict[str, Tuple[Tuple[str, ...], Tuple[str, ...]]]     # SPECIAL 줄: (포함어, 제외어)
+    origin_tail: Pattern      # '밀-미국산'
+    origin_head: Pattern      # '프랑스산-계란'
+    origin_only: Pattern      # '미국·캐나다·호주'
+
+
+class RuleHit(NamedTuple):
+    sources: Dict[str, str]
+    rule_ids: Tuple[str, ...]
+    opaque: bool
+    flavor: bool
+    benign: bool
+
+
 class _Tables(NamedTuple):
     sources: Dict[str, Dict[str, str]]
-    rules: List[Tuple[str, str, str, Tuple[str, ...], Tuple[str, ...]]]
-    words: Dict[str, Tuple[Tuple[str, ...], Tuple[str, ...]]]     # OPAQUE, FLAVOR, FLAVOR_END, BENIGN
+    ruleset: RuleSet
     entries: Dict[str, Lookup]
     auto: frozenset
     kr_box: Dict[str, Dict[str, str]]
@@ -61,40 +86,31 @@ def norm(name: str) -> str:
     return re.sub(r"[\s\-·.∙‧•,]", "", name).lower()
 
 
-def _read(filename: str) -> List[Dict[str, str]]:
-    with open(HERE / filename, encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f, delimiter="\t"))
-
-
 def _split(text: str) -> Tuple[str, ...]:
     return tuple(x for x in text.split("|") if x)
 
 
-def _parse_sources(text: str) -> Tuple[Tuple[str, str], ...]:
-    out = []
-    for token in text.split():
-        code, grade = token.rsplit(":", 1)
-        out.append((code, grade))
-    return tuple(out)
-
-
-@lru_cache(maxsize=1)
-def _tables() -> _Tables:
-    sources = {r["code"]: r for r in _read("sources.tsv")}
+def make_ruleset(rule_rows: List[Dict[str, str]]) -> RuleSet:
+    """rules.tsv의 줄(dict)들로 규칙 묶음을 만든다. 사전을 조립하는 도구도 이 함수를 쓴다."""
     rules, words = [], {}
-    for r in _read("rules.tsv"):
-        if r["source"]:
-            rules.append((r["id"], r["source"], r["grade"], _split(r["include"]), _split(r["exclude"])))
+    for r in rule_rows:
+        if r.get("source"):
+            rules.append(Rule(r["id"], r["source"], r["grade"], _split(r["include"]), _split(r["exclude"]),
+                              _split(r.get("unless") or "")))
         else:
             words[r["id"]] = (_split(r["include"]), _split(r["exclude"]))
-    entries = {}
-    for r in _read("entries.tsv"):
-        entries[norm(r["name"])] = Lookup(
-            name=r["name"], sources=_parse_sources(r["sources"]), opaque="O" in r["flags"], flavor="V" in r["flags"],
-            not_ingredient="X" in r["flags"], via="entry", en=r["en"], note=r["note"], status=r["status"])
-    auto = frozenset(norm(r["name"]) for r in _read("entries_auto.tsv"))
-    kr_box = {r["word"]: r for r in _read("kr_box.tsv")}
-    return _Tables(sources, rules, words, entries, auto, kr_box)
+    for key in SPECIAL:
+        words.setdefault(key, ((), ()))
+    places = sorted(words["ORIGIN"][0], key=len, reverse=True)          # '인도네시아'를 '인도'보다 먼저 본다
+    fixed = sorted(words["ORIGIN_WORD"][0], key=len, reverse=True)
+    token = "(?:(?:%s)산?|%s)등?" % ("|".join(map(re.escape, places)) or "(?!)",
+                                    "|".join(map(re.escape, fixed)) or "(?!)")
+    gap = r"[-:·∙•‧,./\s]+"
+    return RuleSet(
+        tuple(rules), words,
+        re.compile(r"^(.+?)\s*[-:·∙.]\s*%s(?:%s%s)*$" % (token, gap, token)),
+        re.compile(r"^%s(?:[·∙•‧,./\s]+%s)*\s*[-:]\s*(.+)$" % (token, token)),
+        re.compile(r"^%s(?:%s%s)*$" % (token, gap, token)))
 
 
 def _blank(text: str, words: Tuple[str, ...]) -> str:
@@ -103,16 +119,15 @@ def _blank(text: str, words: Tuple[str, ...]) -> str:
     return text
 
 
-def _has(key: str, table_id: str) -> bool:
-    inc, exc = _tables().words[table_id]
+def _has(key: str, rs: RuleSet, table_id: str) -> bool:
+    inc, exc = rs.words[table_id]
     text = _blank(key, exc)
     return any(k in text for k in inc)
 
 
-def _is_flavor(key: str) -> bool:
-    _, exc = _tables().words["FLAVOR"]
-    ends = _tables().words["FLAVOR_END"][0]
-    return _has(key, "FLAVOR") or _blank(key, exc).endswith(ends)
+def _is_flavor(key: str, rs: RuleSet) -> bool:
+    ends = rs.words["FLAVOR_END"][0]
+    return _has(key, rs, "FLAVOR") or (bool(ends) and _blank(key, rs.words["FLAVOR"][1]).endswith(ends))
 
 
 _TASTE_LATER = re.compile(r"맛(?:시즈닝|씨즈닝|분말|분$|조미|소스|베이스|스낵|칩|오일|엑기스|가루|풍미|스프|후레이크|$)")
@@ -130,56 +145,106 @@ def _taste_follows(key: str, end: int) -> bool:
     return bool(_TASTE_LATER.search(key[end:]))        # '명란마요맛시즈닝'처럼 뒤쪽에 '맛'이 붙는 조미 이름
 
 
-def _by_rules(key: str) -> Tuple[Dict[str, str], bool]:
-    """키워드 규칙을 적용한다. ({출처 코드: 등급}, 향료인가)"""
-    flavor = _is_flavor(key)
+def match_rules(key: str, rs: RuleSet) -> RuleHit:
+    """정규화한 이름에 키워드 규칙을 적용한다."""
+    flavor = _is_flavor(key, rs)
     found: Dict[str, str] = {}
-    for _rid, code, grade, inc, exc in _tables().rules:
-        text = _blank(key, exc)
+    used: List[str] = []
+    for rule in rs.rules:
+        if any(w in key for w in rule.unless):
+            continue
+        text = _blank(key, rule.exclude)
         best = ""
-        for k in inc:
+        for k in rule.include:
             i = text.find(k)
             if i < 0:
                 continue
-            g = grade
+            g = rule.grade
             if g == "C" and (flavor or _taste_follows(key, i + len(k))):
                 g = "I"                                # 맛·향 이름이면 한 단계 낮춘다
             elif g == "I" and flavor:
                 g = "P"                                # 초콜릿향 -> 우유처럼 두 번 건너뛴 추정
             if not best or ORDER[g] > ORDER[best]:
                 best = g
-        if best and (code not in found or ORDER[best] > ORDER[found[code]]):
-            found[code] = best
-    return found, flavor
+        if not best:
+            continue
+        used.append(rule.id)
+        if rule.source not in found or ORDER[best] > ORDER[found[rule.source]]:
+            found[rule.source] = best
+    # 종류까지 아는 코드가 있으면 같은 계열의 뭉뚱그린 코드는 뺀다. '멸치액젓'은 생선(액젓)이 아니라 멸치다
+    for code in [c for c in found if ":" not in c]:
+        kinds = [found[c] for c in found if c.startswith(code + ":")]
+        if kinds and max(ORDER[g] for g in kinds) >= ORDER[found[code]]:
+            del found[code]
+    ends = rs.words["BENIGN_END"][0]
+    benign = not found and (_has(key, rs, "BENIGN") or (bool(ends) and key.endswith(ends)))
+    return RuleHit(found, tuple(used), _has(key, rs, "OPAQUE"), flavor, benign)
 
 
-_ORIGIN = re.compile(
-    r"^(.+?)[-:·∙.]\s*(?:[가-힣]{1,8}산|수입|외국|국내|미국|호주|중국|캐나다|러시아|베트남|태국|인도|독일|프랑스|이탈리아)"
-    r"(?:[·∙,./ ]*[가-힣]{1,8}산?)*$")
+def strip_origin_with(name: str, rs: RuleSet) -> str:
+    m = rs.origin_tail.match(name) or rs.origin_head.match(name)
+    return m.group(1).strip() if m else name
+
+
+def is_not_ingredient_with(name: str, rs: RuleSet) -> bool:
+    """원산지만 늘어놓은 표기이거나 제조시설 안내 문구인가."""
+    return bool(rs.origin_only.match(name.strip())) or _has(norm(name), rs, "STATEMENT")
+
+
+def _read(filename: str) -> List[Dict[str, str]]:
+    with open(HERE / filename, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f, delimiter="\t"))
+
+
+def _parse_sources(text: str) -> Tuple[Tuple[str, str], ...]:
+    out = []
+    for token in text.split():
+        code, grade = token.rsplit(":", 1)
+        out.append((code, grade))
+    return tuple(out)
+
+
+@lru_cache(maxsize=1)
+def _tables() -> _Tables:
+    sources = {r["code"]: r for r in _read("sources.tsv")}
+    entries = {}
+    for r in _read("entries.tsv"):
+        entries[norm(r["name"])] = Lookup(
+            name=r["name"], sources=_parse_sources(r["sources"]), opaque="O" in r["flags"], flavor="V" in r["flags"],
+            not_ingredient="X" in r["flags"], via="entry", en=r["en"], note=r["note"], status=r["status"])
+    auto = frozenset(norm(r["name"]) for r in _read("entries_auto.tsv"))
+    kr_box = {r["word"]: r for r in _read("kr_box.tsv")}
+    return _Tables(sources, make_ruleset(_read("rules.tsv")), entries, auto, kr_box)
 
 
 def strip_origin(name: str) -> str:
-    """'밀-미국산', '대두:외국산'처럼 원산지가 붙어 남은 이름에서 앞부분만. 아니면 그대로."""
-    m = _ORIGIN.match(name)
-    return m.group(1).strip() if m else name
+    """'밀-미국산', '대두:외국산', '프랑스산-계란'처럼 원산지가 붙어 남은 이름에서 원재료 부분만. 아니면 그대로.
+
+    'L-글루타민산나트륨', 'DL-사과산'처럼 '산'으로 끝나는 화합물 이름은 원산지가 아니므로 나라 이름표로만 가린다.
+    """
+    return strip_origin_with(name, _tables().ruleset)
 
 
 @lru_cache(maxsize=65536)
 def lookup(name: str) -> Lookup:
-    """원재료 이름 하나를 찾는다. 사전 -> (원산지를 뗀) 사전 -> 규칙 -> 관계없는 무리 -> 자동 단 -> 모름."""
+    """원재료 이름 하나를 찾는다. 사전 -> (원산지를 뗀) 사전 -> 원재료 아님 -> 규칙 -> 관계없는 무리 -> 자동 단 -> 모름."""
     if not isinstance(name, str):
         raise TypeError("이름에는 글자(str)만 넣을 수 있습니다")
     tables = _tables()
-    key = norm(name)
-    for k in (key, norm(strip_origin(name))):
-        hit = tables.entries.get(k)
+    rs = tables.ruleset
+    base = strip_origin_with(name, rs)
+    for key in (norm(name), norm(base)):
+        hit = tables.entries.get(key)
         if hit is not None:
             return hit
-    found, flavor = _by_rules(key)
-    opaque = _has(key, "OPAQUE")
-    if found or opaque or flavor:
-        return Lookup(name=name, sources=tuple(sorted(found.items())), opaque=opaque, flavor=flavor, via="rule")
-    if _has(key, "BENIGN"):
+    if is_not_ingredient_with(name, rs):
+        return Lookup(name=name, not_ingredient=True, via="rule")
+    key = norm(base)                                   # 원산지 글자가 규칙에 걸리지 않게 뗀 이름으로 본다
+    hit = match_rules(key, rs)
+    if hit.sources or hit.opaque or hit.flavor:
+        return Lookup(name=name, sources=tuple(sorted(hit.sources.items())), opaque=hit.opaque, flavor=hit.flavor,
+                      via="rule")
+    if hit.benign:
         return Lookup(name=name, via="benign")
     if key in tables.auto:
         return Lookup(name=name, via="auto")
@@ -196,4 +261,4 @@ def source_info(code: str) -> Dict[str, str]:
     return dict(_tables().sources[code])
 
 
-__all__ = ["Lookup", "lookup", "norm", "strip_origin", "kr_box", "source_info", "ORDER", "GRADES"]
+__all__ = ["Lookup", "lookup", "norm", "strip_origin", "kr_box", "source_info", "ORDER", "GRADES", "SPECIAL"]
