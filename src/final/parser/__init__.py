@@ -1,11 +1,14 @@
-"""파이프라인 3·4단계: 라벨 글자 -> 구역 -> 원재료 나무.
+"""최종본 3·4단계: 라벨 글자 -> 구역 -> 원재료 나무.
 
-    from src.parser import parse_label
+    from src.final.parser import parse_label
     r = parse_label("원재료명: 혼합조미분말(멸치분말, 정제염) 밀, 대두 함유")
     r.to_api()      # {"ingredients_text", "declaration_text", "ingredients": [...]}
     r.mentions()    # [(이름, 깊이, 부모, 잎인가), ...]  분류 단계의 입력
+
+팀 1차 파서(src/parser)와 달리 알레르기 표시란과 같은 시설 문구를 원재료에서 떼어 낸다.
 """
 from dataclasses import dataclass
+from typing import Optional
 
 from .tree import Node, mentions, parse_tree
 from .zones import split_zones, zones_from_fields
@@ -16,9 +19,9 @@ MAX_CHARS = 20000     # 라벨 한 장은 길어야 수천 자
 @dataclass(frozen=True)
 class ParsedLabel:
     ingredients_text: str
-    declaration_text: str | None
+    declaration_text: Optional[str]
     declared: tuple
-    facility_text: str | None
+    facility_text: Optional[str]
     tree: tuple
     repairs: int          # 괄호 짝을 고친 횟수. 0보다 크면 OCR이나 라벨이 깨졌을 수 있다
 

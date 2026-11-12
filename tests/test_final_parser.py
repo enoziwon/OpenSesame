@@ -1,9 +1,9 @@
-"""파서 단위 테스트. 실행: python -m pytest -q"""
+"""최종본 파서 단위 테스트. 실행: python -m pytest -q"""
 import json
 
 import pytest
 
-from src.parser import parse_label, parse_tree
+from src.final.parser import parse_label, parse_tree
 
 
 def shape(nodes):

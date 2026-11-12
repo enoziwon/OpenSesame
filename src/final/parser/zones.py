@@ -1,6 +1,7 @@
 """라벨 글자를 원재료 / 알레르기 표시란 / 같은 시설 문구로 나눈다."""
 import re
 from dataclasses import dataclass
+from typing import Optional
 
 from .tree import normalize
 
@@ -30,9 +31,9 @@ DECL_PREFIX_RE = re.compile(r"[\[【(<]?\s*알레르기\s*(?:유발)?\s*(?:물�
 @dataclass(frozen=True)
 class Zones:
     ingredients_text: str
-    declaration_text: str | None      # 표시란 원문. 못 찾으면 None
+    declaration_text: Optional[str]   # 표시란 원문. 못 찾으면 None
     declared: tuple                   # 표시란 항목 ('밀', '대두')
-    facility_text: str | None         # 같은 시설 문구. 판정에는 쓰지 않는다
+    facility_text: Optional[str]      # 같은 시설 문구. 판정에는 쓰지 않는다
 
 
 def _split_top(s, seps):
