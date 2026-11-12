@@ -1,0 +1,38 @@
+word	source	mandatory	note
+알류	egg	Y	가금류의 알. 법정 명칭
+난류	egg	Y	알류의 옛 표기
+가금류	egg	Y	
+계란	egg	Y	
+달걀	egg	Y	
+메추리알	egg	Y	
+오리알	egg	Y	
+우유	milk	Y	
+메밀	buckwheat	Y	미국 9개 밖
+땅콩	peanut	Y	
+대두	soy	Y	정제 대두유만 써도 적는다 (가이드 R1-1)
+콩	soy	Y	대두의 다른 표기
+밀	wheat	Y	
+고등어	fish:mackerel	Y	한국 표시란이 덮는 유일한 생선
+게	crustacean:crab	Y	
+새우	crustacean:shrimp	Y	
+돼지고기	pork	Y	미국 9개 밖
+복숭아	peach	Y	미국 9개 밖
+토마토	tomato	Y	미국 9개 밖
+아황산류	sulfite	Y	이산화황 10mg/kg 이상일 때. 미국 9개 밖
+아황산	sulfite	Y	
+아황산염	sulfite	Y	
+이산화황	sulfite	Y	
+호두	tree_nut:walnut	Y	
+닭고기	chicken	Y	미국 9개 밖
+쇠고기	beef	Y	미국 9개 밖
+소고기	beef	Y	
+오징어	mollusk:squid	Y	미국 9개 밖
+조개류	mollusk:shellfish	Y	굴·전복·홍합 포함. 미국 9개 밖
+굴	mollusk:shellfish	Y	
+전복	mollusk:shellfish	Y	
+홍합	mollusk:shellfish	Y	
+잣	tree_nut:pine_nut	Y	
+참깨	sesame	N	현행 의무 아님. 2028년 추가 입법예고(공포 미확인). 적혀 있으면 근거로 쓴다
+들깨	perilla	N	현행 의무 아님. 미국 9개 밖
+아몬드	tree_nut:almond	N	현행 의무 아님. 적혀 있으면 근거로 쓴다
+캐슈너트	tree_nut:cashew	N	현행 의무 아님. 적혀 있으면 근거로 쓴다

@@ -1,0 +1,2509 @@
+name	sources	flags	en	type	by	status	basis	note
+밀	wheat:C		wheat		손	확인		
+게	crustacean:crab:C		crab		손	확인		
+굴	mollusk:shellfish:C		oyster		손	확인		
+밤	chestnut:C		chestnut		손	확인		FDA 견과류 12종 밖
+면	wheat:I		noodles		손	확인		구성품 이름으로 남은 '면'. 대개 밀가루 국수
+크림	milk:I		cream		손	확인		유크림을 줄여 적은 경우가 대부분이다(하위 원료가 적힌 사례 전부에 우유)
+초유	milk:C		colostrum		손	확인		
+초유분말	milk:C		colostrum powder		손	확인		
+CPP	milk:C		casein phosphopeptide		손	확인		카제인포스포펩타이드
+EPA	fish:I		EPA (fish oil)		손	확인		어유에서 얻는다. 정제 여부를 라벨로 알 수 없다
+전립분	wheat:C		whole wheat flour		손	확인		통밀가루(全粒粉)
+젓갈	crustacean:shrimp:I fish:I		salted seafood		손	확인		대부분 멸치·까나리지만 새우젓도 있다 (가이드 6장)
+젓갈류	crustacean:shrimp:I fish:I		salted seafood		손	확인		
+양념젓갈	crustacean:shrimp:I fish:I		seasoned salted seafood		손	확인		
+유화제	soy:P		emulsifier		손	검수요청		대두에서 얻은 유화제는 대개 '유화제(대두)'로 적힌다. 유화제만 적힌 제품의 표시란 대두 비율(29%)은 설탕(31%)과 차이가 없다. 가이드 D2는 추정으로 적었으나 근거가 약하다
+전분	wheat:P		starch		손	확인		하위 원료가 적힌 전분의 35%가 밀이다. 미국에서 starch는 옥수수 전분만 뜻하므로 미국인이 오해하기 쉽다
+마가린	milk:P soy:F		margarine		손	확인		하위 원료가 적힌 사례의 62%에 대두, 32%에 우유 성분
+마아가린	milk:P soy:F		margarine		손	확인		
+저지방마가린	milk:P soy:F		low-fat margarine		손	확인		
+감미유	soy:F		seasoned oil		손	확인		하위 원료가 적힌 사례의 68%에 대두
+식용유	soy:F		cooking oil		손	확인		하위 원료가 적힌 사례의 85%에 대두
+유화유지	soy:F		emulsified fat		손	확인		
+경화유	soy:F		hydrogenated oil		손	확인		
+분말유지	milk:P soy:F		powdered fat		손	확인		
+고지방분말	milk:P soy:F		high-fat powder		손	확인		하위 원료가 적힌 사례의 67%에 우유 성분
+유지혼합분말	milk:P soy:F		fat blend powder		손	확인		
+프리페어드에드블펫	milk:P soy:F		prepared edible fat		손	확인		
+해바라기혼합유	soy:F		sunflower oil blend		손	확인		
+고추기름	soy:F		chili oil		손	확인		대개 대두유에 고추를 우린다
+고추맛기름	soy:F		chili-flavored oil		손	확인		하위 원료가 적힌 사례의 60%에 대두
+고추씨맛기름	soy:F		chili seed flavored oil		손	확인		
+고추맛추출기름	soy:F		chili extract oil		손	확인		
+두류가공품	soy:I	O	legume product		손	확인		하위 원료가 적힌 사례의 70%에 대두
+카레	wheat:I	O	curry		손	확인		카레 루에는 대개 밀가루가 들어간다(하위 원료가 적힌 사례의 73%)
+전분믹스	wheat:I		starch mix		손	확인		하위 원료가 적힌 사례의 80%에 밀
+프리믹스	wheat:I		premix		손	확인		
+혼합메밀가루	buckwheat:C wheat:I		buckwheat flour blend		손	확인		하위 원료가 적힌 사례의 75%에 밀
+비타셀	wheat:I		wheat fiber (Vitacel)		손	확인		밀 식이섬유 상표. 하위 원료가 적힌 사례의 89%에 밀
+화이트루	milk:I wheat:I		white roux		손	확인		밀가루를 버터에 볶은 것
+빠데아글라세이브와	milk:I		white coating chocolate		손	확인		코팅용 준초콜릿(pate a glacer)
+리뉴얼화이트	milk:I		(brand)		손	검수요청		상표. 하위 원료가 적힌 사례 전부에 우유 성분
+유유락	milk:I		(brand)		손	검수요청		상표. 하위 원료가 적힌 사례 전부에 우유 성분
+에프에스피	soy:I		(brand)		손	검수요청		상표. 하위 원료가 적힌 사례 전부에 대두
+에이취브이피와이큐	soy:I		hydrolyzed vegetable protein		손	확인		HVP 상표
+오곡분말	sesame:P		five-grain powder		손	검수요청		하위 원료가 적힌 사례의 55%에 참깨
+콜라겐	fish:P		collagen		손	검수요청		어류 콜라겐과 돼지·소 콜라겐을 이름으로 가릴 수 없다
+카라멜	milk:P		caramel		손	검수요청		캐러멜 색소·시럽일 수도, 우유가 든 캐러멜일 수도 있다
+혼다시	fish:bonito:I	O	bonito dashi seasoning		손	확인		가다랑어 맛 조미료
+패각칼슘	mollusk:shellfish:I		shell calcium		손	확인		굴 껍데기 등
+미향			cooking wine		손	확인		맛술류 조미료 상표. 향료가 아니다
+미림			mirin (cooking wine)		손	확인		
+맛술			cooking wine		손	확인		
+미원			MSG		손	확인		L-글루타민산나트륨 상표
+당면			sweet potato starch noodles		손	확인		고구마 전분 국수. 밀이 아니다
+고구마당면			sweet potato starch noodles		손	확인		
+젖산			lactic acid		손	확인		젖(우유)과 무관한 유기산
+젖산칼슘			calcium lactate		손	확인		
+젖산나트륨			sodium lactate		손	확인		
+젖산칼륨			potassium lactate		손	확인		
+유산균			lactic acid bacteria		손	확인		균 자체는 우유가 아니다
+젤라틴			gelatin		손	확인		하위 원료가 적힌 사례는 대부분 돼지
+우유응고효소			rennet (milk-clotting enzyme)		손	확인		
+응유효소			rennet		손	확인		
+렌넷			rennet		손	확인		
+케찹			ketchup		손	확인		
+토마토케첩			tomato ketchup		손	확인		
+토마토케찹			tomato ketchup		손	확인		
+베이킹파우더			baking powder		손	확인		
+베이킹파우다			baking powder		손	확인		
+카레분			curry powder		손	확인		향신료를 섞은 가루. 하위 원료에 밀이 보인 사례는 8%
+카레분말			curry powder		손	검수요청		카레분과 같은 뜻으로 쓰이지만 루 분말일 수도 있다
+피클링설트			curing salt		손	확인		
+리갈브라인믹스		O	brine mix		손	검수요청		염지용 혼합물
+지미분		O	umami seasoning powder		손	확인		
+맛내미		O	seasoning		손	확인		
+사골설렁탕분말		O	beef bone soup powder		손	확인		
+혼합형		X			손	확인		'토코페롤(혼합형)'의 형태 표기
+물엿			starch syrup		손	확인		국내 물엿은 옥수수 전분으로 만든다(하위 원료가 적힌 사례에 밀 없음). 시드 사전은 밀 가능성으로 적었으나 자료로 뒷받침되지 않는다
+변성전분			modified starch		손	확인		표시란 근거로 밀과 관련이 없다(29%, 배경 수준)
+덱스트린			dextrin		손	확인		국내는 대부분 옥수수 전분에서 만든다
+말토덱스트린			maltodextrin		손	확인		국내는 대부분 옥수수 전분에서 만든다
+포도당			glucose		손	확인		
+카라멜색소			caramel color		손	확인		
+종국			koji starter		손	확인		
+비타민E			vitamin E		손	확인		합성품이 많아 대두 유래로 보지 않는다. 표시란에 대두가 있으면 R1로 판단한다
+어간장	fish:C soy:I		fish soy sauce		손	확인		생선을 삭혀 만든 간장. 간장을 섞기도 한다
+커스터드	egg:I milk:I		custard		손	확인		
+메밀면	buckwheat:C wheat:I		buckwheat noodles		손	확인		이름은 메밀이지만 밀가루가 더 많은 제품이 흔하다
+가공두유	milk:P soy:C		processed soy milk		손	확인		유가공품을 넣을 수 있다
+누가	egg:I tree_nut:I		nougat		손	확인		견과와 난백으로 만든다
+갑각류	crustacean:C		crustacean shellfish		손	확인		
+건어포	fish:I mollusk:I		dried fish jerky		손	확인		쥐포 같은 생선포일 수도, 오징어채일 수도 있다
+조미건어포	fish:I mollusk:I	O	seasoned dried fish jerky		손	확인		
+어패류	crustacean:P fish:P		seafood		손	검수요청		종류를 알 수 없다
+XO소스	crustacean:shrimp:I	O	XO sauce		손	확인		건새우와 건관자를 쓴다
+누룩	wheat:I		nuruk (fermentation starter)		손	확인		대개 밀로 빚는다
+곡자	wheat:I		nuruk (fermentation starter)		손	확인		
+단백가수분해물	soy:P wheat:P		hydrolyzed protein		손	검수요청		원료가 적히지 않았다
+땅콩또는견과류가공품	peanut:I tree_nut:I	O	peanut or tree nut product		손	확인		식품 유형 이름이라 땅콩인지 견과인지 알 수 없다
+고다	milk:C		Gouda cheese		손	확인		
+CBP	milk:C		colostrum basic protein		손	확인		초유 염기성 단백질
+글리코메크로펩타이드	milk:C		glycomacropeptide		손	확인		유청에서 얻는 펩타이드
+스핑고마이엘린	milk:I		sphingomyelin		손	확인		식품용은 대개 우유에서 얻는다
+오스테오폰틴	milk:I		osteopontin		손	확인		식품용은 우유 단백질
+마카롱	egg:I tree_nut:almond:I		macaron		손	확인		아몬드 가루와 난백으로 만든다
+매작과	wheat:I		Korean fried cookie		손	확인		
+약과	sesame:I wheat:I		yakgwa (honey cookie)		손	확인		밀가루 반죽에 참기름을 넣어 튀긴다
+알수없음		X			손	확인		
+세균수기준		X			손	확인		
+세균수기준1급		X			손	확인		
+생물기준		X			손	확인		
+특정성분		X			손	확인		
+무수		X			손	확인		
+이상		X			손	확인		
+결정		X			손	확인		
+분말		X			손	확인		
+건강		X			손	확인		
+주요		X			손	확인		
+원산지		X			손	확인		
+수입		X			손	확인		
+유기		X			손	확인		
+유기농		X			손	확인		
+무농약		X			손	확인		
+무항생제		X			손	확인		
+태평양		X			손	확인		
+제주		X			손	확인		
+제주도		X			손	확인		
+신안군		X			손	확인		
+말레이지아산		X			손	확인		
+키르기스스탄		X			손	확인		
+국내가공		X			손	확인		
+유기농함량		X			손	확인		
+살균제품		X			손	확인		
+즉석조리식품		X			손	확인		
+질소충전제품		X			손	확인		
+레토르트식품		X			손	확인		
+정육기준		X			손	확인		
+배합함량		X			손	확인		
+배합수제외		X			손	확인		
+강화성분제외		X			손	확인		
+원료삼배합비율		X			손	확인		
+생두의원산지		X			손	확인		
+국가명은홈페이지에별도표시		X			손	확인		
+페닐알라닌함유		X			손	확인		
+홍삼성분		X			손	확인		
+1A등급		X			손	확인		
+g이상		X			손	확인		
+또는갓		X			손	확인		
+1x10^8		X			손	확인		
+www.purmil.co.kr		X			손	확인		
+계란	egg:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 알가공품	
+난류	egg:C			C1	시드	시드확인	시행규칙 별표2; 식약처 질의응답	법정 명칭. 식약처는 '알류(달걀)' 표기를 권장
+달걀	egg:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 알가공품	
+알류	egg:C			C1	시드	시드확인	시행규칙 별표2; 식약처 질의응답	법정 명칭. 식약처는 '알류(달걀)' 표기를 권장
+전란	egg:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 알가공품	
+전란분	egg:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 알가공품	
+전란액	egg:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 알가공품	
+우유	milk:C			C1	시드	시드확인	FDA 5판 C.1-2; 식품공전 유가공품	
+원유	milk:C			C1	시드	시드확인	FDA 5판 C.1-2; 식품공전 유가공품	
+낙화생	peanut:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 식용유지; FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	견과류가 아니라 Peanuts / 학명: Arachis hypogaea L.
+땅콩	peanut:C			C1	시드	시드확인	FDA 5판 A.1; 식품공전 식용유지; FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	견과류가 아니라 Peanuts / 학명: Arachis hypogaea L.
+검정깨	sesame:C			C1	시드	시드확인	표준국어대사전; FDA 참깨 안내	흑임자=검은깨(검은 참깨) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+흑지마	sesame:C			C1	시드	시드확인	표준국어대사전; FDA 참깨 안내	흑임자=검은깨(검은 참깨) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+흑호마	sesame:C			C1	시드	시드확인	표준국어대사전; FDA 참깨 안내	흑임자=검은깨(검은 참깨) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+깨	sesame:C			C1	시드	시드확인	FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+볶은참깨	sesame:C			C1	시드	시드확인	FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+참깨	sesame:C			C1	시드	시드확인	FDA 참깨 안내; FARE sesame; FDA 5판; 입법예고 2026-386; 한국민족문화대백과 깨	한국은 2028년 추가 예정(입법예고) / '깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+참깨분말	sesame:C			C1	시드	시드확인	FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+통깨	sesame:C			C1	시드	시드확인	FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+흑임자	sesame:C			C1	시드	시드확인	FDA 참깨 안내; FARE sesame; 표준국어대사전	한국은 2028년 추가 예정(입법예고) / 흑임자=검은깨(검은 참깨) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+흰깨	sesame:C			C1	시드	시드확인	FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+대두	soy:C			C1	시드	시드확인	FDA 5판 C.11; C002 실제 표기	
+메주콩	soy:C			C1	시드	시드확인	표준국어대사전	
+백태	soy:C			C1	시드	시드확인	FDA 5판 C.11; C002 실제 표기; 사이언스타임즈 콩 기사; 우리말샘	라벨에서는 노란 콩. 방언으로 흰 명태를 뜻하기도 함(출처 상충)
+서리태	soy:C			C1	시드	시드확인	FDA 5판 C.11; C002 실제 표기	
+콩	soy:C			C1	시드	시드확인	FDA 5판 C.11; OFF 실제 표기(레시틴(콩))	단독 '콩'은 보통 대두지만 다른 콩일 수 있음
+콩고물	soy:C			C1	시드	시드확인	표준국어대사전	
+흑태	soy:I			C2	시드	시드검증필요	표준국어대사전	흑태는 검은콩과 먹태(명태 가공품) 두 뜻이 있음. 원재료 목록의 다른 단어로 구분해야 함
+밀가루	wheat:C			C1	시드	시드확인	FDA 5판 C.9; FARE wheat; C002 실제 표기	
+소맥분	wheat:C			C1	시드	시드확인	FDA 5판 C.9; FARE wheat; C002 실제 표기	
+통밀	wheat:C			C1	시드	시드확인	FDA 5판 C.9; FARE wheat; C002 실제 표기	
+영양강화 밀가루	wheat:C			C1	시드	시드확인	식품공전 농산가공식품류	
+난백	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난백분	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난백액	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난황	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난황분	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난황액	egg:C			C2	시드	시드확인	FARE egg; 식품공전 알가공품	
+난각칼슘	egg:I			C2	시드	시드검증필요	OFF 실제 표기(신라면 '난각칼슘(계란)')	난각(卵殼)=달걀 껍데기. 한국 라벨은 계란으로 병기한 사례가 있음. 미국 기준 판정은 미확인
+버터유	milk:C			C2	시드	시드확인	FARE milk; 식품공전 유가공품	
+전지분유	milk:C			C2	시드	시드확인	FDA 5판 D.5; 식품공전 유가공품	
+탈지분유	milk:C			C2	시드	시드확인	FDA 5판 D.5; 식품공전 유가공품	
+혼합분유	milk:C			C2	시드	시드확인	FDA 5판 D.5; 식품공전 유가공품	
+유당	milk:C			C2	시드	시드확인	FDA 5판 B.7	단백질이 남는 경우가 많아 대개 표시 대상
+젖당	milk:C			C2	시드	시드확인	표준국어대사전; FDA 5판 B.7	유당의 우리말
+유지방	milk:C			C2	시드	시드확인	표준국어대사전	젖의 지방(乳脂)
+농축유청	milk:C			C2	시드	시드확인	FDA 5판 C.2; 식품공전 유가공품; OFF 실제 표기	
+유청	milk:C			C2	시드	시드확인	FDA 5판 C.2; 식품공전 유가공품; OFF 실제 표기	
+유청단백분말	milk:C			C2	시드	시드확인	FDA 5판 C.2; 식품공전 유가공품; OFF 실제 표기	
+유청분말	milk:C			C2	시드	시드확인	FDA 5판 C.2; 식품공전 유가공품; OFF 실제 표기	
+생크림	milk:C			C2	시드	시드확인	FARE milk; 식품공전 유가공품	
+유크림	milk:C			C2	시드	시드확인	FARE milk; 식품공전 유가공품	
+검은깨	sesame:C			C2	시드	시드확인	표준국어대사전; FDA 참깨 안내	흑임자=검은깨(검은 참깨) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+호마	sesame:C			C2	시드	시드확인	FARE sesame; 표준국어대사전	
+밀쌀	wheat:C			C2	시드	시드확인	OFF 실제 표기(양념쌈장)	'쌀'이 들어 있지만 밀
+소맥	wheat:C			C2	시드	시드확인	판매처 라벨 문자열(양조간장 '소맥(미국산)', 표시란 '밀')	한자어(小麥)
+강력분	wheat:C			C2	시드	시드확인	FARE wheat	이름에 '밀'이 없지만 밀가루
+박력분	wheat:C			C2	시드	시드확인	FARE wheat	이름에 '밀'이 없지만 밀가루
+중력분	wheat:C			C2	시드	시드확인	FARE wheat	이름에 '밀'이 없지만 밀가루
+교맥	buckwheat:C			C2	시드	시드확인	표준국어대사전	메밀의 한자어(蕎麥)
+난소화성말토덱스트린				C2	시드	시드확인	난소화성 덱스트린 특허; C002 실제 표기	'난'은 어려울 난(難)이라 계란(卵)이 아님. 주로 옥수수전분에서 만듦
+돈골				C2	시드	시드확인	OFF 실제 표기(라면류, 국물 제품)	돈골(豚骨)=돼지 뼈. 한국 표시 대상이지만 미국 9대 아님
+엿기름				C2	시드	시드확인	표준국어대사전	보리 싹. 9대 Wheat 아님
+미강유				C2	시드	시드확인	FDA 5판 A.1	'유'는 기름(油). 9대 원료가 아님
+밀감				C2	시드	시드확인	표준국어대사전	귤(蜜柑). '밀'이지만 밀(wheat)이 아님
+밀랍				C2	시드	시드확인	표준국어대사전	꿀벌이 만든 밀(蜜蠟). '밀'이지만 밀(wheat)이 아님
+대맥				C2	시드	시드확인	표준국어대사전	보리의 한자어(大麥). 9대 Wheat 아님
+사골				C2	시드	시드확인	OFF 실제 표기(라면류, 국물 제품)	소 뼈. 한국 표시 대상이지만 미국 9대 아님
+야자경화유				C2	시드	시드확인	FDA 5판 A.1	'유'는 기름(油). 9대 원료가 아님
+어성초				C2	시드	시드확인	우리말샘	약모밀(魚腥草). '어'가 있지만 생선이 아님
+옥수수유				C2	시드	시드확인	FDA 5판 A.1	'유'는 기름(油). 9대 원료가 아님
+우골				C2	시드	시드확인	OFF 실제 표기(라면류, 국물 제품)	우골(牛骨)=소 뼈. 한국 표시 대상이지만 미국 9대 아님
+유산				C2	시드	시드확인	식품첨가물 규격 젖산; 표준국어대사전	유산(乳酸)=젖산. 우유 단백질이 아님
+유산칼슘				C2	시드	시드확인	식품첨가물 규격 젖산; 표준국어대사전	유산(乳酸)=젖산. 우유 단백질이 아님
+팜유				C2	시드	시드확인	FDA 5판 A.1	'유'는 기름(油). 9대 원료가 아님
+소두				C2	시드	시드확인	표준국어대사전	팥(小豆). 대두와 한 글자 차이
+유지		O		C2	시드	시드확인	표준국어대사전	대개 기름(油脂)이지만 젖의 지방(乳脂)일 수도 있음
+곤쟁이	crustacean:I			C3	시드	시드검증필요	표준국어대사전; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우와 비슷한 갑각류. FDA 목록 등재명 미확인 / FDA 목록 미등재. 생물학상 갑각류(곤쟁이목) / 영어 이름(mysid): 미확인 / FDA 매칭: 목록에 없음 / 학명: Neomysis japonica
+랑구스틴	crustacean:lobster:C		lobsterette	C3	시드	시드검증필요	FDA Seafood List; FARE shellfish	
+스캄피	crustacean:lobster:C		lobsterette	C3	시드	시드검증필요	FDA Seafood List; FARE shellfish	
+난백알부민	egg:C			C3	시드	시드검증필요	FARE egg; KFA egg	
+오보뮤코이드	egg:C			C3	시드	시드검증필요	FARE egg; KFA egg	
+오브알부민	egg:C			C3	시드	시드검증필요	FARE egg; KFA egg	
+리소자임	egg:C			C3	시드	시드검증필요	FARE egg; 식품첨가물 규격 리소짐	공전 이름은 '리소짐'
+가다랑어포	fish:bonito:C		tuna (skipjack)	C3	시드	시드확인	FDA Seafood List; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+가쓰오부시	fish:bonito:C		tuna (skipjack)	C3	시드	시드확인	FDA Seafood List; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+안초비	fish:anchovy:C		anchovy	C3	시드	시드검증필요	FARE fish	
+앤초비	fish:anchovy:C		anchovy	C3	시드	시드검증필요	FARE fish	
+락토글로불린	milk:C			C3	시드	시드검증필요	FARE milk; KFA milk	
+락토페린	milk:C			C3	시드	시드확인	표시기준 [표 6]; FARE milk	우유 단백질이라 Milk. 섭취 안전성 의견은 출처마다 다름
+락트알부민	milk:C			C3	시드	시드검증필요	FARE milk; KFA milk	
+기(ghee)	milk:C			C3	시드	시드검증필요	FDA 5판 B.7; FARE milk	단백질이 남는 경우가 많아 대개 표시 대상
+WPC	milk:C			C3	시드	시드확인	FDA 5판 C.2	유청단백 농축물·분리물의 영문 약어
+WPI	milk:C			C3	시드	시드확인	FDA 5판 C.2	유청단백 농축물·분리물의 영문 약어
+카세인	milk:C			C3	시드	시드검증필요	FARE milk	표기 변이(한국 라벨 사용 빈도 검증 필요)
+카제인칼슘	milk:C			C3	시드	시드확인	FARE milk; 식품첨가물 규격 카제인칼슘	표기 변이(한국 라벨 사용 빈도 검증 필요)
+피넛	peanut:C			C3	시드	시드확인	표준국어대사전; FDA 5판; 시행규칙 별표2; MFDS 식품원료 조회	견과류가 아니라 Peanuts / 학명: Arachis hypogaea L.
+세사몰	sesame:C			C3	시드	시드검증필요	FARE sesame; KFA sesame	
+참깨가루	sesame:C			C3	시드	시드확인	FARE sesame; KFA sesame; FDA 5판; FDA 참깨 안내; 입법예고 2026-386; 한국민족문화대백과 깨	'깨' 단독은 보통 참깨(E3) / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+참깨소스	sesame:C	O		C3	시드	시드확인	FARE sesame; ACAAI sesame; FARE 참깨 식단표; FDA 참깨 안내	tahini가 참깨인 줄 모른 사고가 많음 / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+참깨페이스트	sesame:C			C3	시드	시드확인	FARE sesame; ACAAI sesame; FARE 참깨 식단표; FDA 참깨 안내	tahini가 참깨인 줄 모른 사고가 많음 / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+타히니	sesame:C			C3	시드	시드확인	FARE sesame; ACAAI sesame; FARE 참깨 식단표; FDA 참깨 안내	tahini가 참깨인 줄 모른 사고가 많음 / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+할바	sesame:C			C3	시드	시드검증필요	FARE sesame; KFA sesame	
+낫토	soy:C			C3	시드	시드검증필요	FARE soy; KFA soy	
+미소	soy:C			C3	시드	시드검증필요	FARE soy; KFA soy	
+템페	soy:C			C3	시드	시드검증필요	FARE soy; KFA soy	
+에다마메	soy:C			C3	시드	시드검증필요	FARE soy; KFA soy	
+풋콩	soy:C			C3	시드	시드확인	FARE soy; KFA soy	
+불구르	wheat:C			C3	시드	시드검증필요	FARE wheat; KFA wheat	
+쿠스쿠스	wheat:C			C3	시드	시드검증필요	FARE wheat; KFA wheat	
+파리나	wheat:C			C3	시드	시드검증필요	FARE wheat; KFA wheat	
+게엑기스	crustacean:crab:C		crab	C4	시드	시드확인	판매처 라벨(게맛살, 표시란 '게' 함유); 시행규칙 별표2; 판매처 라벨(게맛살 더킹크랩)	추출 성분도 한국 표시 대상 / 추출 성분도 표시 대상(K1 나.2)
+크랩액기스	crustacean:crab:C		crab	C4	시드	시드확인	판매처 라벨(게맛살, 표시란 '게' 함유); 시행규칙 별표2	추출 성분도 한국 표시 대상
+새우엑기스	crustacean:shrimp:C		shrimp	C4	시드	시드확인	식품안전정보원 규제 현황(2023)	법령 해설의 '추출 성분' 예시
+마요네즈	egg:C			C4	시드	시드확인	FARE egg; 식품공전 조미식품(난황 또는 전란이 주원료)	
+부침개	egg:I			C4	시드	시드확인	서울아산병원 식사요법	계란이 흔히 들어가는 원료·음식(병원 회피 목록)
+알가열제품	egg:C			C4	시드	시드확인	식품공전 알가공품	
+알함유가공품	egg:C	O		C4	시드	시드확인	식품공전 알가공품	
+튀김옷	egg:I			C4	시드	시드확인	서울아산병원 식사요법	계란이 흔히 들어가는 원료·음식(병원 회피 목록)
+까나리액젓	fish:sandlance:C		sand lance	C4	시드	시드확인	FARE fish; 식품공전 수산가공품; FDA Seafood List; MFDS 식품원료 조회	MFDS 이명에 양미리. 표준명 양미리(Hypoptychus)는 별종·FDA 미등재 / FDA 매칭: 속 일치(Ammodytes spp.) / 학명: Ammodytes personatus
+멸치분말	fish:anchovy:C		anchovy	C4	시드	시드확인	판매처 라벨(쌀국수); FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+멸치액젓	fish:anchovy:C		anchovy	C4	시드	시드확인	FARE fish; 식품공전 수산가공품; FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+상어연골	fish:C			C4	시드	시드확인	FDA 5판 D.4, B.10	상어도 어류
+소용돌이맛살	fish:C			C4	시드	시드확인	식품공전 수산가공품; OFF 실제 표기	
+남플라	fish:C			C4	시드	시드검증필요	표준국어대사전	어간장=물고기 단백질 분해 간장(D1)
+느억맘	fish:C			C4	시드	시드검증필요	표준국어대사전	어간장=물고기 단백질 분해 간장(D1)
+어장	fish:C			C4	시드	시드검증필요	표준국어대사전	어간장=물고기 단백질 분해 간장(D1)
+냉동연육	fish:C			C4	시드	시드검증필요	FDA 5판; 판매처 라벨(게맛살 더킹크랩)	종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+어묵	fish:C			C4	시드	시드확인	식품공전 수산가공품; OFF 실제 표기; FDA 5판; 판매처 라벨(게맛살 더킹크랩)	종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+어육	fish:C			C4	시드	시드검증필요	FDA 5판; 판매처 라벨(게맛살 더킹크랩)	종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+오뎅	fish:C			C4	시드	시드검증필요	FDA 5판; 판매처 라벨(게맛살 더킹크랩)	종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+어육반제품	fish:C			C4	시드	시드확인	식품공전 수산가공품	
+어육살	fish:C			C4	시드	시드확인	식품공전 수산가공품; OFF 실제 표기	
+어육소시지	fish:C			C4	시드	시드확인	식품공전 수산가공품; OFF 실제 표기	
+피쉬콜라겐	fish:C			C4	시드	시드확인	FDA 5판 D.4, B.10; FDA 5판	상어도 어류 / 단백질 포함 시 대상(B.8). 고도정제 어유는 예외(D.9)
+피시소스	fish:C	O		C4	시드	시드검증필요	FARE fish; 식품공전 수산가공품; 표준국어대사전	어간장=물고기 단백질 분해 간장(D1)
+가공연유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+가공유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+가공유크림	milk:C			C4	시드	시드확인	식품공전 유가공품	
+가당분유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+강화우유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+농후발효유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+발효버터유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+발효유	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+요구르트	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+발효유분말	milk:C			C4	시드	시드확인	식품공전 유가공품	
+가공버터	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+버터	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+버터오일	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+버터밀크	milk:C			C4	시드	시드확인	표준국어대사전; FARE milk	
+가당연유	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+농축우유	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품	
+유산균첨가우유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+유함유가공품	milk:C	O		C4	시드	시드확인	식품공전 유가공품	
+가공치즈	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품; OFF 실제 표기	
+모짜렐라치즈	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품; OFF 실제 표기	
+에멘탈치즈분말	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품; OFF 실제 표기	
+치즈	milk:C			C4	시드	시드확인	FARE milk; 식품공전 유가공품; OFF 실제 표기	
+가수분해카제인	milk:C			C4	시드	시드확인	FDA 면제 통보 목록	면제 통보에 FDA가 이의
+크림발효유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+환원유	milk:C			C4	시드	시드확인	식품공전 유가공품	
+참기름	sesame:C			C4	시드	시드확인	FARE sesame; 식품공전 식용유지; FDA 5판; FARE 참깨 식단표	참기름은 보통 고도 정제가 아니라 표시 대상(FARE). 추출참깨유의 정제 정도는 미확인 / D.9: 고도정제유만 예외. 참기름은 보통 비정제 / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+추출참깨유	sesame:C			C4	시드	시드검증필요	FARE sesame; 식품공전 식용유지	참기름은 보통 고도 정제가 아니라 표시 대상(FARE). 추출참깨유의 정제 정도는 미확인
+개량메주	soy:C			C4	시드	시드확인	식품공전 장류; 식품공전 두부류; 식품공전 음료류	
+농축대두단백	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+대두단백	soy:C			C4	시드	시드확인	FDA 5판 C.11	
+조직대두단백	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+콩고기	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+가공두부	soy:C			C4	시드	시드확인	FARE soy; 식품공전 두부류	
+두부	soy:C			C4	시드	시드확인	FARE soy; 식품공전 두부류	
+유바	soy:C			C4	시드	시드확인	FARE soy; 식품공전 두부류	
+유부	soy:C			C4	시드	시드검증필요	FARE soy; 식품공전 두부류	
+메주	soy:C			C4	시드	시드확인	FARE soy; 식품공전 장류; OFF 실제 표기	
+볶은콩가루	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+분리대두단백	soy:C			C4	시드	시드확인	C002 실제 표기; OFF 실제 표기	
+비지	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+원액두유	soy:C			C4	시드	시드확인	식품공전 장류; 식품공전 두부류; 식품공전 음료류	
+청국장	soy:C			C4	시드	시드확인	FARE soy; 식품공전 장류; OFF 실제 표기	
+콩가루	soy:C			C4	시드	시드검증필요	FARE soy; KFA soy	
+콩나물	soy:C			C4	시드	시드확인	식품공전 장류; 식품공전 두부류; 식품공전 음료류	
+탈지대두	soy:C			C4	시드	시드확인	C002 실제 표기; OFF 실제 표기	
+한식간장	soy:C			C4	시드	시드확인	식품공전 장류; 식품공전 두부류; 식품공전 음료류	
+한식메주	soy:C			C4	시드	시드확인	식품공전 장류; 식품공전 두부류; 식품공전 음료류	
+마르지판	tree_nut:C			C4	시드	시드검증필요	FARE tree nut; KFA tree nut	종류(아몬드·헤이즐넛 등)는 라벨 확인
+가수분해밀단백	wheat:C			C4	시드	시드검증필요	FARE wheat	
+글루텐	wheat:C			C4	시드	시드확인	판매처 라벨(메밀국수)	
+밀글루텐	wheat:C			C4	시드	시드확인	판매처 라벨(메밀국수)	
+활성글루텐	wheat:C			C4	시드	시드검증필요	FARE wheat	
+밀기울	wheat:C			C4	시드	시드검증필요	FARE wheat	
+밀배아	wheat:C			C4	시드	시드검증필요	FARE wheat	
+밀전분	wheat:C			C4	시드	시드검증필요	FARE wheat	
+소맥전분	wheat:C			C4	시드	시드검증필요	FARE wheat	
+감자전분				C4	시드	시드확인	판매처 라벨(쌀국수); 표시기준	원료가 적힌 전분. 9대 아님
+옥수수전분				C4	시드	시드확인	판매처 라벨(쌀국수); 표시기준	원료가 적힌 전분. 9대 아님
+타피오카전분				C4	시드	시드확인	판매처 라벨(쌀국수); 표시기준	원료가 적힌 전분. 9대 아님
+게추출물	crustacean:crab:C		crab	C5	시드	시드확인	FARE shellfish; 시행규칙 별표2; 판매처 라벨(게맛살 더킹크랩)	추출 성분도 표시 대상(K1 나.2)
+새우추출물	crustacean:shrimp:C		shrimp	C5	시드	시드확인	FARE shellfish; FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+화이트초콜릿	milk:C			C5	시드	시드확인	식품공전 코코아가공품	
+치즈코코넛분말	milk:C			C5	시드	시드확인	OFF 실제 표기	한 이름에 재료가 둘(치즈+코코넛). 코코넛은 미국 견과류 목록에서 빠짐
+땅콩가루	peanut:C			C5	시드	시드검증필요	FARE peanut	
+땅콩버터	peanut:C			C5	시드	시드확인	FARE peanut; KFA peanut; FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	'버터'가 붙지만 Milk 아님 / 견과류가 아니라 Peanuts / 학명: Arachis hypogaea L.
+땅콩분태	peanut:C			C5	시드	시드검증필요	FARE peanut	
+깨소금	sesame:C			C5	시드	시드확인	FARE sesame; KFA sesame; 표준국어대사전; FDA 참깨 안내	볶은 참깨를 빻은 것 / 2028년 추가 예정(입법예고) / 학명: Sesamum indicum L. / Sesamum orientale / Sesamum trifoliatum / Sesamum luteum
+아몬드가루	tree_nut:almond:C		almond	C5	시드	시드확인	FARE tree nut; FDA 5판; 입법예고 2026-386; MFDS 식품원료 조회	'버터·밀크'가 붙어도 Milk 아님 / 2028년 추가 예정(입법예고) / 학명: Prunus dulcis (Mill.) D. A. Webb. / Prunus amygdalus Batsch. / Prunus communis (L.) Arcang. / Amygdalus communis Bunge
+아몬드밀크	tree_nut:almond:C		almond	C5	시드	시드검증필요	FARE tree nut	'버터·밀크'가 붙어도 Milk 아님
+아몬드버터	tree_nut:almond:C		almond	C5	시드	시드확인	FARE tree nut; FDA 5판; 입법예고 2026-386; MFDS 식품원료 조회	'버터·밀크'가 붙어도 Milk 아님 / 2028년 추가 예정(입법예고) / 학명: Prunus dulcis (Mill.) D. A. Webb. / Prunus amygdalus Batsch. / Prunus communis (L.) Arcang. / Amygdalus communis Bunge
+아몬드추출물	tree_nut:I			C5	시드	시드확인	FARE tree nut; OFF 실제 표기	천연 추출물이면 들어 있음, 인공향은 대체로 안전(FARE)
+아몬드향	tree_nut:I	V		C5	시드	시드확인	FARE tree nut; OFF 실제 표기	천연 추출물이면 들어 있음, 인공향은 대체로 안전(FARE)
+헤이즐넛향	tree_nut:I	V		C5	시드	시드확인	FARE tree nut; OFF 실제 표기	천연 추출물이면 들어 있음, 인공향은 대체로 안전(FARE)
+국수	wheat:I			C5	시드	시드확인	FARE wheat	쌀국수 등 밀이 없는 국수도 있음
+빵가루	wheat:C			C5	시드	시드확인	FARE wheat; KFA wheat	
+파스타	wheat:C			C5	시드	시드확인	FARE wheat	
+날치알	fish:C			C6	시드	시드확인	표준국어대사전; FDA 5판 C.3; FDA Seafood List; MFDS 식품원료 조회	'알'이지만 Egg가 아니라 생선 알 / 시판 '날치알' 원료 어종은 제품 확인 / 학명: Cheilopogon agoo / Cypselurus agoo
+명란	fish:C			C6	시드	시드확인	표준국어대사전; FDA 5판 C.3; FDA Seafood List; 식품공전 식품원료 분류	'알'이지만 Egg가 아니라 생선 알 / 식품공전 어란류에 명태알 / 학명: Gadus chalcogrammus / Theragra chalcogramma
+연어알	fish:C			C6	시드	시드확인	표준국어대사전; FDA 5판 C.3; FDA 5판; FDA Seafood List; MFDS 식품원료 조회	'알'이지만 Egg가 아니라 생선 알 / 학명: Oncorhynchus keta
+연육	fish:C			C6	시드	시드확인	FARE fish; 식품공전 수산가공품; 판매처 라벨(게맛살 연육 72.1%); 표준국어대사전; FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(부산어묵); FDA 5판; 판매처 라벨(게맛살 더킹크랩)	게가 아니라 생선 연육이 주원료. FARE·KFA는 계란 함유 가능성도 언급 / 라벨에서는 생선 연육. 사전에는 연꽃 열매(蓮肉)라는 뜻도 있음 / 어묵 연육 원료(P3: 갈치·실꼬리돔 연육) / 학명: Nemipterus virgatus / 학명: Saurida undosquamis / 종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+크래미	fish:C			C6	시드	시드검증필요	FARE fish; 식품공전 수산가공품; FDA 5판; 판매처 라벨(게맛살 더킹크랩)	게가 아니라 생선 연육이 주원료. FARE·KFA는 계란 함유 가능성도 언급 / 종명 없으면 FDA 종 표기 불가. 게맛살은 게살·게농축액 흔함
+모조치즈	milk:I			C6	시드	시드확인	FARE milk; KFA milk	이름과 달리 카제인나트륨 등이 든 제품이 있음
+식물성크림	milk:I			C6	시드	시드확인	FARE milk; KFA milk	이름과 달리 카제인나트륨 등이 든 제품이 있음
+A2 우유	milk:C			C6	시드	시드확인	판매처 라벨(멸균우유)	베타카제인 종류만 다른 우유
+락토프리 우유	milk:C			C6	시드	시드확인	KFA milk; 식품공전 유가공품	유당만 뺀 우유라 우유 단백질은 그대로
+유당분해우유	milk:C			C6	시드	시드확인	KFA milk; 식품공전 유가공품	유당만 뺀 우유라 우유 단백질은 그대로
+베타락토글로불린	milk:C			C6	시드	시드확인	FDA 5판 B.16; 대체식품 표시 가이드라인	미생물이 만든 우유 단백질도 Milk. 한국은 '우유와 유사한 성분' 주의 문구만 붙음
+비동물성 유청단백	milk:C			C6	시드	시드검증필요	FDA 5판 B.16	정밀발효로 만든 같은 단백질도 Milk
+정밀발효 유청단백	milk:C			C6	시드	시드확인	FDA 5판 B.16; 대체식품 표시 가이드라인	미생물이 만든 우유 단백질도 Milk. 한국은 '우유와 유사한 성분' 주의 문구만 붙음
+커피 크리머	milk:I			C6	시드	시드확인	21 CFR 101.4; 코코넛밀크파우더 미표시 리콜(KFA)	카제인나트륨이 든 제품이 있음
+커피 프림	milk:I			C6	시드	시드확인	FARE milk; KFA milk	이름과 달리 카제인나트륨 등이 든 제품이 있음
+코코넛밀크파우더	milk:I			C6	시드	시드확인	21 CFR 101.4; 코코넛밀크파우더 미표시 리콜(KFA)	카제인나트륨이 든 제품이 있음
+두유	soy:C			C6	시드	시드확인	FARE soy; OFF 실제 표기	'유'가 붙지만 우유가 아니라 대두
+냉면	wheat:I			C6	시드	시드확인	식품공전 면류	면 원료가 '곡분 또는 전분'이라 밀이 들 수 있음
+메밀국수	wheat:I			C6	시드	시드확인	판매처 라벨(메밀국수)	이름은 메밀이지만 밀이 더 많은 제품이 있음
+밀고기	wheat:C			C6	시드	시드검증필요	FARE wheat	'고기'라는 이름이어도 밀
+세이탄	wheat:C			C6	시드	시드검증필요	FARE wheat	'고기'라는 이름이어도 밀
+쌀과자	wheat:I			C6	시드	시드확인	FDA 5판 D.8	공정에 밀가루를 쓰는 사례(FDA 예시)
+쌀국수	wheat:I			C6	시드	시드확인	국립식량과학원 쌀국수 초록(2020)	밀가루를 섞은 압출면이 많음
+L-글루타민산나트륨				C6	시드	시드확인	KFA wheat; C002 실제 표기	'글루' 글자만 글루텐과 비슷함
+L-글루탐산나트륨				C6	시드	시드확인	KFA wheat; C002 실제 표기	'글루' 글자만 글루텐과 비슷함
+강낭콩				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+개구리				C6	시드	시드확인	FDA Seafood List; FDA 5판 B.10	수산물 목록에 있어도 어류가 아님
+김				C6	시드	시드확인	FARE fish; FDA 5판 B.10	해조류는 생선이 아님
+깻잎				C6	시드	시드확인	표준국어대사전	주로 들깻잎. 참깨 아님 / 들깻잎·참깻잎 통칭, 주로 들깻잎
+녹두				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+다시마				C6	시드	시드확인	FARE fish; FDA 5판 B.10	해조류는 생선이 아님
+들기름				C6	시드	시드확인	식품공전 식용유지; 한국민족문화대백과 깨; 표준국어대사전; 입법예고 2026-386; MFDS 식품원료 조회	참깨가 아니라 들깨(perilla). 한국은 들깨를 2028년 추가 예정 / 꿀풀과, 참깨 아님. '임자'=들깨지만 '흑임자'=검은 참깨 / 2028년 추가 예정(입법예고) / 학명: Perilla frutescens var. japonica (Hassk.) H. Hara / Melissa maxima Ard. / Perilla avium Dunn
+들깨				C6	시드	시드확인	식품공전 식용유지; 한국민족문화대백과 깨; 표준국어대사전; 입법예고 2026-386; MFDS 식품원료 조회	참깨가 아니라 들깨(perilla). 한국은 들깨를 2028년 추가 예정 / 꿀풀과, 참깨 아님. '임자'=들깨지만 '흑임자'=검은 참깨 / 2028년 추가 예정(입법예고) / 학명: Perilla frutescens var. japonica (Hassk.) H. Hara / Melissa maxima Ard. / Perilla avium Dunn
+들깨가루				C6	시드	시드확인	식품공전 식용유지; 한국민족문화대백과 깨; 표준국어대사전; 입법예고 2026-386; MFDS 식품원료 조회	참깨가 아니라 들깨(perilla). 한국은 들깨를 2028년 추가 예정 / 꿀풀과, 참깨 아님. '임자'=들깨지만 '흑임자'=검은 참깨 / 2028년 추가 예정(입법예고) / 학명: Perilla frutescens var. japonica (Hassk.) H. Hara / Melissa maxima Ard. / Perilla avium Dunn
+수임				C6	시드	시드확인	한국민족문화대백과 깨; 표준국어대사전; 입법예고 2026-386; MFDS 식품원료 조회	꿀풀과, 참깨 아님. '임자'=들깨지만 '흑임자'=검은 참깨 / 2028년 추가 예정(입법예고) / 학명: Perilla frutescens var. japonica (Hassk.) H. Hara / Melissa maxima Ard. / Perilla avium Dunn
+임자				C6	시드	시드확인	한국민족문화대백과 깨; 표준국어대사전; 입법예고 2026-386; MFDS 식품원료 조회	꿀풀과, 참깨 아님. '임자'=들깨지만 '흑임자'=검은 참깨 / 2028년 추가 예정(입법예고) / 학명: Perilla frutescens var. japonica (Hassk.) H. Hara / Melissa maxima Ard. / Perilla avium Dunn
+추출들깨유				C6	시드	시드확인	식품공전 식용유지	참깨가 아니라 들깨(perilla). 한국은 들깨를 2028년 추가 예정
+땅콩호박				C6	시드	시드확인	FARE tree nut	호박의 한 종류(버터넛 스쿼시)
+렌틸콩				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 대두가 아님
+미역				C6	시드	시드확인	FARE fish; FDA 5판 B.10	해조류는 생선이 아님
+밀크씨슬				C6	시드	시드확인	NCCIH 밀크씨슬	엉겅퀴류 식물. '밀크'지만 우유가 아님
+버터넛				C6	시드	시드검증필요	FDA 5판 C.7-8; FARE tree nut	흰호두 또는 땅콩호박을 뜻함. FDA 목록 밖이지만 FARE는 피하라고 권고(출처 상충)
+병아리콩				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+숙주나물				C6	시드	시드확인	표준국어대사전	녹두 싹. 콩나물(대두)과 다름
+스테아릴젖산나트륨				C6	시드	시드확인	FARE milk; OFF 실제 표기	'젖·유(乳)' 글자가 있어도 Milk 아님
+스테아릴젖산칼슘				C6	시드	시드확인	표시기준 [표 6]; FARE milk	'젖' 글자가 있어도 우유 단백질 없음
+오트밀크				C6	시드	시드확인	FDA 5판 C.7(Table 1)	'밀크'지만 우유가 아님
+완두				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+완두콩				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+자라				C6	시드	시드확인	FDA Seafood List; FDA 5판 B.10	수산물 목록에 있어도 어류가 아님
+주석산수소칼륨				C6	시드	시드확인	FARE milk; OFF 실제 표기	'젖·유(乳)' 글자가 있어도 Milk 아님
+카라기난				C6	시드	시드확인	FARE fish; FDA 5판 B.10	해조류는 생선이 아님
+코코넛밀크				C6	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; EatRight 견과 해설	'밀크'지만 우유가 아님 / 2025 지침에서 제외 / 학명: Cocos nucifera L.
+카카오버터				C6	시드	시드확인	FARE milk; 식품공전 코코아가공품; OFF 실제 표기	'버터'가 붙지만 우유가 아님
+코코아버터				C6	시드	시드확인	FARE milk; 식품공전 코코아가공품; OFF 실제 표기	'버터'가 붙지만 우유가 아님
+팥				C6	시드	시드확인	FDA 5판 C.11	'콩'이지만 9대 Soy는 대두만 해당
+대마씨				C6	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	씨앗은 9대 아님 / 학명: Helianthus annuus L.
+아마씨				C6	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	씨앗은 9대 아님 / 학명: Helianthus annuus L.
+아마인				C6	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	씨앗은 9대 아님 / 학명: Helianthus annuus L.
+치아씨드				C6	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	씨앗은 9대 아님 / 학명: Helianthus annuus L.
+알부민	egg:I			C7	시드	시드검증필요	FARE egg; KFA egg	단독 '알부민'은 모호: 난백알부민은 계란, 락트알부민은 우유
+생선	fish:C			C7	시드	시드확인	FDA 5판 B.10, C.5	미국은 종류 없이 'fish'만 적을 수 없음
+어류	fish:C			C7	시드	시드확인	FDA 5판 B.10, C.5	미국은 종류 없이 'fish'만 적을 수 없음
+연체류	mollusk:I			C7	시드	시드확인	FDA 5판 B.9; 시행규칙 별표2	총칭. 한국은 오징어·조개류만 표시 대상, 미국은 9대 아님
+식육				C7	시드	시드확인	표시기준 [별지1] 1.가	고기 통칭. 돼지·소·닭이면 한국 표시 대상, 미국 9대 아님
+시저드레싱	fish:anchovy:I	O	anchovy	C8	시드	시드검증필요	FARE fish	국산 우스타소스에는 멸치가 없을 수 있음
+니신	milk:I			C8	시드	시드확인	FARE milk; KFA milk; OFF 실제 표기	유산균 자체는 우유 단백질이 아니지만 배양 배지에서 우유가 들어올 수 있음
+밀크초콜릿	milk:C			C8	시드	시드확인	식품공전 코코아가공품	
+캐러멜	milk:I			C8	시드	시드검증필요	FARE milk	
+조미김	sesame:I	O		C8	시드	시드확인	식품공전 수산가공품	참기름 또는 들기름으로 조미. 괄호 병기 확인
+팔라펠	sesame:I			C8	시드	시드검증필요	FARE sesame; KFA sesame	
+후무스	sesame:I			C8	시드	시드검증필요	FARE sesame; KFA sesame	
+페스토	tree_nut:I			C8	시드	시드검증필요	FARE tree nut	잣·호두가 흔함
+건면	wheat:I			C8	시드	시드확인	식품공전 면류	원료가 '곡분 또는 전분'이라 밀이 아닐 수도 있음
+생면	wheat:I			C8	시드	시드확인	식품공전 면류	원료가 '곡분 또는 전분'이라 밀이 아닐 수도 있음
+숙면	wheat:I			C8	시드	시드확인	식품공전 면류	원료가 '곡분 또는 전분'이라 밀이 아닐 수도 있음
+유탕면	wheat:I			C8	시드	시드확인	식품공전 면류	원료가 '곡분 또는 전분'이라 밀이 아닐 수도 있음
+기타가공품		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+당류가공품		O		C8	시드	시드확인	표시기준 [별지1] 1.바; 식품공전 조미식품; C002 실제 표기	이름만으로 원료를 알 수 없음
+동물성유지		O		C8	시드	시드확인	표시기준 [별지1] 1.바; 식품공전 조미식품; C002 실제 표기	이름만으로 원료를 알 수 없음
+마늘발효조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+매운맛조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+발효표고조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+복합양념분말		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+복합조미식품		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+볶음양념분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+비프조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+서류가공품		O		C8	시드	시드확인	표시기준 [별지1] 1.바; 식품공전 조미식품; C002 실제 표기	이름만으로 원료를 알 수 없음
+소고기맛베이스		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+소스		O		C8	시드	시드확인	표시기준 [별지1] 1.바; 식품공전 조미식품; C002 실제 표기	이름만으로 원료를 알 수 없음
+수육조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+시즈닝		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+식물성풍미유		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+안정제		O		C8	시드	시드확인	표시기준 [표 6]	레시틴·카제인·젤라틴·리소짐 등이 용도 이름으로만 적힐 수 있음. 한국 표시 의무 항목은 표시란으로 교차 확인
+야채조미추출물		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+영양강화제		O		C8	시드	시드확인	표시기준 [표 6]	레시틴·카제인·젤라틴·리소짐 등이 용도 이름으로만 적힐 수 있음. 한국 표시 의무 항목은 표시란으로 교차 확인
+올리고녹차풍미액		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+육수맛 조미베이스		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+이스트조미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+젤형성제		O		C8	시드	시드확인	표시기준 [표 6]	레시틴·카제인·젤라틴·리소짐 등이 용도 이름으로만 적힐 수 있음. 한국 표시 의무 항목은 표시란으로 교차 확인
+조미효모분말		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+증점제		O		C8	시드	시드확인	표시기준 [표 6]	레시틴·카제인·젤라틴·리소짐 등이 용도 이름으로만 적힐 수 있음. 한국 표시 의무 항목은 표시란으로 교차 확인
+천연향료		OV		C8	시드	시드확인	FDA 5판 B.5; FDA FASTER Act; OFF 실제 표기	미국은 향신료·향료 속 9대도 표시 의무지만, 한국은 참깨 등 표시 의무가 없어 라벨로 판단 불가
+칠리맛풍미분		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+합성향료		OV		C8	시드	시드확인	FDA 5판 B.5; FDA FASTER Act; OFF 실제 표기	미국은 향신료·향료 속 9대도 표시 의무지만, 한국은 참깨 등 표시 의무가 없어 라벨로 판단 불가
+향료		OV		C8	시드	시드확인	FDA 5판 B.5; FDA FASTER Act; OFF 실제 표기	미국은 향신료·향료 속 9대도 표시 의무지만, 한국은 참깨 등 표시 의무가 없어 라벨로 판단 불가
+향신료		O		C8	시드	시드확인	FDA 5판 B.5; FDA FASTER Act; OFF 실제 표기	미국은 향신료·향료 속 9대도 표시 의무지만, 한국은 참깨 등 표시 의무가 없어 라벨로 판단 불가
+혼합제제		O		C8	시드	시드확인	OFF 실제 표기	속을 알 수 없는 원료. 한국 표시 의무 항목은 표시란으로 교차 확인, 참깨·고등어 외 생선 등은 확인 불가
+효소식품		O		C8	시드	시드확인	표시기준 [별지1] 1.바; 식품공전 조미식품; C002 실제 표기	이름만으로 원료를 알 수 없음
+효소제		O		C8	시드	시드확인	표시기준 [표 6]	레시틴·카제인·젤라틴·리소짐 등이 용도 이름으로만 적힐 수 있음. 한국 표시 의무 항목은 표시란으로 교차 확인
+게농축액	crustacean:crab:C		crab	C9	시드	시드확인	시행규칙 별표2; 판매처 라벨(게맛살 더킹크랩)	추출 성분도 표시 대상(K1 나.2)
+글루코사민	crustacean:I			C9	시드	시드확인	FARE shellfish; 식품첨가물 규격 키토산; 식품첨가물 규격 글루코사민	갑각류 껍데기에서 얻을 수 있음 / 게·새우 껍질 또는 오징어 뼈에서 얻음
+키토산	crustacean:I			C9	시드	시드확인	FARE shellfish; 식품첨가물 규격 키토산	갑각류 껍데기에서 얻을 수 있음
+키틴	crustacean:I			C9	시드	시드검증필요	식품첨가물 규격 키토산	공전 정의에 원료가 적혀 있지 않음
+난황레시틴	egg:C			C9	시드	시드확인	식품첨가물 규격 레시틴	
+어류젤라틴	fish:C			C9	시드	시드검증필요	FARE fish; FDA 5판 D.4; FDA 5판	단백질 포함 시 대상(B.8). 고도정제 어유는 예외(D.9)
+어류콜라겐	fish:C			C9	시드	시드검증필요	FDA 5판	단백질 포함 시 대상(B.8). 고도정제 어유는 예외(D.9)
+락토페린농축물	milk:C			C9	시드	시드확인	표시기준 [표 6]; 식품첨가물 규격 락토페린농축물	우유 단백질(주용도 영양강화제) / 우유를 탈지·분리·정제해 얻음
+락툴로오스	milk:I			C9	시드	시드검증필요	FDA 면제 통보 목록; FARE milk	미국은 락티톨 면제 통보에 이의(2006), EU는 면제
+락티톨	milk:I			C9	시드	시드확인	FDA 면제 통보 목록; FARE milk; 식품첨가물 규격 락티톨	미국은 락티톨 면제 통보에 이의(2006), EU는 면제 / 유당에서 만든 당알코올
+렌넷카제인	milk:C			C9	시드	시드확인	FDA 5판 D.5; 식품첨가물 규격 카제인나트륨; OFF 실제 표기	
+유단백가수분해식품	milk:C			C9	시드	시드확인	FDA 5판 D.5; 식품첨가물 규격 카제인나트륨; OFF 실제 표기	
+카제인	milk:C			C9	시드	시드확인	FDA 5판 D.5; 식품첨가물 규격 카제인나트륨; OFF 실제 표기	
+카제인Na	milk:C			C9	시드	시드확인	표시기준 [표 6]	간략명 표기. '유화제·증점제·안정제'로만 적힐 수도 있음
+카제인나트륨	milk:C			C9	시드	시드확인	FDA 5판 D.5; 식품첨가물 규격 카제인나트륨; OFF 실제 표기	
+참깨유불검화물	sesame:C			C9	시드	시드확인	식품첨가물 규격 참깨유추출물; 표시기준 [표 5]	참깨에서 얻은 첨가물
+참깨유추출물	sesame:C			C9	시드	시드확인	식품첨가물 규격 참깨유추출물; 표시기준 [표 5]	참깨에서 얻은 첨가물
+대두레시틴	soy:C			C9	시드	시드확인	FARRP 대두레시틴; FDA 청원·면제 목록; 식품첨가물 규격 레시틴	미국은 표시 의무. 이형제 용도의 특정 제품만 면제
+포스파티딜세린	soy:I			C9	시드	시드검증필요	FDA 청원·면제 목록	
+피칸너트색소	tree_nut:pecan:I		pecan	C9	시드	시드검증필요	표시기준 [표 5]	피칸에서 얻은 색소일 수 있음(공전 정의 확인 필요)
+오징어먹물색소	mollusk:C			C9	시드	시드확인	식품첨가물 규격 오징어먹물색소	
+락색소				C9	시드	시드확인	식품첨가물 규격 락색소	락깍지벌레 분비물의 색소. '락'이지만 락토(우유)가 아님
+뮤신				C9	시드	시드확인	식품첨가물 규격 뮤신	돼지 위 점막에서 얻음. 9대 아님
+밀납				C9	시드	시드확인	식품첨가물 규격 밀납	꿀벌이 만든 밀(蜜蠟). 9대 아님
+쉘락				C9	시드	시드확인	식품첨가물 규격 쉘락	깍지벌레 분비물. 9대 아님
+시아너트색소				C9	시드	시드검증필요	표시기준 [표 5]; FDA FAQ(2025-03)	시어(shea)로 추정. 2025년 FDA 견과류 목록에서 빠짐
+메타중아황산나트륨				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+메타중아황산칼륨				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+무수아황산				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+산성아황산나트륨				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+아황산나트륨				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+이산화황				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+차아황산나트륨				C9	시드	시드확인	시행규칙 별표2; 표시기준 [표 4]	한국은 이산화황 10mg/kg 이상일 때만 표시. 용도 괄호 '(표백제)·(보존료)·(산화방지제)'와 함께 적힘
+카민				C9	시드	시드확인	식품첨가물 규격 코치닐추출색소	연지벌레 색소. 9대 아님
+코치닐				C9	시드	시드확인	식품첨가물 규격 코치닐추출색소	연지벌레 색소. 9대 아님
+해바라기레시틴				C9	시드	시드확인	식품첨가물 규격 레시틴; FDA 청원·면제 목록	원료가 해바라기면 9대 아님
+가시발새우	crustacean:lobster:C		lobsterette	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metanephrops thomsoni
+딱새우	crustacean:lobster:C		lobsterette	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metanephrops thomsoni
+가재	crustacean:crayfish:C		crayfish	C10	시드	시드확인	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	참가재(Cambaroides)는 FDA 미등재 / 학명: Procambarus clarkii
+미국가재	crustacean:crayfish:C		crawfish/crayfish	C10	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	참가재(Cambaroides)는 FDA 미등재 / 학명: Procambarus clarkii
+민물가재	crustacean:crayfish:C		crayfish	C10	시드	시드확인	FDA Seafood List; FARE shellfish	
+참가재	crustacean:crayfish:C		crawfish/crayfish	C10	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	참가재(Cambaroides)는 FDA 미등재 / 학명: Procambarus clarkii
+크레이피시	crustacean:crayfish:C		crayfish	C10	시드	시드검증필요	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	참가재(Cambaroides)는 FDA 미등재 / 학명: Procambarus clarkii
+갯가재	crustacean:shrimp:C		mantis shrimp	C10	시드	시드검증필요	FDA Seafood List; FARE shellfish; MFDS 식품원료 조회	한국 종이 Seafood List에 있는지 미확인 / Oratosquilla 미등재, Squilla mantis=I(C) / FDA 매칭: 근연 분류군 유추(Squilla mantis) / 학명: Oratosquilla oratoria
+딱새	crustacean:shrimp:C		mantis shrimp	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	Oratosquilla 미등재, Squilla mantis=I(C) / FDA 매칭: 근연 분류군 유추(Squilla mantis) / 학명: Oratosquilla oratoria
+거북손	crustacean:C		barnacle	C10	시드	시드검증필요	FDA Seafood List; FARE shellfish; MFDS 식품원료 조회; Wikipedia 거북손	한국 종이 Seafood List에 있는지 미확인 / Capitulum 미등재, 거북손류(Pollicipes)=Barnacle I(C) / FDA 매칭: 근연 분류군 유추(Pollicipes pollicipes) / 학명: Capitulum mitella L. / Lepas mitella L. / Mitella mitella Pilsbry / Pollicipes mitella Sowerby
+곤쟁이젓	crustacean:C		mysid	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전; 한국민족문화대백과 새우젓	FDA 목록 미등재. 생물학상 갑각류(곤쟁이목) / 영어 이름(mysid): 미확인 / FDA 매칭: 목록에 없음 / 학명: Neomysis japonica
+자하젓	crustacean:C		mysid	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전; 한국민족문화대백과 새우젓	FDA 목록 미등재. 생물학상 갑각류(곤쟁이목) / 영어 이름(mysid): 미확인 / FDA 매칭: 목록에 없음 / 학명: Neomysis japonica
+게살	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Portunus trituberculatus
+게장	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Portunus trituberculatus
+꽃게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Portunus trituberculatus
+양념게장	crustacean:crab:C	O	crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Portunus trituberculatus
+꽃새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Trachysalambria curvirostris
+닭새우	crustacean:lobster:C		spiny lobster	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	독도새우 별칭과 혼동 주의(미확인) / 학명: Panulirus japonicus
+대게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Chionoecetes opilio
+대하	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List; MFDS 식품원료 조회	학명: Penaeus chinensis
+왕새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Penaeus chinensis
+큰새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Penaeus chinensis
+따개비	crustacean:C		barnacle	C10	시드	시드확인	FDA Seafood List; FARE shellfish	한국 종이 Seafood List에 있는지 미확인 / 울릉도 '따개비'(칼국수·밥)는 삿갓조개(연체류) / FDA 매칭: 속 일치(Balanus spp.)
+돌게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 매칭: 속 일치(Charybdis feriata) / 학명: Charybdis japonica
+민꽃게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 매칭: 속 일치(Charybdis feriata) / 학명: Charybdis japonica
+박하지	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 매칭: 속 일치(Charybdis feriata) / 학명: Charybdis japonica
+랍스터	crustacean:lobster:C		lobster	C10	시드	시드확인	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 새우·게와 별도 품목 / 학명: Homarus americanus
+로브스터	crustacean:lobster:C		lobster	C10	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 새우·게와 별도 품목 / 학명: Homarus americanus
+바닷가재	crustacean:lobster:C		lobster	C10	시드	시드확인	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 새우·게와 별도 품목 / 학명: Homarus americanus
+유럽바닷가재	crustacean:lobster:C		lobster	C10	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 새우·게와 별도 품목 / 학명: Homarus americanus
+보리새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List; MFDS 식품원료 조회	학명: Penaeus japonicus
+부채새우	crustacean:lobster:C		slipper lobster	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Ibacus ciliatus
+새뱅이	crustacean:shrimp:C		freshwater shrimp	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전	FDA 목록 미등재 / FDA 매칭: 목록에 없음 / 학명: Neocaridina denticulata
+생이젓	crustacean:shrimp:C		freshwater shrimp	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전	FDA 목록 미등재 / FDA 매칭: 목록에 없음 / 학명: Neocaridina denticulata
+토하	crustacean:shrimp:C		freshwater shrimp	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전	FDA 목록 미등재 / FDA 매칭: 목록에 없음 / 학명: Neocaridina denticulata
+토하젓	crustacean:shrimp:C		freshwater shrimp	C10	시드	시드검증필요	MFDS 식품원료 조회; 표준국어대사전	FDA 목록 미등재 / FDA 매칭: 목록에 없음 / 학명: Neocaridina denticulata
+새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List	
+건새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+도화새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+북쪽분홍새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+블랙타이거	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+새우분말	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+얼룩새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+중하	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+징거미새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Metapenaeus joyneri
+새우젓	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓; 표준국어대사전	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus / FDA 목록 미등재. 생물학상 갑각류(곤쟁이목) / 영어 이름(mysid): 미확인 / FDA 매칭: 목록에 없음 / 학명: Neomysis japonica
+쏙	crustacean:shrimp:C		mud shrimp	C10	시드	시드검증필요	MFDS 식품원료 조회	FDA 미등재. MFDS 이명에 '갯가재'가 섞여 있음 / 영어 이름(mud shrimp): 미확인 / FDA 매칭: 목록에 없음 / 학명: Upogebia major
+동백하젓	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus
+오젓	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus
+육젓	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus
+젓새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus
+추젓	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 새우젓	새우젓은 잔새우 또는 곤쟁이로 담금(E4) / 학명: Acetes japonicus
+동남참게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Eriocheir sinensis
+방게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Eriocheir sinensis
+참게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Eriocheir sinensis
+남극크릴	crustacean:krill:C		krill	C10	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	크릴오일이 고도정제유인지 제품 확인 / FDA 매칭: 속 일치(Euphausia spp.) / 학명: Euphausia superba
+크릴	crustacean:krill:C		krill	C10	시드	시드확인	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	크릴오일이 고도정제유인지 제품 확인 / FDA 매칭: 속 일치(Euphausia spp.) / 학명: Euphausia superba
+크릴오일	crustacean:krill:C		krill	C10	시드	시드검증필요	FDA Seafood List; FARE shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	크릴오일이 정제유 예외에 드는지 미확인 / 크릴오일이 고도정제유인지 제품 확인 / FDA 매칭: 속 일치(Euphausia spp.) / 학명: Euphausia superba
+왕게	crustacean:crab:C		crab	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	참게류 아닌 집게하목이지만 FDA I(C) / 학명: Paralithodes camtschaticus
+킹크랩	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	참게류 아닌 집게하목이지만 FDA I(C) / 학명: Paralithodes camtschaticus
+털게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 시장명 'Korean variety crabmeat' / 학명: Erimacrus isenbeckii
+붉은대게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(게맛살 더킹크랩)	FDA 시장명 'Crab, Beni-zuwai' / 학명: Chionoecetes japonicus
+홍게	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(게맛살 더킹크랩)	FDA 시장명 'Crab, Beni-zuwai' / 학명: Chionoecetes japonicus
+홍게살	crustacean:crab:C		crab	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(게맛살 더킹크랩)	FDA 시장명 'Crab, Beni-zuwai' / 학명: Chionoecetes japonicus
+흰다리새우	crustacean:shrimp:C		shrimp	C10	시드	시드확인	FDA 5판 C.5; FDA Seafood List; MFDS 식품원료 조회	학명: Litopenaeus vannamei / Penaeus vannamei
+거위알	egg:C		goose egg	C10	시드	시드확인	FDA 5판 C.3-4	2025 지침부터 다른 가금류의 알도 Egg. 새 이름을 함께 적도록 권장
+메추리알	egg:C		quail egg	C10	시드	시드확인	FDA 5판 C.3-4	2025 지침부터 다른 가금류의 알도 Egg. 새 이름을 함께 적도록 권장
+오리알	egg:C		duck egg	C10	시드	시드확인	FDA 5판 C.3-4	2025 지침부터 다른 가금류의 알도 Egg. 새 이름을 함께 적도록 권장
+피단	egg:C		duck egg	C10	시드	시드확인	FDA 5판 C.3-4	2025 지침부터 다른 가금류의 알도 Egg. 새 이름을 함께 적도록 권장
+가다랑어	fish:bonito:C		tuna (skipjack)	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+가쓰오	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+가쓰오엑기스	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+훈연가쓰오	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; 판매처 라벨(참치액)	FDA 일반명 Skipjack Tuna. FDA는 'bonito'를 이 종의 비허용 속명으로 둠 / 학명: Katsuwonus pelamis
+가오리	fish:skate:C		ray	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	B.10: 홍어·가오리·상어도 fish / FDA 매칭: 근연 분류군 유추(Raja spp.) / 학명: Beringraja pulchra / Raja pulchra
+가자미	fish:flatfish:C		flounder/sole	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	종별로 속 단위 유추 / FDA 매칭: 속 일치(Pleuronichthys coenosus) / 학명: Pleuronichthys cornutus
+도다리	fish:flatfish:C		flounder/sole	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	종별로 속 단위 유추 / FDA 매칭: 속 일치(Pleuronichthys coenosus) / 학명: Pleuronichthys cornutus
+문치가자미	fish:flatfish:C		flounder/sole	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	종별로 속 단위 유추 / FDA 매칭: 속 일치(Pleuronichthys coenosus) / 학명: Pleuronichthys cornutus
+갈치	fish:hairtail:C		cutlassfish	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Trichiurus lepturus / Trichiurus japonicus
+갈치속젓	fish:hairtail:C		cutlassfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Trichiurus lepturus / Trichiurus japonicus
+갯장어	fish:eel:C		pike-conger eel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Muraenesox cinereus
+고등어	fish:mackerel:C		mackerel	C10	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	한국 표시 대상 생선은 고등어뿐 / 망치·대서양고등어 포함 여부는 미확인 / 학명: Scomber japonicus
+노르웨이고등어	fish:mackerel:C		mackerel	C10	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	망치·대서양고등어 포함 여부는 미확인 / 학명: Scomber japonicus
+대서양고등어	fish:mackerel:C		mackerel	C10	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	망치·대서양고등어 포함 여부는 미확인 / 학명: Scomber japonicus
+망치고등어	fish:mackerel:C		mackerel	C10	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	망치·대서양고등어 포함 여부는 미확인 / 학명: Scomber japonicus
+곰장어	fish:C		hagfish	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	FDA B.10: 무악어류도 fish / FDA 매칭: 속 일치(Eptatretus stoutii) / 학명: Eptatretus burgeri
+광어	fish:flatfish:C		flounder	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Paralichthys olivaceus
+까나리	fish:sandlance:C		sand lance	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	MFDS 이명에 양미리. 표준명 양미리(Hypoptychus)는 별종·FDA 미등재 / FDA 매칭: 속 일치(Ammodytes spp.) / 학명: Ammodytes personatus
+양미리	fish:sandlance:C		sand lance	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	MFDS 이명에 양미리. 표준명 양미리(Hypoptychus)는 별종·FDA 미등재 / FDA 매칭: 속 일치(Ammodytes spp.) / 학명: Ammodytes personatus
+꽁치	fish:saury:C		saury	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 한국민족문화대백과 과메기	과메기는 원료 확인 필요 / 학명: Cololabis saira
+날치	fish:C		flyingfish	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	시판 '날치알' 원료 어종은 제품 확인 / 학명: Cheilopogon agoo / Cypselurus agoo
+넙치	fish:flatfish:C		flounder	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Paralichthys olivaceus
+농어	fish:C		sea bass	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Lateolabrax japonicus
+곤이	fish:cod:C		cod	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Gadus macrocephalus
+대구	fish:cod:C		cod	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Gadus macrocephalus
+대구알	fish:cod:C		cod	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Gadus macrocephalus
+대구포	fish:cod:C		cod	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Gadus macrocephalus
+도루묵	fish:C		sandfish	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	Arctoscopus 미등재, 같은 과 Trichodon spp.=Sandfish / 영어 이름(sandfish): 과 유추 / FDA 매칭: 근연 분류군 유추(Trichodon spp.) / 학명: Arctoscopus japonicus
+도루묵알	fish:C		sandfish	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	Arctoscopus 미등재, 같은 과 Trichodon spp.=Sandfish / 영어 이름(sandfish): 과 유추 / FDA 매칭: 근연 분류군 유추(Trichodon spp.) / 학명: Arctoscopus japonicus
+매퉁이	fish:C		lizardfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Saurida undosquamis
+꼼장어	fish:C		hagfish	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	FDA B.10: 무악어류도 fish / FDA 매칭: 속 일치(Eptatretus stoutii) / 학명: Eptatretus burgeri
+먹장어	fish:C		hagfish	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	FDA B.10: 무악어류도 fish / FDA 매칭: 속 일치(Eptatretus stoutii) / 학명: Eptatretus burgeri
+메기	fish:C		sheatfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	'catfish' 명칭 사용 제한(FD&C 403(t)) / 학명: Silurus asotus
+메로	fish:C		toothfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Dissostichus eleginoides / Dissostichus mawsoni
+파타고니아이빨고기	fish:C		toothfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Dissostichus eleginoides / Dissostichus mawsoni
+멸치	fish:anchovy:C		anchovy	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Engraulis japonicus
+멸치엑기스	fish:anchovy:C		anchovy	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+멸치육수	fish:anchovy:C		anchovy	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+멸치젓	fish:anchovy:C		anchovy	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+지리멸	fish:anchovy:C		anchovy	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Engraulis japonicus
+명란젓	fish:pollock:C		pollock	C10	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류	식품공전 어란류에 명태알 / 학명: Gadus chalcogrammus / Theragra chalcogramma
+명태알	fish:pollock:C		pollock	C10	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류	식품공전 어란류에 명태알 / 학명: Gadus chalcogrammus / Theragra chalcogramma
+건태	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+노가리	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+동태	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+먹태	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+명태	fish:pollock:C		pollock	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 표준국어대사전; FDA 5판; MFDS 식품원료 조회; 우리말샘; 명태 이름 기사(위키트리)	'태'는 콩(백태·흑태)에도 쓰여 헷갈리기 쉬움 / 'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+북어채	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+생태	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+짝태	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+코다리	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+황태채	fish:pollock:C		pollock	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전; 우리말샘; 명태 이름 기사(위키트리)	'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+미꾸라지	fish:C		loach	C10	시드	시드검증필요	식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 목록 미등재 → 영어명 미확인 / 영어 이름(loach): 미확인 / FDA 매칭: 목록에 없음 / 학명: Misgurnus mizolepis / paramisgurnus dabryanus
+미꾸리	fish:C		loach	C10	시드	시드검증필요	식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 목록 미등재 → 영어명 미확인 / 영어 이름(loach): 미확인 / FDA 매칭: 목록에 없음 / 학명: Misgurnus mizolepis / paramisgurnus dabryanus
+추어	fish:C		loach	C10	시드	시드검증필요	식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 목록 미등재 → 영어명 미확인 / 영어 이름(loach): 미확인 / FDA 매칭: 목록에 없음 / 학명: Misgurnus mizolepis / paramisgurnus dabryanus
+민어	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Miichthys miiuy
+백조기	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Miichthys miiuy
+보구치	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Miichthys miiuy
+수조기	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Miichthys miiuy
+방어	fish:C		amberjack	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Seriola quinqueradiata
+부시리	fish:C		amberjack	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Seriola quinqueradiata
+뒤포리	fish:sardine:C		sardine	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회; 우리말샘	우리말샘은 디포리를 보리멸(전라 방언)로 풀이 → 디포리는 종 모호, 둘 다 Fish / 학명: Sardinella zunasi / Sardinella aurita
+디포리	fish:sardine:C		sardine	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 우리말샘	우리말샘은 디포리를 보리멸(전라 방언)로 풀이 → 디포리는 종 모호, 둘 다 Fish / 학명: Sardinella zunasi / Sardinella aurita / 학명: Sillago sihama
+밴댕이	fish:sardine:C		sardine	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회; 우리말샘	우리말샘은 디포리를 보리멸(전라 방언)로 풀이 → 디포리는 종 모호, 둘 다 Fish / 학명: Sardinella zunasi / Sardinella aurita
+민물장어	fish:eel:C		eel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Anguilla japonica
+뱀장어	fish:eel:C		eel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Anguilla japonica
+뱅어	fish:C		icefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Salangichthys microdon
+뱅어포	fish:C		icefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Salangichthys microdon
+실치	fish:C		icefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Salangichthys microdon
+병어	fish:C		butterfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Pampus argenteus
+병치	fish:C		butterfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Pampus argenteus
+보리멸	fish:C		whiting	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 우리말샘	학명: Sillago sihama
+부세	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Larimichthys crocea
+부세굴비	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Larimichthys crocea
+북어	fish:pollock:C		pollock	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 표준국어대사전; FDA 5판; MFDS 식품원료 조회; 우리말샘; 명태 이름 기사(위키트리)	'태'는 콩(백태·흑태)에도 쓰여 헷갈리기 쉬움 / 'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+붕어	fish:C		carp	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6	
+붕장어	fish:eel:C		conger eel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Conger myriaster
+아나고	fish:eel:C		conger eel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Conger myriaster
+빙어	fish:C		smelt	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	FDA 매칭: 속 일치(Hypomesus pretiosus) / 학명: Hypomesus nipponensis
+삼치	fish:C		Spanish mackerel	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	고등어과지만 '고등어' 아님 / 학명: Scomberomorus niphonius
+곱상어	fish:C		shark	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	학명: Squalus acanthias
+상어	fish:C		shark	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	학명: Squalus acanthias
+청상아리	fish:C		shark	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	학명: Squalus acanthias
+무지개송어	fish:trout:C		trout	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	MFDS '송어'는 Oncorhynchus masou(=cherry salmon) / 학명: Oncorhynchus mykiss
+송어	fish:trout:C		trout	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	MFDS '송어'는 Oncorhynchus masou(=cherry salmon) / 학명: Oncorhynchus mykiss
+숭어	fish:C		mullet	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Mugil cephalus
+실꼬리돔	fish:C		threadfin bream	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(부산어묵)	어묵 연육 원료(P3: 갈치·실꼬리돔 연육) / 학명: Nemipterus virgatus
+아구	fish:monkfish:C		monkfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Lophius litulon
+아귀	fish:monkfish:C		monkfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Lophius litulon
+황아귀	fish:monkfish:C		monkfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Lophius litulon
+대서양연어	fish:salmon:C		salmon	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	학명: Oncorhynchus keta
+연어	fish:salmon:C		salmon	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	학명: Oncorhynchus keta
+훈제연어	fish:salmon:C		salmon	C10	시드	시드확인	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	학명: Oncorhynchus keta
+시샤모	fish:C		capelin	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	'시샤모'가 열빙어인지 Spirinchus인지 제품 확인 필요(미확인) / 학명: Mallotus villosus
+열빙어	fish:C		capelin	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	'시샤모'가 열빙어인지 Spirinchus인지 제품 확인 필요(미확인) / 학명: Mallotus villosus
+우럭	fish:C		rockfish	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Sebastes schlegelii
+이면수	fish:C		Atka mackerel	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	P. azonus 미등재, 같은 속 P. monopterygius=Atka Mackerel / FDA 매칭: 속 일치(Pleurogrammus monopterygius) / 학명: Pleurogrammus azonus
+임연수어	fish:C		Atka mackerel	C10	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	P. azonus 미등재, 같은 속 P. monopterygius=Atka Mackerel / FDA 매칭: 속 일치(Pleurogrammus monopterygius) / 학명: Pleurogrammus azonus
+잉어	fish:C		carp	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6	
+장어	fish:eel:C		eel	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Anguilla japonica
+전갱이	fish:C		jack mackerel	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Trachurus japonicus
+전어	fish:shad:C		gizzard shad	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 시장명 표기 'Gizzard or Scad'(원문 그대로) / 학명: Konosirus punctatus
+전어밤젓	fish:shad:C		gizzard shad	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	FDA 시장명 표기 'Gizzard or Scad'(원문 그대로) / 학명: Konosirus punctatus
+정어리	fish:sardine:C		sardine	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Sardinops sagax / Sardinops melanostictus / Sardina pilchardus
+조기	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+볼락	fish:C		rockfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Sebastes schlegelii
+열기	fish:C		rockfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Sebastes schlegelii
+조피볼락	fish:C		rockfish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Sebastes schlegelii
+쥐치	fish:filefish:C		filefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	말쥐치(Thamnaconus modestus)는 FDA 미등재 → filefish 유추 / 학명: Stephanolepis cirrhifer
+쥐치포	fish:filefish:C		filefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	말쥐치(Thamnaconus modestus)는 FDA 미등재 → filefish 유추 / 학명: Stephanolepis cirrhifer
+쥐포	fish:filefish:C		filefish	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	말쥐치(Thamnaconus modestus)는 FDA 미등재 → filefish 유추 / 학명: Stephanolepis cirrhifer
+감성돔	fish:seabream:C		porgy/sea bream	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Pagrus major
+도미	fish:seabream:C		porgy/sea bream	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Pagrus major
+돔	fish:seabream:C		porgy/sea bream	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회	학명: Pagrus major
+참돔	fish:seabream:C		sea bream	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회	학명: Pagrus major
+굴비	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+보리굴비	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+영광굴비	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+참조기	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+황조기	fish:croaker:C		croaker	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 한국민족문화대백과 영광굴비	학명: Larimichthys polyactis
+날개다랑어	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+눈다랑어	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+다랑어	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+참다랑어	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+참치	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+참치액	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+참치캔	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+황다랑어	fish:tuna:C		tuna	C10	시드	시드확인	FDA Seafood List; MFDS 식품원료 조회; 판매처 라벨(참치액)	참치액은 가다랑어·황다랑어 추출물(P1) / 학명: Thunnus orientalis
+창난젓	fish:pollock:C		pollock	C10	시드	시드확인	표준국어대사전; FDA Seafood List	명태 창자 젓갈 / 학명: Gadus chalcogrammus / Theragra chalcogramma
+창란젓	fish:pollock:C		pollock	C10	시드	시드확인	표준국어대사전; FDA Seafood List	명태 창자 젓갈 / 학명: Gadus chalcogrammus / Theragra chalcogramma
+과메기	fish:herring:C		herring	C10	시드	시드확인	FDA Seafood List; 한국민족문화대백과 과메기	학명: Clupea pallasii / 과메기는 원료 확인 필요 / 학명: Cololabis saira
+청어	fish:herring:C		herring	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 한국민족문화대백과 과메기	학명: Clupea pallasii
+청어알	fish:herring:C		herring	C10	시드	시드확인	FDA Seafood List; 한국민족문화대백과 과메기	학명: Clupea pallasii
+칠성장어	fish:C		lamprey	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	FDA 목록 미등재, B.10에 lamprey 명시 / FDA 매칭: 목록에 없음 / 학명: Lethenteron camtschaticum / Lampetra japonica
+철갑상어알	fish:C		sturgeon	C10	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류	FDA 매칭: 속 일치(Acipenser dabryanus) / 학명: Acipenser sinensis / Acipenser naccarii / Acipenser transmontanus
+간재미	fish:skate:C		skate	C10	시드	시드검증필요	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	B.10: 홍어·가오리·상어도 fish / FDA 매칭: 근연 분류군 유추(Raja spp.) / 학명: Beringraja pulchra / Raja pulchra
+참홍어	fish:skate:C		skate	C10	시드	시드검증필요	FDA 5판; FDA Seafood List; MFDS 식품원료 조회	B.10: 홍어·가오리·상어도 fish / FDA 매칭: 근연 분류군 유추(Raja spp.) / 학명: Beringraja pulchra / Raja pulchra
+홍어	fish:skate:C		skate	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; FDA 5판; MFDS 식품원료 조회	B.10: 홍어·가오리·상어도 fish / FDA 매칭: 근연 분류군 유추(Raja spp.) / 학명: Beringraja pulchra / Raja pulchra
+황강달이	fish:croaker:C		croaker/drum	C10	시드	시드검증필요	표준국어대사전; MFDS 식품원료 조회; FDA Seafood List	사전상 황석어=참조기. 황강달이로 보는 설명도 있으나 미확인. 어느 쪽이든 민어과 / FDA 매칭: 속 일치(Collichthys spp.) / 학명: Collichthys lucidus
+황석어	fish:croaker:C		croaker/drum	C10	시드	시드검증필요	표준국어대사전; MFDS 식품원료 조회; FDA Seafood List	사전상 황석어=참조기. 황강달이로 보는 설명도 있으나 미확인. 어느 쪽이든 민어과 / FDA 매칭: 속 일치(Collichthys spp.) / 학명: Collichthys lucidus
+황석어젓	fish:croaker:C		croaker/drum	C10	시드	시드검증필요	표준국어대사전; MFDS 식품원료 조회; FDA Seafood List	사전상 황석어=참조기. 황강달이로 보는 설명도 있으나 미확인. 어느 쪽이든 민어과 / FDA 매칭: 속 일치(Collichthys spp.) / 학명: Collichthys lucidus
+황태	fish:pollock:C		pollock	C10	시드	시드확인	FDA Seafood List; FDA 5판 C.6; 표준국어대사전; FDA 5판; MFDS 식품원료 조회; 우리말샘; 명태 이름 기사(위키트리)	'태'는 콩(백태·흑태)에도 쓰여 헷갈리기 쉬움 / 'Alaska pollock'은 알래스카 어획분만 허용(F2) / 학명: Gadus chalcogrammus / Theragra chalcogramma
+산양유	milk:C		goat milk	C10	시드	시드확인	FDA 5판 C.1-2	2025 지침부터 염소·양 젖도 Milk. 동물 이름을 함께 적도록 권장
+개암	tree_nut:hazelnut:C		hazelnut	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; MFDS 식품원료 조회; 표준국어대사전	Corylus spp. 전체 / 학명: Corylus heterophylla Fisch. ex Trautv.
+마카다미아	tree_nut:macadamia:C		macadamia	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Macadamia integrifolia Maiden & Betche / Macadamia tetraphulla L.
+마카다미아너트	tree_nut:macadamia:C		macadamia nut	C10	시드	시드확인	FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Macadamia integrifolia Maiden & Betche / Macadamia tetraphulla L.
+마카다미아넛	tree_nut:macadamia:C		macadamia nut	C10	시드	시드확인	FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Macadamia integrifolia Maiden & Betche / Macadamia tetraphulla L.
+브라질너트	tree_nut:brazil_nut:C		Brazil nut	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Bertholletia excelsa
+브라질넛	tree_nut:brazil_nut:C		Brazil nut	C10	시드	시드확인	FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Bertholletia excelsa
+아몬드	tree_nut:almond:C		almond	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 입법예고 2026-386; MFDS 식품원료 조회	아몬드·캐슈너트는 한국 2028년 추가 예정(입법예고) / 2028년 추가 예정(입법예고) / 학명: Prunus dulcis (Mill.) D. A. Webb. / Prunus amygdalus Batsch. / Prunus communis (L.) Arcang. / Amygdalus communis Bunge
+아몬드분말	tree_nut:almond:C		almond	C10	시드	시드확인	FDA 5판; 입법예고 2026-386; MFDS 식품원료 조회	2028년 추가 예정(입법예고) / 학명: Prunus dulcis (Mill.) D. A. Webb. / Prunus amygdalus Batsch. / Prunus communis (L.) Arcang. / Amygdalus communis Bunge
+실백	tree_nut:pine_nut:C		pine nut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	Pinus spp. 전체 / 학명: Pinus koraiensis (Siebold & Zucc.) Moldenke / Pinus madschurica Rupr.
+실백잣	tree_nut:pine_nut:C		pine nut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	Pinus spp. 전체 / 학명: Pinus koraiensis (Siebold & Zucc.) Moldenke / Pinus madschurica Rupr.
+잣	tree_nut:pine_nut:C		pine nut	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	Pinus spp. 전체 / 학명: Pinus koraiensis (Siebold & Zucc.) Moldenke / Pinus madschurica Rupr.
+잣가루	tree_nut:pine_nut:C		pine nut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	Pinus spp. 전체 / 학명: Pinus koraiensis (Siebold & Zucc.) Moldenke / Pinus madschurica Rupr.
+캐슈	tree_nut:cashew:C		cashew	C10	시드	시드확인	FDA 5판; 입법예고 2026-386; 식품공전 식품원료 분류; MFDS 식품원료 조회	2028년 추가 예정(입법예고) / 학명: Anacardium occidentale L. / Anacardium curatellifolium St. Hil.
+캐슈너트	tree_nut:cashew:C		cashew	C10	시드	시드확인	FDA 5판; 입법예고 2026-386; 식품공전 식품원료 분류; MFDS 식품원료 조회	2028년 추가 예정(입법예고) / 학명: Anacardium occidentale L. / Anacardium curatellifolium St. Hil.
+케슈너트	tree_nut:cashew:C		cashew	C10	시드	시드확인	FDA 5판; 입법예고 2026-386; 식품공전 식품원료 분류; MFDS 식품원료 조회	2028년 추가 예정(입법예고) / 학명: Anacardium occidentale L. / Anacardium curatellifolium St. Hil.
+캐슈넛	tree_nut:cashew:C		cashew	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 입법예고 2026-386; 식품공전 식품원료 분류; MFDS 식품원료 조회	아몬드·캐슈너트는 한국 2028년 추가 예정(입법예고) / 2028년 추가 예정(입법예고) / 학명: Anacardium occidentale L. / Anacardium curatellifolium St. Hil.
+피스타치오	tree_nut:pistachio:C		pistachio	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Pistacia vera L.
+피칸	tree_nut:pecan:C		pecan	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Carya pecan / Carya illinoensis / Juglans pecan / Juglans illinoensis / Hicoria pecan / Carya oliviformis
+피칸넛	tree_nut:pecan:C		pecan	C10	시드	시드확인	FDA 5판; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Carya pecan / Carya illinoensis / Juglans pecan / Juglans illinoensis / Hicoria pecan / Carya oliviformis
+필버트	tree_nut:hazelnut:C		hazelnut	C10	시드	시드확인	FDA 5판; MFDS 식품원료 조회; 표준국어대사전	Corylus spp. 전체 / 학명: Corylus heterophylla Fisch. ex Trautv.
+헤이즐넛	tree_nut:hazelnut:C		hazelnut	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; MFDS 식품원료 조회; 표준국어대사전	Corylus spp. 전체 / 학명: Corylus heterophylla Fisch. ex Trautv.
+헤즐넛	tree_nut:hazelnut:C		hazelnut	C10	시드	시드확인	FDA 5판; MFDS 식품원료 조회; 표준국어대사전	Corylus spp. 전체 / 학명: Corylus heterophylla Fisch. ex Trautv.
+월넛	tree_nut:walnut:C		walnut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	한국 '캘리포니아 호두'는 보통 산지명(Juglans regia) / 학명: Juglans regia L. / J. sinensis (C. de Candolle) Dode.
+캘리포니아호두	tree_nut:walnut:C		walnut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	한국 '캘리포니아 호두'는 보통 산지명(Juglans regia) / 학명: Juglans regia L. / J. sinensis (C. de Candolle) Dode.
+호도	tree_nut:walnut:C		walnut	C10	시드	시드확인	FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	한국 '캘리포니아 호두'는 보통 산지명(Juglans regia) / 학명: Juglans regia L. / J. sinensis (C. de Candolle) Dode.
+호두	tree_nut:walnut:C		walnut	C10	시드	시드확인	FDA 5판 C.7(Table 1); FDA 5판; 시행규칙 별표2; 표준국어대사전; MFDS 식품원료 조회	한국 '캘리포니아 호두'는 보통 산지명(Juglans regia) / 학명: Juglans regia L. / J. sinensis (C. de Candolle) Dode.
+블랙월넛	tree_nut:walnut:C		black walnut	C10	시드	시드검증필요	FDA 5판; MFDS 식품원료 조회	학명: Juglans nigra L.
+흑호두	tree_nut:walnut:C		black walnut	C10	시드	시드검증필요	FDA 5판 C.7(Table 1); FDA 5판; MFDS 식품원료 조회	학명: Juglans nigra L.
+듀럼밀	wheat:C			C10	시드	시드확인	FDA 5판 C.9; 판매처 상품 표시	
+듀럼밀 세몰리나	wheat:C			C10	시드	시드확인	FDA 5판 C.9; 판매처 상품 표시	
+세몰리나	wheat:C			C10	시드	시드확인	FDA 5판 C.9; 판매처 상품 표시	
+스펠트밀	wheat:C			C10	시드	시드검증필요	FDA 5판 C.9	
+아인콘	wheat:C			C10	시드	시드검증필요	FDA 5판 C.9	
+엠머	wheat:C			C10	시드	시드검증필요	FDA 5판 C.9	
+트리티케일	wheat:C			C10	시드	시드검증필요	FDA 5판 C.9	밀과 호밀의 잡종도 Wheat
+파로	wheat:C			C10	시드	시드검증필요	FDA 5판 C.9	
+카무트	wheat:C			C10	시드	시드확인	FDA 5판 C.9; C002 실제 표기	
+호라산밀	wheat:C			C10	시드	시드확인	FDA 5판 C.9; C002 실제 표기	
+가래		O		C10	시드	시드검증필요	FDA 5판; MFDS 식품원료 조회	Juglans mandshurica는 FDA 표1에 없음 / 학명: Juglans mandshurica Maxim. / Juglans cathayensis Dode / Juglans cathayensis var. formosana (Hayata) A.M.Lu & R.H.Chang
+가래나무		O		C10	시드	시드검증필요	FDA 5판; MFDS 식품원료 조회	Juglans mandshurica는 FDA 표1에 없음 / 학명: Juglans mandshurica Maxim. / Juglans cathayensis Dode / Juglans cathayensis var. formosana (Hayata) A.M.Lu & R.H.Chang
+산호두		O		C10	시드	시드검증필요	FDA 5판; MFDS 식품원료 조회	Juglans mandshurica는 FDA 표1에 없음 / 학명: Juglans mandshurica Maxim. / Juglans cathayensis Dode / Juglans cathayensis var. formosana (Hayata) A.M.Lu & R.H.Chang
+왕가래나무		O		C10	시드	시드검증필요	FDA 5판; MFDS 식품원료 조회	Juglans mandshurica는 FDA 표1에 없음 / 학명: Juglans mandshurica Maxim. / Juglans cathayensis Dode / Juglans cathayensis var. formosana (Hayata) A.M.Lu & R.H.Chang
+메밀	buckwheat:C			D1	시드	시드확인	시행규칙 별표2; 표준국어대사전	미국 9대 아님(선택 항목). '밀'이 들어 있지만 밀(Wheat)이 아님
+메밀가루	buckwheat:C			D1	시드	시드확인	시행규칙 별표2; 표준국어대사전	미국 9대 아님(선택 항목). '밀'이 들어 있지만 밀(Wheat)이 아님
+메밀묵	buckwheat:C			D1	시드	시드확인	시행규칙 별표2; 표준국어대사전	미국 9대 아님(선택 항목). '밀'이 들어 있지만 밀(Wheat)이 아님
+모밀	buckwheat:C			D1	시드	시드확인	시행규칙 별표2; 표준국어대사전	미국 9대 아님(선택 항목). '밀'이 들어 있지만 밀(Wheat)이 아님. '모밀'은 메밀의 다른 말
+가리비	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / '관자'는 가리비·키조개 모두 가능 / 학명: Mizuhopecten yessoensis / Patinopecten yessoensis
+관자	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	'관자'는 가리비·키조개 모두 가능 / 학명: Mizuhopecten yessoensis / Patinopecten yessoensis / 학명: Atrina pectinata
+참가리비	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	'관자'는 가리비·키조개 모두 가능 / 학명: Mizuhopecten yessoensis / Patinopecten yessoensis
+큰가리비	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	'관자'는 가리비·키조개 모두 가능 / 학명: Mizuhopecten yessoensis / Patinopecten yessoensis
+해만가리비	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	'관자'는 가리비·키조개 모두 가능 / 학명: Mizuhopecten yessoensis / Patinopecten yessoensis
+갑오징어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 오징어와 별도 품목 / FDA 매칭: 속 일치(Sepia spp.) / 학명: Sepia esculenta / Sepia officinalis
+참갑오징어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 오징어와 별도 품목 / FDA 매칭: 속 일치(Sepia spp.) / 학명: Sepia esculenta / Sepia officinalis
+골뱅이	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / MFDS 목록에서 6종의 이명 → 종 불명 / FDA 매칭: 속 일치(Buccinum spp.)
+골뱅이통조림	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회; 표준국어대사전	MFDS 목록에서 6종의 이명 → 종 불명 / FDA 매칭: 속 일치(Buccinum spp.)
+군소	mollusk:C			D1	시드	시드검증필요	식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 미등재 / FDA 매칭: 목록에 없음 / 학명: Aplysia kurodai
+굴추출물	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Crassostrea gigas
+석화	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Crassostrea gigas
+어리굴젓	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Crassostrea gigas
+꼬막	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	학명: Tegillarca granosa
+새꼬막	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	학명: Tegillarca granosa
+참꼬막	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	학명: Tegillarca granosa
+피조개	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	학명: Tegillarca granosa
+꼴뚜기	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 오징어와 별도 품목 / 학명: Loligo beka
+꼴뚜기젓	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 오징어와 별도 품목 / 학명: Loligo beka
+참꼴뚜기	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	식품공전에서 오징어와 별도 품목 / 학명: Loligo beka
+낙지	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Octopus spp.) / 학명: Octopus minor
+낙지젓	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Octopus spp.) / 학명: Octopus minor
+고디	mollusk:C			D1	시드	시드검증필요	MFDS 식품원료 조회; 우리말샘	FDA 미등재 / FDA 매칭: 목록에 없음 / 학명: Semisulcospira libertina
+다슬기	mollusk:C			D1	시드	시드검증필요	MFDS 식품원료 조회; 우리말샘	FDA 미등재 / FDA 매칭: 목록에 없음 / 학명: Semisulcospira libertina
+대사리	mollusk:C			D1	시드	시드검증필요	MFDS 식품원료 조회; 우리말샘	FDA 미등재 / FDA 매칭: 목록에 없음 / 학명: Semisulcospira libertina
+올갱이	mollusk:C			D1	시드	시드검증필요	MFDS 식품원료 조회; 우리말샘	FDA 미등재 / FDA 매칭: 목록에 없음 / 학명: Semisulcospira libertina
+대왕오징어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	학명: Dosidicus gigas / Dosidicus eschrichti / Dosidicus steenstrupi
+아메리카대왕오징어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	학명: Dosidicus gigas / Dosidicus eschrichti / Dosidicus steenstrupi
+가무락조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+개량조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+개조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+동죽	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+맛조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+모시조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+새조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018); MFDS 식품원료 조회	FAQ 예시에 개량조개 / FDA 매칭: 목록에 없음 / 학명: Cyclina sinensis
+대문어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Enteroctopus dofleini / Octopus vulgaris / Octopus bimaculatus / Octopus maya
+문어	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / 학명: Enteroctopus dofleini / Octopus vulgaris / Octopus bimaculatus / Octopus maya
+참문어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Enteroctopus dofleini / Octopus vulgaris / Octopus bimaculatus / Octopus maya
+바지락	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	학명: Ruditapes philippinarum / Tapes philippinarum
+조개젓	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 식약처 FAQ(2018)	학명: Ruditapes philippinarum / Tapes philippinarum
+대합	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	꽃 '백합'과 동음이의(MFDS 목록에 식물 백합도 있음) / FDA 매칭: 속 일치(Meretrix spp.) / 학명: Meretrix lusoria
+백합	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	꽃 '백합'과 동음이의(MFDS 목록에 식물 백합도 있음) / FDA 매칭: 속 일치(Meretrix spp.) / 학명: Meretrix lusoria
+생합	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	꽃 '백합'과 동음이의(MFDS 목록에 식물 백합도 있음) / FDA 매칭: 속 일치(Meretrix spp.) / 학명: Meretrix lusoria
+배말	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 삿갓조개 기사(경북매일)	FDA 매칭: 근연 분류군 유추(Cellana denticulata)
+삿갓조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 삿갓조개 기사(경북매일)	FDA 매칭: 근연 분류군 유추(Cellana denticulata)
+울릉도 '따개비'	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 삿갓조개 기사(경북매일)	FDA 매칭: 근연 분류군 유추(Cellana denticulata)
+고둥	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+물레고둥	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+뿔소라	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+소라	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+참소라	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+피뿔고둥	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FAQ: 패류(조개류)에 소라·고둥 포함 / 학명: Turbo cornutus
+마른오징어	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+물오징어	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+살오징어	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+오징어	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / 미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+오징어젓	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+오징어채	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 Contains 불가(D.10) / 학명: Todarodes pacificus
+논우렁이	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	식품공전 패류 예시에 없음 / 학명: Cipangopaludina chinensis malleata
+왕우렁이	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	식품공전 패류 예시에 없음 / 학명: Cipangopaludina chinensis malleata
+우렁	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	식품공전 패류 예시에 없음 / 학명: Cipangopaludina chinensis malleata
+우렁이	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	식품공전 패류 예시에 없음 / 학명: Cipangopaludina chinensis malleata
+재첩	mollusk:C			D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; 식약처 FAQ(2018)	FDA 매칭: 속 일치(Corbicula spp.) / 학명: Corbicula fluminea
+말전복	mollusk:C			D1	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	FDA 매칭: 속 일치(Haliotis corrugata) / 학명: Haliotis discus discus
+오분자기	mollusk:C			D1	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	FDA 매칭: 속 일치(Haliotis corrugata) / 학명: Haliotis discus discus
+전복	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / FDA 매칭: 속 일치(Haliotis corrugata) / 학명: Haliotis discus discus
+참전복	mollusk:C			D1	시드	시드확인	FDA Seafood List; 시행규칙 별표2; MFDS 식품원료 조회	FDA 매칭: 속 일치(Haliotis corrugata) / 학명: Haliotis discus discus
+조개	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019)	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상
+조개류	mollusk:C			D1	시드	시드확인	시행규칙 별표2; 회수 사례(굴소스, 2026-07)	
+주꾸미	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Amphioctopus membranaceus) / 학명: Amphioctopus fangsiao
+쭈꾸미	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Amphioctopus membranaceus) / 학명: Amphioctopus fangsiao
+키조개	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; 식약처 FAQ(2018)	학명: Atrina pectinata
+창오징어	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	MFDS 표준명은 '꼴뚜기' 계열 / 학명: Loligo chinensis / Photololigo edulis / Loligo kensaki Wakiya & Ishikawa
+한치	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	MFDS 표준명은 '꼴뚜기' 계열 / 학명: Loligo chinensis / Photololigo edulis / Loligo kensaki Wakiya & Ishikawa
+한치꼴뚜기	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	MFDS 표준명은 '꼴뚜기' 계열 / 학명: Loligo chinensis / Photololigo edulis / Loligo kensaki Wakiya & Ishikawa
+화살꼴뚜기	mollusk:C			D1	시드	시드검증필요	FDA Seafood List; MFDS 식품원료 조회	MFDS 표준명은 '꼴뚜기' 계열 / 학명: Loligo chinensis / Photololigo edulis / Loligo kensaki Wakiya & Ishikawa
+담치	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Mytilus coruscus
+지중해담치	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Mytilus coruscus
+진주담치	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Mytilus coruscus
+참담치	mollusk:C			D1	시드	시드확인	FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	학명: Mytilus coruscus
+홍합	mollusk:C			D1	시드	시드확인	FDA 5판 B.9; ACAAI shellfish; 국내 표시제 현황(2019); FDA 5판; FDA Seafood List; 시행규칙 별표2; 표준국어대사전	미국 9대 아님(선택 항목). 한국은 오징어·조개류(굴·전복·홍합 포함)가 표시 대상 / 학명: Mytilus coruscus
+개불				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Urechis unicinctus
+닭고기				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	한국 표시 대상이지만 미국 9대 아님
+돈사태				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	돼지고기 부위. 한국 표시 대상이지만 미국 9대 아님
+돈육				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	돼지고기. 한국 표시 대상이지만 미국 9대 아님
+돼지고기				D1	시드	시드확인	시행규칙 별표2	한국 표시 대상이지만 미국 9대 아님
+루핀				D1	시드	시드검증필요	FARE peanut; EU 1169/2011	미국 9대 아님(EU는 표시 대상). 땅콩과 교차반응
+멍게				D1	시드	시드확인	FDA Seafood List; ACAAI shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	갑각류도 연체류도 아님 / '우렁쉥이'를 '우렁이'로 부분일치 금지 / 학명: Halocynthia roretzi
+우렁쉥이				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	'우렁쉥이'를 '우렁이'로 부분일치 금지 / 학명: Halocynthia roretzi
+미더덕				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Styela clava
+오만둥이				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Styela clava
+주름미더덕				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	학명: Styela clava
+복숭아				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	한국 표시 대상이지만 미국 9대 아님
+말똥성게				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA Type I(비갑각류) / FDA 매칭: 속 일치(Heliocidaris spp.) / 학명: Anthocidaris crassispina
+보라성게				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA Type I(비갑각류) / FDA 매칭: 속 일치(Heliocidaris spp.) / 학명: Anthocidaris crassispina
+성게				D1	시드	시드확인	FDA Seafood List; ACAAI shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	갑각류도 연체류도 아님 / FDA Type I(비갑각류) / FDA 매칭: 속 일치(Heliocidaris spp.) / 학명: Anthocidaris crassispina
+성게알				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA Type I(비갑각류) / FDA 매칭: 속 일치(Heliocidaris spp.) / 학명: Anthocidaris crassispina
+우니				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA Type I(비갑각류) / FDA 매칭: 속 일치(Heliocidaris spp.) / 학명: Anthocidaris crassispina
+소고기				D1	시드	시드확인	시행규칙 별표2	한국 표시 대상이지만 미국 9대 아님. 법령 명칭은 '쇠고기'
+쇠고기				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	한국 표시 대상이지만 미국 9대 아님
+식용돈지				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	돼지 지방. 한국 표시 대상이지만 미국 9대 아님
+식용우지				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	소 지방. 한국 표시 대상이지만 미국 9대 아님
+아황산류				D1	시드	시드확인	시행규칙 별표2	한국은 이산화황 10mg/kg 이상일 때만 표시. 표시란에는 '이산화황'으로 적히기도 함
+코코넛오일				D1	시드	시드확인	FDA 5판; EatRight 견과 해설	2025 지침에서 제외 / 학명: Cocos nucifera L.
+코코야자				D1	시드	시드확인	FDA 5판; EatRight 견과 해설	2025 지침에서 제외 / 학명: Cocos nucifera L.
+토마토				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	한국 표시 대상이지만 미국 9대 아님
+토마토색소				D1	시드	시드확인	시행규칙 별표2; 식품공전 식용유지; NEIS 급식 Open API	한국 표시 대상이지만 미국 9대 아님
+돌기해삼				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Apostichopus spp.) / 학명: Stichopus japonicus
+해삼				D1	시드	시드확인	FDA Seafood List; ACAAI shellfish; 식품공전 식품원료 분류; MFDS 식품원료 조회	갑각류도 연체류도 아님 / FDA 매칭: 속 일치(Apostichopus spp.) / 학명: Stichopus japonicus
+식용해파리				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Rhopilema spp.) / 학명: Rhopilema esculenta
+해파리				D1	시드	시드확인	FDA Seafood List; 식품공전 식품원료 분류; MFDS 식품원료 조회	FDA 매칭: 속 일치(Rhopilema spp.) / 학명: Rhopilema esculenta
+넛맥				D2	시드	시드검증필요	FDA 5판 C.8	FDA 견과류 목록(Table 1)에 없음
+대추				D2	시드	시드확인	FDA 5판; MFDS 식품원료 조회	견과 아님 / 학명: 묏대추나무 Ziziphus jujuba Mill / Ziziphus vulgaris Lamarck / 대추나무 Ziziphus jujuba var. inermis (Bunge) Rehder
+도토리				D2	시드	시드확인	FDA 5판 C.8; FDA 5판; 식품공전 식품원료 분류	FDA 견과류 목록(Table 1)에 없음 / FDA 표1에 없음
+도토리가루				D2	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	FDA 표1에 없음
+도토리묵				D2	시드	시드확인	FDA 5판; 식품공전 식품원료 분류	FDA 표1에 없음
+리치				D2	시드	시드확인	FDA 5판; EatRight 견과 해설	2025 지침에서 제외 / 학명: Litchi chinensis Sonn. / Nephelizm litchi Cambess
+여지				D2	시드	시드확인	FDA 5판; EatRight 견과 해설	2025 지침에서 제외 / 학명: Litchi chinensis Sonn. / Nephelizm litchi Cambess
+군밤				D2	시드	시드확인	FDA 5판; EatRight 견과 해설; 식품공전 식품원료 분류	2025 지침에서 제외
+맛밤				D2	시드	시드확인	FDA 5판; EatRight 견과 해설; 식품공전 식품원료 분류	2025 지침에서 제외
+밤가루				D2	시드	시드확인	FDA 5판; EatRight 견과 해설; 식품공전 식품원료 분류	2025 지침에서 제외
+시어버터				D2	시드	시드확인	FDA 5판 C.7-8; FARE 5판 해설	2025년 FDA 견과류 목록에서 빠짐. 견과류로 경고하면 오탐 / 2025년 FDA 견과류 목록에서 빠짐. '버터'지만 우유도 아님
+야자유				D2	시드	시드확인	FDA 5판 C.7-8; FARE 5판 해설	2025년 FDA 견과류 목록에서 빠짐. 견과류로 경고하면 오탐
+은행				D2	시드	시드확인	FDA 5판 C.7-8; FARE 5판 해설; FDA 5판; EatRight 견과 해설; 식품공전 식품원료 분류	2025년 FDA 견과류 목록에서 빠짐. 견과류로 경고하면 오탐 / 2025 지침에서 제외 / 학명: Ginkgo biloba L.
+코코넛				D2	시드	시드확인	FDA 5판 C.7-8; FARE 5판 해설; FDA 5판; EatRight 견과 해설	2025년 FDA 견과류 목록에서 빠짐. 견과류로 경고하면 오탐 / 2025 지침에서 제외 / 학명: Cocos nucifera L.
+해바라기씨				D2	시드	시드확인	FDA 5판 C.8; FDA 5판; 식품공전 식품원료 분류	FDA 견과류 목록(Table 1)에 없음 / 씨앗은 9대 아님 / 학명: Helianthus annuus L.
+행인				D2	시드	시드검증필요	FDA 5판 C.8	FDA 견과류 목록(Table 1)에 없음
+호박씨				D2	시드	시드확인	FDA 5판 C.8; FDA 5판; 식품공전 식품원료 분류	FDA 견과류 목록(Table 1)에 없음 / 씨앗은 9대 아님 / 학명: Helianthus annuus L.
+정제수					규칙	확인		
+정제소금					규칙	확인		
+백설탕					규칙	확인		
+향미증진제					규칙	확인		
+산도조절제					규칙	확인		
+합성착향료		V			규칙	확인		
+양파					규칙	확인		
+마늘					규칙	확인		
+정제염					규칙	확인		
+구연산					규칙	확인		
+비타민C					규칙	확인		
+설탕					규칙	확인		
+액상과당					규칙	확인		
+정백당					규칙	확인		
+식물성유지	soy:F				규칙	확인	S04	
+주정					규칙	확인		
+대두유	soy:R				규칙	확인	S03	
+천일염					규칙	확인		
+대파					규칙	확인		
+고춧가루					규칙	확인		
+당근					규칙	확인		
+옥수수					규칙	확인		
+합성보존료					규칙	확인		
+레시틴	soy:I				규칙	확인	S02	
+발색제					규칙	확인		
+아질산나트륨					규칙	확인		
+생강					규칙	확인		
+잔탄검					규칙	확인		
+구아검					규칙	확인		
+쌀					규칙	확인		
+폴리인산나트륨					규칙	확인		
+쇼트닝	soy:F				규칙	확인	S04	
+효소처리스테비아					규칙	확인		
+비타민B2					규칙	확인		
+피로인산나트륨					규칙	확인		
+구연산삼나트륨					규칙	확인		
+식염					규칙	확인		
+양조간장	soy:C wheat:I				규칙	확인	W03,S01	
+무					규칙	확인		
+소르빈산칼륨					규칙	확인		
+간장	soy:C wheat:I				규칙	확인	W03,S01	
+글리세린지방산에스테르					규칙	확인		
+탄산수소나트륨					규칙	확인		
+합성감미료					규칙	확인		
+팜올레인유					규칙	확인		
+발효식초					규칙	확인		
+D-소르비톨					규칙	확인		
+아라비아검					규칙	확인		
+파프리카추출색소					규칙	확인		
+가공유지	soy:F				규칙	확인	S04	
+글리신					규칙	확인		
+찹쌀					규칙	확인		
+글리세린					규칙	확인		
+양배추					규칙	확인		
+혼합간장	soy:C wheat:I				규칙	확인	W03,S01	
+프락토올리고당					규칙	확인		
+코코아분말					규칙	확인		
+치자황색소					규칙	확인		
+고추장	soy:I wheat:I				규칙	확인	W03,S02	
+탄산칼슘					규칙	확인		
+수크랄로스					규칙	확인		
+현미					규칙	확인		
+산화방지제					규칙	확인		
+d-토코페롤	soy:R				규칙	확인	S03	
+흑후추분말					규칙	확인		
+메타인산나트륨					규칙	확인		
+면류첨가알칼리제					규칙	확인		
+효모					규칙	확인		
+바닐라향		V			규칙	확인		
+해바라기유					규칙	확인		
+이산화규소					규칙	확인		
+옥배유					규칙	확인		
+마늘분말					규칙	확인		
+토마토페이스트					규칙	확인		
+부추					규칙	확인		
+카놀라유					규칙	확인		
+비타민D3					규칙	확인		
+함수결정포도당					규칙	확인		
+규소수지					규칙	확인		
+효모추출물					규칙	확인		
+쌀가루					규칙	확인		
+후추					규칙	확인		
+바닐린					규칙	확인		
+소금					규칙	확인		
+양파분말					규칙	확인		
+프로필렌글리콜					규칙	확인		
+밀크향	milk:I	V			규칙	확인	M01	
+혼합식용유	soy:F				규칙	확인	S04	
+탄산나트륨					규칙	확인		
+로커스트콩검					규칙	확인		
+사과					규칙	확인		
+D-소르비톨액					규칙	확인		
+이소말토올리고당					규칙	확인		
+비타민B6염산염					규칙	확인		
+구연산나트륨					규칙	확인		
+유기농설탕					규칙	확인		
+코치닐추출색소					규칙	확인		
+생강분말					규칙	확인		
+고과당					규칙	확인		
+곡류가공품		O			규칙	확인		
+닭가슴살	chicken:C				규칙	확인	X15	
+천연색소					규칙	확인		
+과당					규칙	확인		
+후추가루					규칙	확인		
+코코아매스					규칙	확인		
+치자청색소					규칙	확인		
+감자					규칙	확인		
+혼합탈지분유	milk:C				규칙	확인	M01	
+팽창제					규칙	확인		
+기타설탕					규칙	확인		
+볶음참깨	sesame:C				규칙	확인	G01	
+건파					규칙	확인		
+산화아연					규칙	확인		
+현미유					규칙	확인		
+자몽종자추출물					규칙	확인		
+비타민B1염산염					규칙	확인		
+5'-리보뉴클레오티드이나트륨					규칙	확인		
+말티톨시럽					규칙	확인		
+엽산					규칙	확인		
+발효영양원					규칙	확인		
+홍화황색소					규칙	확인		
+배추					규칙	확인		
+D-자일로오스					규칙	확인		
+천연착향료		V			규칙	확인		
+탄산칼륨					규칙	확인		
+펙틴					규칙	확인		
+고추양념		O			규칙	확인		
+산성피로인산나트륨					규칙	확인		
+간장분말	soy:C wheat:I				규칙	확인	W03,S01	
+올리고당					규칙	확인		
+벌꿀					규칙	확인		
+배					규칙	확인		
+제삼인산칼슘					규칙	확인		
+커피원두					규칙	확인		
+건당근					규칙	확인		
+니코틴산아미드					규칙	확인		
+소스류		O			규칙	확인		
+청양고추					규칙	확인		
+흑후추					규칙	확인		
+된장	soy:C wheat:I				규칙	확인	W03,S01	
+딸기향		V			규칙	확인		
+채종유					규칙	확인		
+파					규칙	확인		
+사과농축액					규칙	확인		
+콜라겐케이싱					규칙	확인		
+결정과당					규칙	확인		
+오렌지향		V			규칙	확인		
+자연치즈	milk:C				규칙	확인	M01	
+후추분					규칙	확인		
+멥쌀					규칙	확인		
+흑설탕					규칙	확인		
+팜스테아린유					규칙	확인		
+찹쌀가루					규칙	확인		
+토코페롤	soy:R				규칙	확인	S03	
+글루코노델타락톤					규칙	확인		
+배퓨레					규칙	확인		
+아스파탐					규칙	확인		
+타우린					규칙	확인		
+갈색설탕					규칙	확인		
+부분경화유	soy:F				규칙	확인	S04	
+젤란검					규칙	확인		
+후추분말					규칙	확인		
+호박산이나트륨					규칙	확인		
+보리	barley:C				규칙	확인	X05	
+버터향	milk:I	V			규칙	확인	M01	
+감미료					규칙	확인		
+사과향		V			규칙	확인		
+아세설팜칼륨					규칙	확인		
+제이인산칼륨					규칙	확인		
+다시마엑기스					규칙	확인		
+딸기					규칙	확인		
+사과퓨레					규칙	확인		
+대두고형분	soy:C				규칙	확인	S01	
+황산칼슘					규칙	확인		
+절임배추					규칙	확인		
+올리브유					규칙	확인		
+합성착색료					규칙	확인		
+난백분말	egg:C				규칙	확인	E01	
+재제소금					규칙	확인		
+고추					규칙	확인		
+자일리톨					규칙	확인		
+염화칼슘					규칙	확인		
+조제해수염화마그네슘					규칙	확인		
+고추가루					규칙	확인		
+원당					규칙	확인		
+청경채					규칙	확인		
+레몬향		V			규칙	확인		
+맥아엑기스	barley:C				규칙	확인	X05	
+염화칼륨					규칙	확인		
+건양배추					규칙	확인		
+사골엑기스	beef:C				규칙	확인	X14	
+셀룰로오스검					규칙	확인		
+표고버섯					규칙	확인		
+탄산가스					규칙	확인		
+저감미당					규칙	확인		
+흑미					규칙	확인		
+베타카로틴					규칙	확인		
+건미역					규칙	확인		
+사과산					규칙	확인		
+아미드펙틴					규칙	확인		
+자당					규칙	확인		
+커피향		V			규칙	확인		
+커피					규칙	확인		
+포도향		V			규칙	확인		
+에리쏘르빈산나트륨					규칙	확인		
+콩기름	soy:R				규칙	확인	S03	
+맛소금					규칙	확인		
+생이스트					규칙	확인		
+양조식초					규칙	확인		
+유산균배양액					규칙	확인		
+이산화탄소					규칙	확인		
+백미					규칙	확인		
+레몬농축액					규칙	확인		
+고추분					규칙	확인		
+양조간장원액	soy:C wheat:I				규칙	확인	W03,S01	
+조미액		O			규칙	확인		
+천연첨가물					규칙	확인		
+혼합양념		O			규칙	확인		
+감초					규칙	확인		
+발효주정					규칙	확인		
+가공소금					규칙	확인		
+파인애플					규칙	확인		
+대두분	soy:C				규칙	확인	S01	
+두유액	soy:C				규칙	확인	S01	
+복숭아향		V			규칙	확인		
+사과과즙					규칙	확인		
+포도씨유					규칙	확인		
+양파농축액					규칙	확인		
+인산염					규칙	확인		
+진간장	soy:C wheat:I				규칙	확인	W03,S01	
+홍고추					규칙	확인		
+카로틴					규칙	확인		
+고구마전분					규칙	확인		
+옥수수가루					규칙	확인		
+산탄검					규칙	확인		
+요구르트향	milk:I	V			규칙	확인	M01	
+전분가공품					규칙	확인		
+녹차풍미유		O			규칙	확인		
+청주					규칙	확인		
+이스트					규칙	확인		
+합성팽창제					규칙	확인		
+사과농축과즙					규칙	확인		
+염화마그네슘					규칙	확인		
+감칠맛베이스		O			규칙	확인		
+분말·결정포도당					규칙	확인		
+고구마					규칙	확인		
+등심					규칙	확인		
+분말비타민A					규칙	확인		
+MCT유					규칙	확인		
+오렌지과즙					규칙	확인		
+비타민B12					규칙	확인		
+카르복시메틸셀룰로오스나트륨					규칙	확인		
+팜핵경화유					규칙	확인		
+마늘분					규칙	확인		
+제일인산칼슘					규칙	확인		
+판토텐산칼슘					규칙	확인		
+맥아엿	barley:C				규칙	확인	X05	
+산분해간장	soy:C wheat:I				규칙	확인	W03,S01	
+향미유		O			규칙	확인		
+자당지방산에스테르					규칙	확인		
+홍삼농축액					규칙	확인		
+효소제제					규칙	확인		
+폴리소르베이트					규칙	확인		
+D-소비톨					규칙	확인		
+초산나트륨					규칙	확인		
+물엿분말					규칙	확인		
+식초					규칙	확인		
+안나토색소					규칙	확인		
+양파분					규칙	확인		
+건고추					규칙	확인		
+마늘농축액					규칙	확인		
+폴리글리시톨시럽					규칙	확인		
+대두다당류	soy:C				규칙	확인	S01	
+배농축액					규칙	확인		
+유기쌀					규칙	확인		
+한천					규칙	확인		
+분말카라멜					규칙	확인		
+스테비올배당체					규칙	확인		
+크랜베리					규칙	확인		
+녹차풍미액					규칙	확인		
+채소상탕					규칙	확인		
+후춧가루					규칙	확인		
+준초콜릿	milk:I				규칙	확인	M02	
+난각분말	egg:I				규칙	확인	E02	
+비프엑기스	beef:C				규칙	확인	X14	
+코코아프리퍼레이션	milk:I				규칙	확인	M02	
+나이아신아미드					규칙	확인		
+당귀					규칙	확인		
+제이인산나트륨					규칙	확인		
+파라옥시안식향산에틸					규칙	확인		
+식물성경화유지	soy:F				규칙	확인	S04	
+폴리덱스트로스					규칙	확인		
+한우	beef:C				규칙	확인	X14	
+겉보리	barley:C				규칙	확인	X05	
+복합인산염					규칙	확인		
+생강농축액					규칙	확인		
+해조칼슘					규칙	확인		
+계피					규칙	확인		
+구운아몬드	tree_nut:almond:C				규칙	확인	N01	
+분말유크림	milk:C				규칙	확인	M01,M02	
+오렌지농축액					규칙	확인		
+보존료					규칙	확인		
+블루베리					규칙	확인		
+양파퓨레					규칙	확인		
+다진마늘					규칙	확인		
+면-소맥분	wheat:C				규칙	확인	W01	
+비타민D3혼합제제					규칙	확인		
+쌈배추					규칙	확인		
+파인애플농축액					규칙	확인		
+계피분말					규칙	확인		
+맛베이스		O			규칙	확인		
+식물성분해단백	soy:I				규칙	확인	S02	
+자일로오스					규칙	확인		
+정제포도당					규칙	확인		
+백후추분말					규칙	확인		
+분당					규칙	확인		
+기타과당					규칙	확인		
+단호박					규칙	확인		
+망고향		V			규칙	확인		
+알긴산나트륨					규칙	확인		
+피막제					규칙	확인		
+고올레산해바라기유					규칙	확인		
+구운소금					규칙	확인		
+정제가공유지	soy:F				규칙	확인	S04	
+가슴살					규칙	확인		
+강황					규칙	확인		
+피망					규칙	확인		
+황기					규칙	확인		
+글리세린에스테르					규칙	확인		
+분말셀룰로오스					규칙	확인		
+알긴산프로필렌글리콜					규칙	확인		
+올레오레진캪시컴					규칙	확인		
+고량색소					규칙	확인		
+체다치즈	milk:C				규칙	확인	M01	
+레몬농축과즙					규칙	확인		
+시클로덱스트린					규칙	확인		
+포도과즙					규칙	확인		
+화이트식초					규칙	확인		
+식이섬유					규칙	확인		
+옥분					규칙	확인		
+인스턴트커피					규칙	확인		
+조미양념분		O			규칙	확인		
+천연향신료					규칙	확인		
+5`-리보뉴클레오티드이나트륨					규칙	확인		
+무수결정포도당					규칙	확인		
+바나나향		V			규칙	확인		
+시트러스향		V			규칙	확인		
+어묵맛시즈닝	fish:surimi:I	O			규칙	확인	F22	
+응고제					규칙	확인		
+효소처리루틴					규칙	확인		
+녹차					규칙	확인		
+말토올리고당					규칙	확인		
+유기농현미					규칙	확인		
+청피망					규칙	확인		
+L-카르니틴					규칙	확인		
+스모크오일					규칙	확인		
+천궁					규칙	확인		
+파인애플향		V			규칙	확인		
+1A등급원유	milk:C				규칙	확인	M01	
+수수					규칙	확인		
+유기농쌀					규칙	확인		
+치즈분말	milk:C				규칙	확인	M01	
+껌베이스					규칙	확인		
+천일염천연응고제					규칙	확인		
+타마린드검					규칙	확인		
+두부응고제					규칙	확인		
+적양배추색소					규칙	확인		
+진한감칠맛분		O			규칙	확인		
+파슬리후레이크					규칙	확인		
+허브추출물					규칙	확인		
+검정콩	soy:C				규칙	확인	S01	
+소르비톨					규칙	확인		
+올레오레진캡시컴					규칙	확인		
+귀리	oat:C				규칙	확인	X07	
+기계발골육					규칙	확인		
+소브산칼륨					규칙	확인		
+양파엑기스					규칙	확인		
+탈지대두분	soy:C				규칙	확인	S01	
+비타민A아세테이트					규칙	확인		
+율무					규칙	확인		
+쪽파					규칙	확인		
+치즈향	milk:I	V			규칙	확인	M01	
+파프리카					규칙	확인		
+건표고버섯					규칙	확인		
+물					규칙	확인		
+숙지황					규칙	확인		
+옥수수배아					규칙	확인		
+꿀					규칙	확인		
+백후추					규칙	확인		
+소주					규칙	확인		
+스모크향		V			규칙	확인		
+에스테르화유	soy:F				규칙	확인	S04	
+오렌지농축과즙					규칙	확인		
+우리밀	wheat:C				규칙	확인	W01	
+정제팜유					규칙	확인		
+제이인산칼슘					규칙	확인		
+환원철					규칙	확인		
+단호박분말					규칙	확인		
+야채즙					규칙	확인		
+자몽향		V			규칙	확인		
+전지분골드	milk:C				규칙	확인	M01	
+다시다		O			규칙	확인		
+비타민E혼합제제					규칙	확인		
+사골농축액	beef:C				규칙	확인	X14	
+소포제					규칙	확인		
+코코아파우더					규칙	확인		
+건청경채					규칙	확인		
+당시럽					규칙	확인		
+디엘알파토코페롤					규칙	확인		
+멸치추출농축액	fish:anchovy:C				규칙	확인	F02	
+밀분해추출물	wheat:C				규칙	확인	W01	
+분말난백	egg:C				규칙	확인	E01	
+블루베리향		V			규칙	확인		
+소르비탄지방산에스테르					규칙	확인		
+시금치					규칙	확인		
+탄산마그네슘					규칙	확인		
+홍국색소					규칙	확인		
+미립당					규칙	확인		
+생강분					규칙	확인		
+칼슘혼합제제					규칙	확인		
+콩발효맛내기	soy:C	O			규칙	확인	S01	
+CMC					규칙	확인		
+DL-알라닌					규칙	확인		
+게향	crustacean:crab:P	V			규칙	확인	C03	
+마늘엑기스					규칙	확인		
+브로콜리					규칙	확인		
+삼겹살					규칙	확인		
+팜유류					규칙	확인		
+가공전지분	milk:C				규칙	확인	M01	
+땅콩향	peanut:I	V			규칙	확인	P01	
+비타민A혼합제제					규칙	확인		
+샐러리					규칙	확인		
+이스트후드					규칙	확인		
+저당					규칙	확인		
+코코넛분말	coconut:C				규칙	확인	X09	
+탄산칼슘혼합제제					규칙	확인		
+건포도					규칙	확인		
+고추씨기름					규칙	확인		
+대두식이섬유	soy:C				규칙	확인	S01	
+무수구연산					규칙	확인		
+생강가루					규칙	확인		
+우스타소스	soy:I wheat:I	O			규칙	확인	W03,S02	
+재래김					규칙	확인		
+L-시스틴					규칙	확인		
+레몬과즙					규칙	확인		
+비타민B1					규칙	확인		
+생강추출물분말					규칙	확인		
+올레오레진파프리카					규칙	확인		
+요리당					규칙	확인		
+칠리추출물					규칙	확인		
+효소					규칙	확인		
+L-로이신					규칙	확인		
+L-발린					규칙	확인		
+심황색소					규칙	확인		
+유정란	egg:C				규칙	확인	E01	
+천연감미료					규칙	확인		
+L-이소로이신					규칙	확인		
+돈지	pork:C				규칙	확인	X13	
+매운양념분말		O			규칙	확인		
+바나나					규칙	확인		
+아카시아검					규칙	확인		
+야채풍미액					규칙	확인		
+우지	beef:C				규칙	확인	X14	
+크림치즈	milk:C				규칙	확인	M01,M02	
+트랜스글루타미나아제					규칙	확인		
+페닐알라닌					규칙	확인		
+계육	chicken:C				규칙	확인	X15	
+다시마분말					규칙	확인		
+베타믹스	wheat:I				규칙	확인	W02	
+솔비톨					규칙	확인		
+알파미분					규칙	확인		
+팜에스테르화유	soy:F				규칙	확인	S04	
+포도농축액					규칙	확인		
+D-소비톨액					규칙	확인		
+감귤과즙					규칙	확인		
+김치	crustacean:shrimp:I fish:I				규칙	확인	F27,C09	
+닭발	chicken:C				규칙	확인	X15	
+딸기분말					규칙	확인		
+치킨엑기스	chicken:C				규칙	확인	X15	
+파슬리					규칙	확인		
+한우사골	beef:C				규칙	확인	X14	
+혼합제제II					규칙	확인		
+간장조미분말	soy:C wheat:I	O			규칙	확인	W03,S01	
+딸기농축액					규칙	확인		
+탄산수소암모늄					규칙	확인		
+건크랜베리					규칙	확인		
+레몬					규칙	확인		
+사양벌꿀					규칙	확인		
+에리스리톨					규칙	확인		
+절임무					규칙	확인		
+조미마늘분		O			규칙	확인		
+중쇄중성지방					규칙	확인		
+찹쌀풀					규칙	확인		
+케일					규칙	확인		
+허브향		V			규칙	확인		
+대추농축액					규칙	확인		
+돈지방	pork:C				규칙	확인	X13	
+매실농축액					규칙	확인		
+시클로덱스트린시럽					규칙	확인		
+오리고기					규칙	확인		
+오이					규칙	확인		
+이스트엑기스					규칙	확인		
+초코향	milk:P	V			규칙	확인	M02	
+초콜릿	milk:I				규칙	확인	M02	
+코치닐색소					규칙	확인		
+해바라기씨유					규칙	확인		
+감자분말					규칙	확인		
+겨자분					규칙	확인		
+드라이비타민D3					규칙	확인		
+무농약현미					규칙	확인		
+무지유고형분	milk:C				규칙	확인	M01	
+불고기양념장		O			규칙	확인		
+숯불갈비맛엑기스	beef:I	O			규칙	확인	X14	
+쌀조청					규칙	확인		
+애호박					규칙	확인		
+옥수수분말					규칙	확인		
+요구르트분말	milk:C				규칙	확인	M01	
+인산					규칙	확인		
+증숙고구마					규칙	확인		
+차추출물					규칙	확인		
+초콜릿향	milk:P	V			규칙	확인	M02	
+결정셀룰로오스					규칙	확인		
+농축사과과즙					규칙	확인		
+복합스파이스		O			규칙	확인		
+블루베리농축액					규칙	확인		
+비트레드					규칙	확인		
+빙초산					규칙	확인		
+스위트콘					규칙	확인		
+아카시아꿀					규칙	확인		
+증숙감자					규칙	확인		
+콩단백	soy:C				규칙	확인	S01	
+DHA	fish:I				규칙	확인	F25	
+검은콩	soy:C				규칙	확인	S01	
+드링크향		V			규칙	확인		
+멘톨향		V			규칙	확인		
+사과식초					규칙	확인		
+소갈비	beef:C				규칙	확인	X14	
+식용유지가공품	soy:F				규칙	확인	S04	
+유자					규칙	확인		
+포도농축과즙					규칙	확인		
+혼합제제식품첨가물					규칙	확인		
+흑후추분					규칙	확인		
+겨자분말					규칙	확인		
+마늘베이스		O			규칙	확인		
+소르비톨액					규칙	확인		
+양파풍미분		O			규칙	확인		
+염화콜린					규칙	확인		
+옥수수기름					규칙	확인		
+유산균주					규칙	확인		
+정제우지	beef:C				규칙	확인	X14	
+혼합조미료		O			규칙	확인		
+홍국적색소					규칙	확인		
+dl-α-토코페릴아세테이트					규칙	확인		
+건양파					규칙	확인		
+망고농축액					규칙	확인		
+새송이버섯					규칙	확인		
+쇠고기엑기스	beef:C				규칙	확인	X14	
+알파탈지대두분	soy:C				규칙	확인	S01	
+오징어조미분말	mollusk:squid:C	O			규칙	확인	X01	
+우육	beef:C				규칙	확인	X14	
+월계수잎					규칙	확인		
+찰옥수수전분					규칙	확인		
+D-말티톨					규칙	확인		
+건다시마					규칙	확인		
+과즙					규칙	확인		
+구연산칼륨					규칙	확인		
+굴소스	mollusk:shellfish:C soy:I wheat:I	O			규칙	확인	W03,S02,X03	
+기타전분					규칙	확인		
+망고과즙					규칙	확인		
+바나나퓨레					규칙	확인		
+아미노베이스		O			규칙	확인		
+유기찹쌀가루					규칙	확인		
+이스트엑기스분말					규칙	확인		
+제일인산칼륨					규칙	확인		
+청포도향		V			규칙	확인		
+초산전분					규칙	확인		
+폴리리신					규칙	확인		
+효모분말					규칙	확인		
+고화방지분당					규칙	확인		
+기타올리고당					규칙	확인		
+맛베이스에스		O			규칙	확인		
+수크로오스					규칙	확인		
+에리소르빈산나트륨					규칙	확인		
+춘장	soy:C wheat:I				규칙	확인	W03,S01	
+L-아르기닌					규칙	확인		
+매실					규칙	확인		
+샐러리분말					규칙	확인		
+안식향산나트륨					규칙	확인		
+제삼인산나트륨					규칙	확인		
+카카오색소					규칙	확인		
+캐슈넛트	tree_nut:cashew:C				규칙	확인	N04	
+트레할로스					규칙	확인		
+간마늘					규칙	확인		
+감귤농축액					규칙	확인		
+마늘가루					규칙	확인		
+아미노산액	soy:I				규칙	확인	S02	
+치자적색소					규칙	확인		
+코리안더					규칙	확인		
+코코아빈					규칙	확인		
+탈지유	milk:C				규칙	확인	M01	
+황산동					규칙	확인		
+효모추출분말					규칙	확인		
+농축우유단백분말	milk:C				규칙	확인	M01	
+비타민B1라우릴황산염					규칙	확인		
+수삼					규칙	확인		
+양조간장분말	soy:C wheat:I				규칙	확인	W03,S01	
+인삼					규칙	확인		
+정제어유	fish:I				규칙	확인	F25	
+청양고추엑기스					규칙	확인		
+키위					규칙	확인		
+파프리카추출물					규칙	확인		
+팔라티노스					규칙	확인		
+효모추출물제품					규칙	확인		
+고다치즈	milk:C				규칙	확인	M01	
+딸기과즙					규칙	확인		
+맵쌀					규칙	확인		
+메주가루	soy:C				규칙	확인	S01	
+버터혼합분말	milk:C				규칙	확인	M01	
+생빵가루	wheat:C				규칙	확인	W01,W02	
+쇼트닝II	soy:F				규칙	확인	S04	
+올레오레진로즈메리					규칙	확인		
+유산균발효분말					규칙	확인		
+이노시톨					규칙	확인		
+조미베이스분말		O			규칙	확인		
+토마토주스					규칙	확인		
+팜스테아린에스테르화유	soy:F				규칙	확인	S04	
+표고버섯분말					규칙	확인		
+프로테아제					규칙	확인		
+핵산					규칙	확인		
+홍차추출분말					규칙	확인		
+가쓰오부시엑기스	fish:bonito:C				규칙	확인	F03	
+나타드코코					규칙	확인		
+딸기농축과즙					규칙	확인		
+레몬라임향		V			규칙	확인		
+메이플시럽					규칙	확인		
+바닐라추출물					규칙	확인		
+비타민K1					규칙	확인		
+삭카린나트륨					규칙	확인		
+솔빈산칼륨					규칙	확인		
+아미노산간장	soy:C wheat:I				규칙	확인	W03,S01	
+압착올리브유					규칙	확인		
+액상포도당					규칙	확인		
+유장분말	milk:C				규칙	확인	M01	
+유카추출물					규칙	확인		
+청양고춧가루					규칙	확인		
+트레하					규칙	확인		
+파프리카색소					규칙	확인		
+푸마르산제일철					규칙	확인		
+호박					규칙	확인		
+홍피망					규칙	확인		
+기타엿					규칙	확인		
+당근농축액					규칙	확인		
+매운조미고추맛분		O			규칙	확인		
+바나나농축액					규칙	확인		
+바질					규칙	확인		
+배농축과즙					규칙	확인		
+복합조미간장분말	soy:C wheat:I	O			규칙	확인	W03,S01	
+분말된장	soy:C wheat:I				규칙	확인	W03,S01	
+비피더스균					규칙	확인		
+생마늘					규칙	확인		
+쇠고기다시다	beef:C	O			규칙	확인	X14	
+숙주					규칙	확인		
+우엉					규칙	확인		
+자몽과즙					규칙	확인		
+재제염					규칙	확인		
+정제팜올레인유					규칙	확인		
+조미맛분		O			규칙	확인		
+천연바닐라추출물					규칙	확인		
+천연바닐라향		V			규칙	확인		
+체다치즈파우더	milk:C				규칙	확인	M01	
+발아현미					규칙	확인		
+복숭아과즙					규칙	확인		
+복숭아농축과즙					규칙	확인		
+설탕분말					규칙	확인		
+양념베이스		O			규칙	확인		
+조미분에이		O			규칙	확인		
+푸마르산일나트륨					규칙	확인		
+향신료올레오레진류					규칙	확인		
+로즈마리					규칙	확인		
+밀크칼슘	milk:C				규칙	확인	M01	
+바지락엑기스	mollusk:shellfish:C				규칙	확인	X03	
+배양액					규칙	확인		
+베리류색소					규칙	확인		
+비오틴					규칙	확인		
+쇠고기분말	beef:C				규칙	확인	X14	
+자주색고구마색소					규칙	확인		
+작약					규칙	확인		
+카페인					규칙	확인		
+파래김					규칙	확인		
+팜올레인부분경화유	soy:F				규칙	확인	S04	
+홍삼					규칙	확인		
+히알루론산					규칙	확인		
+가쓰오부시분말	fish:bonito:C				규칙	확인	F03	
+갈비살	beef:C				규칙	확인	X14	
+경성가공치즈	milk:C				규칙	확인	M01	
+계피가루					규칙	확인		
+구기자					규칙	확인		
+구연산철암모늄					규칙	확인		
+동결난백	egg:C				규칙	확인	E01	
+미분					규칙	확인		
+쌀보리	barley:C				규칙	확인	X05	
+지미베이스		O			규칙	확인		
+치커리식이섬유					규칙	확인		
+치킨스톡	chicken:C	O			규칙	확인	X15	
+칼슘					규칙	확인		
+키위퓨레					규칙	확인		
+탈염유청분말	milk:C				규칙	확인	M01	
+팥앙금					규칙	확인		
+dl-a-토코페릴아세테이트					규칙	확인		
+검은콩추출액	soy:C				규칙	확인	S01	
+결정포도당					규칙	확인		
+고추양념분말		O			규칙	확인		
+구운캐슈넛트	tree_nut:cashew:C				규칙	확인	N04	
+그레이티드파마산치즈	milk:C				규칙	확인	M01	
+글루코노-δ-락톤					규칙	확인		
+다시마농축액					규칙	확인		
+당근즙					규칙	확인		
+바나나분말					규칙	확인		
+백앙금					규칙	확인		
+보리가루	barley:C				규칙	확인	X05	
+볶음고추분말					규칙	확인		
+볶음소금					규칙	확인		
+볶음양념분말		O			규칙	확인		
+불고기양념		O			규칙	확인		
+이소말트					규칙	확인		
+조제겨자					규칙	확인		
+천연카제인	milk:C				규칙	확인	M01	
+체다치즈분말	milk:C				규칙	확인	M01	
+카라멜향		V			규칙	확인		
+활성소맥글루텐	wheat:C				규칙	확인	W01	
+김후레이크					규칙	확인		
+뉴클레오타이드					규칙	확인		
+복합유산균					규칙	확인		
+볶음양파분말					규칙	확인		
+비타민B12혼합제제					규칙	확인		
+비프분말	beef:C				규칙	확인	X14	
+식물성유산균발효액ENT					규칙	확인		
+쌀미강추출물					규칙	확인		
+씨즈닝엑기스		O			규칙	확인		
+아가베시럽					규칙	확인		
+아카시아벌꿀					규칙	확인		
+어육추출액	fish:surimi:C				규칙	확인	F22	
+에탄올					규칙	확인		
+요거트분말	milk:C				규칙	확인	M01	
+우거지					규칙	확인		
+조미흰후추분말		O			규칙	확인		
+쿠민					규칙	확인		
+파래					규칙	확인		
+황산알루미늄칼륨					규칙	확인		
+흰강낭콩					규칙	확인		
+감자가루					규칙	확인		
+감칠맛조미분		O			규칙	확인		
+고구마향		V			규칙	확인		
+기장					규칙	확인		
+나이아신NE					규칙	확인		
+동결건조파					규칙	확인		
+백출					규칙	확인		
+비타민ARE					규칙	확인		
+생강엑기스					규칙	확인		
+에틸알콜					규칙	확인		
+이디티에이칼슘이나트륨					규칙	확인		
+종가집김치전용풀	crustacean:shrimp:I fish:I				규칙	확인	F27,C09	
+타피오카변성전분					규칙	확인		
+표고버섯엑기스분말					규칙	확인		
+푸마르산					규칙	확인		
+혼합과일향		V			규칙	확인		
+dl-α-토코페롤					규칙	확인		
+가루엿					규칙	확인		
+감초추출물					규칙	확인		
+검은참깨페이스트	sesame:C				규칙	확인	G01	
+과라나추출분말					규칙	확인		
+당밀					규칙	확인		
+로즈마리추출물					규칙	확인		
+만두시즈닝분말		O			규칙	확인		
+망고퓨레					규칙	확인		
+분말혼합양념		O			규칙	확인		
+비타민B6					규칙	확인		
+생강엑기스분말					규칙	확인		
+생강풍미분말		O			규칙	확인		
+시금치분말					규칙	확인		
+안심					규칙	확인		
+오리육					규칙	확인		
+옥수수분					규칙	확인		
+유단백가수분해물	crustacean:P fish:P milk:C				규칙	확인	M01,F26,C08	
+인산이전분					규칙	확인		
+차조					규칙	확인		
+파인애플퓨레					규칙	확인		
+폴리인산칼륨					규칙	확인		
+현미찹쌀					규칙	확인		
+L-트레오닌					규칙	확인		
+감초농축액					규칙	확인		
+건조효모					규칙	확인		
+건홍피망					규칙	확인		
+너트맥분말					규칙	확인		
+돌김					규칙	확인		
+레몬식초					규칙	확인		
+매실향		V			규칙	확인		
+매운맛분말		O			규칙	확인		
+분말간장	soy:C wheat:I				규칙	확인	W03,S01	
+사과농축과즙액					규칙	확인		
+사과청징농축액					규칙	확인		
+생감자					규칙	확인		
+식물성크림분말	milk:I				규칙	확인	M02	
+알파옥수수전분					규칙	확인		
+야채추출물					규칙	확인		
+양송이					규칙	확인		
+염화암모늄					규칙	확인		
+유기농백미					규칙	확인		
+육수	fish:P				규칙	확인	F26	
+초산					규칙	확인		
+팽이버섯					규칙	확인		
+페퍼민트향		V			규칙	확인		
+후추추출물분말					규칙	확인		
+L-메티오닌					규칙	확인		
+간장베이스	soy:C wheat:I	O			규칙	확인	W03,S01	
+과자	wheat:I				규칙	확인	W02	
+다시다쇠고기	beef:C	O			규칙	확인	X14	
+다시마추출액					규칙	확인		
+동결건조오징어	mollusk:squid:C				규칙	확인	X01	
+망고					규칙	확인		
+매운고추베이스분말		O			규칙	확인		
+메타인산칼륨					규칙	확인		
+볶은소금					규칙	확인		
+비타민A					규칙	확인		
+살균우유	milk:C				규칙	확인	M01	
+스모크후레바		V			규칙	확인		
+양상추					규칙	확인		
+양파가루					규칙	확인		
+유기찹쌀					규칙	확인		
+제일인산나트륨					규칙	확인		
+중탄산나트륨					규칙	확인		
+치킨향분말	chicken:I	V			규칙	확인	X15	
+쿨링향		V			규칙	확인		
+포도					규칙	확인		
+훼누그릭					규칙	확인		
+휘핑크림	milk:I				규칙	확인	M02	
+가공유장분	milk:C				규칙	확인	M01	
+갈은마늘					규칙	확인		
+건무					규칙	확인		
+계란후레이크	egg:C				규칙	확인	E01	
+딸기시럽					규칙	확인		
+맥아	barley:C				규칙	확인	X05	
+맥아당					규칙	확인		
+멸치엑기스분말	fish:anchovy:C				규칙	확인	F02	
+미강풍미액					규칙	확인		
+복령					규칙	확인		
+복합감칠맛분말		O			규칙	확인		
+복합액상토코페롤	soy:R				규칙	확인	S03	
+산화전분					규칙	확인		
+생양파					규칙	확인		
+식품첨가물혼합제제					규칙	확인		
+아라키돈산					규칙	확인		
+야채					규칙	확인		
+양파맛분말		O			규칙	확인		
+우정육					규칙	확인		
+조개야채엑기스	mollusk:shellfish:C				규칙	확인	X03	
+조미육수분말	fish:P	O			규칙	확인	F26	
+조청					규칙	확인		
+진저스파이스		O			규칙	확인		
+착색료					규칙	확인		
+치킨파우더	chicken:C				규칙	확인	X15	
+크림향	milk:P	V			규칙	확인	M02	
+클로렐라추출물					규칙	확인		
+토마토즙					규칙	확인		
+휀넬					규칙	확인		
+L-트립토판					규칙	확인		
+감귤향		V			규칙	확인		
+강황분					규칙	확인		
+건조크랜베리					규칙	확인		
+기타주류					규칙	확인		
+다진생강					규칙	확인		
+닭	chicken:C				규칙	확인	X15	
+닭다리살	chicken:C				규칙	확인	X15	
+마					규칙	확인		
+맥아물엿	barley:C				규칙	확인	X05	
+복숭아농축액					규칙	확인		
+분말검은후추					규칙	확인		
+비프시즈닝	beef:C	O			규칙	확인	X14	
+색소혼합제제					규칙	확인		
+씨트러스향		V			규칙	확인		
+어니언스파이스		O			규칙	확인		
+오레가노					규칙	확인		
+우유향	milk:I	V			규칙	확인	M01	
+유기농대두	soy:C				규칙	확인	S01	
+정육					규칙	확인		
+조개엑기스	mollusk:shellfish:C				규칙	확인	X03	
+찰보리	barley:C				규칙	확인	X05	
+천연오렌지향		V			규칙	확인		
+커피추출액					규칙	확인		
+케이싱					규칙	확인		
+토마토분					규칙	확인		
+토마토향		V			규칙	확인		
+표백제					규칙	확인		
+하얀설탕					규칙	확인		
+화이바솔					규칙	확인		
+환원탈지유	milk:C				규칙	확인	M01	
+D-솔비톨					규칙	확인		
+L-히스티딘					규칙	확인		
+갈락토올리고당	milk:I				규칙	확인	M02	
+겨자씨					규칙	확인		
+녹차분말					규칙	확인		
+다진양파					규칙	확인		
+대두액	soy:C				규칙	확인	S01	
+로즈마리분말					규칙	확인		
+명태연육	fish:pollock:C fish:surimi:C				규칙	확인	F05,F22	
+미분염					규칙	확인		
+분말마늘					규칙	확인		
+비타민혼합제제					규칙	확인		
+사과에센스		V			규칙	확인		
+아세틸아디핀산이전분					규칙	확인		
+알파콘					규칙	확인		
+야자에스테르화유	coconut:C soy:F				규칙	확인	S04,X09	
+야채분말					규칙	확인		
+양지					규칙	확인		
+오뚜기비프시즈닝	beef:C	O			규칙	확인	X14	
+오징어엑기스	mollusk:squid:C				규칙	확인	X01	
+유자향		V			규칙	확인		
+유채유					규칙	확인		
+잡화꿀					규칙	확인		
+조					규칙	확인		
+조미고추맛분		O			규칙	확인		
+조미아미노산간장분말	soy:C wheat:I	O			규칙	확인	W03,S01	
+청양고추엑기스분말					규칙	확인		
+파인애플과즙					규칙	확인		
+팜스테아린					규칙	확인		
+혼합전지분유	milk:C				규칙	확인	M01	
+효모추출물혼합분말					규칙	확인		
+데어리스프레드	milk:C	O			규칙	확인	M01	
+돼지	pork:C				규칙	확인	X13	
+버터유분말	milk:C				규칙	확인	M01	
+복분자					규칙	확인		
+사골추출물	beef:C				규칙	확인	X14	
+셀룰로오스혼합제제					규칙	확인		
+쇠고기다시	beef:C	O			규칙	확인	X14	
+쇠고기맛분	beef:I	O			규칙	확인	X14	
+식용색소청색제1호					규칙	확인		
+아몬드슬라이스	tree_nut:almond:C				규칙	확인	N01	
+알파옥수수분말					규칙	확인		
+양파조미유		O			규칙	확인		
+오렌지					규칙	확인		
+옥수수씨눈					규칙	확인		
+유기농원유	milk:C				규칙	확인	M01	
+중백당					규칙	확인		
+진탄검					규칙	확인		
+천연레몬향		V			규칙	확인		
+카라멜시럽					규칙	확인		
+퀴노아					규칙	확인		
+크림버터혼합분말	milk:C				규칙	확인	M01,M02	
+피로인산제이철					규칙	확인		
+하바네로맛시즈닝		O			규칙	확인		
+한식메주된장	soy:C wheat:I				규칙	확인	W03,S01	
+호화쌀혼합분말					규칙	확인		
+건블루베리					규칙	확인		
+건조채심					규칙	확인		
+과채가공품		O			규칙	확인		
+기타코코아가공품		O			규칙	확인		
+김치유산균발효액					규칙	확인		
+농축유청단백	milk:C				규칙	확인	M01	
+매운맛베이스		O			규칙	확인		
+소고기엑기스	beef:C				규칙	확인	X14	
+쇠고기농축액	beef:C				규칙	확인	X14	
+쇠고기육수분말	beef:C				규칙	확인	X14	
+쌀발효액					규칙	확인		
+쌀튀밥					규칙	확인		
+에틸말톨					규칙	확인		
+열대과일퓨레					규칙	확인		
+오미자					규칙	확인		
+이노신산이나트륨					규칙	확인		
+적포도농축액					규칙	확인		
+적포도주					규칙	확인		
+조미소고기분말	beef:C	O			규칙	확인	X14	
+종가집멸치액젓	fish:I fish:anchovy:C				규칙	확인	F02,F25	
+중탄산암모늄					규칙	확인		
+천연응고제					규칙	확인		
+치즈혼합분말	milk:C				규칙	확인	M01	
+팜추출물					규칙	확인		
+팜핵유					규칙	확인		
+함수구연산					규칙	확인		
+향신료조제품		O			규칙	확인		
+호화쌀가루					규칙	확인		
+혼합미분					규칙	확인		
+홍삼사포닌					규칙	확인		
+히드록시프로필메틸셀룰로오스					규칙	확인		
+히드록시프로필인산이전분					규칙	확인		
+CJ감칠맛액젓	fish:I	O			규칙	확인	F25	
+CJ김치양념풀	crustacean:shrimp:I fish:I	O			규칙	확인	F27,C09	
+D-키실로오스					규칙	확인		
+DL-alpha-토코페릴아세테이트					규칙	확인		
+DL-알파토코페롤					규칙	확인		
+L-멘톨					규칙	확인		
+곤약					규칙	확인		
+과실발효액					규칙	확인		
+과일야채발효당					규칙	확인		
+다시마엑기스분말					규칙	확인		
+당근분말					규칙	확인		
+뒷다리살					규칙	확인		
+땅콩페이스트	peanut:C				규칙	확인	P01	
+떡					규칙	확인		
+무염버터	milk:C				규칙	확인	M01	
+바베큐시즈닝		O			규칙	확인		
+배터믹스	wheat:I				규칙	확인	W02	
+비타민B1질산염					규칙	확인		
+비타민씨					규칙	확인		
+석류농축액					규칙	확인		
+식용유지	soy:F				규칙	확인	S04	
+와사비분					규칙	확인		
+요거트향	milk:I	V			규칙	확인	M01	
+요오드칼륨					규칙	확인		
+유기농아가베시럽					규칙	확인		
+종가집새우액젓	crustacean:shrimp:C				규칙	확인	C01	
+종가집순한다시마베이스		O			규칙	확인		
+팜경화유					규칙	확인		
+표고버섯엑기스					규칙	확인		
+함수포도당					규칙	확인		
+향료혼합제제		V			규칙	확인		
+2배양조식초					규칙	확인		
+DHA분말	fish:I				규칙	확인	F25	
+간양파					규칙	확인		
+감칠맛분말		O			규칙	확인		
+갓					규칙	확인		
+건마늘					규칙	확인		
+고사리					규칙	확인		
+냉동마늘					규칙	확인		
+달맞이꽃종자유					규칙	확인		
+당근퓨레					규칙	확인		
+도라지					규칙	확인		
+돈골농축분말	pork:C				규칙	확인	X13	
+돼지갈비	pork:C				규칙	확인	X13	
+라임향		V			규칙	확인		
+레시친	soy:I				규칙	확인	S02	
+망고농축퓨레					규칙	확인		
+무항생제돼지고기	pork:C				규칙	확인	X13	
+복합스파이스에스		O			규칙	확인		
+새우엑기스분말	crustacean:shrimp:C				규칙	확인	C01	
+수용성비타민혼합제제					규칙	확인		
+순무씨유					규칙	확인		
+아미노산혼합제제					규칙	확인		
+아스코르빈산나트륨					규칙	확인		
+알로에베라겔즙액함유절편					규칙	확인		
+야채믹스					규칙	확인		
+원두					규칙	확인		
+지용성비타민혼합제제					규칙	확인		
+찰옥수수변성전분					규칙	확인		
+찰옥수수알파전분					규칙	확인		
+찹쌀분말					규칙	확인		
+채종경화에스테르화유	soy:F				규칙	확인	S04	
+천연자몽향		V			규칙	확인		
+치킨스톡분말	chicken:C	O			규칙	확인	X15	
+카라멜당시럽					규칙	확인		
+커피농축액					규칙	확인		
+코치닐색소-엔					규칙	확인		
+코코넛향	coconut:I	V			규칙	확인	X09	
+키위향		V			규칙	확인		
+파인애플농축과즙					규칙	확인		
+해물페이스트	crustacean:P fish:P				규칙	확인	F26,C08	
+호밀	rye:C				규칙	확인	X06	
+호박산					규칙	확인		
+혼합야채엑기스					규칙	확인		
+혼합제재					규칙	확인		
+홍합엑기스분말	mollusk:shellfish:C				규칙	확인	X03	
+황산암모늄					규칙	확인		
+흑미가루					규칙	확인		
+1급A원유	milk:C				규칙	확인	M01	
+건식빵가루	wheat:C				규칙	확인	W01,W02	
+검은깨페이스트	sesame:C				규칙	확인	G01	
+까망베르치즈분말	milk:C				규칙	확인	M01	
+냉동생빵가루	wheat:C				규칙	확인	W01,W02	
+다이스토마토					규칙	확인		
+당밀시럽					규칙	확인		
+돼지갈비살	pork:C				규칙	확인	X13	
+돼지막창	pork:C				규칙	확인	X13	
+볶은커피					규칙	확인		
+블루베리과즙					규칙	확인		
+비타민					규칙	확인		
+사골추출물분말	beef:C				규칙	확인	X14	
+세이보리분말					규칙	확인		
+식물성쇼트닝	soy:F				규칙	확인	S04	
+쌀엿					규칙	확인		
+알파쌀가루					규칙	확인		
+에르소르빈산나트륨					규칙	확인		
+연유	milk:C				규칙	확인	M01	
+염수					규칙	확인		
+용성비타민P					규칙	확인		
+유기농밀가루	wheat:C				규칙	확인	W01	
+유청단백	milk:C				규칙	확인	M01	
+제2인산칼륨					규칙	확인		
+조미건조홍고추		O			규칙	확인		
+칠리맛조미분		O			규칙	확인		
+커피분말					규칙	확인		
+팥향		V			규칙	확인		
+페파스파이스로얄		O			규칙	확인		
+폰단트					규칙	확인		
+한우뼈추출액	beef:C				규칙	확인	X14	
+허니향		V			규칙	확인		
+허브믹스					규칙	확인		
+황백당					규칙	확인		
+황설탕					규칙	확인		
+1등급원유	milk:C				규칙	확인	M01	
+5-리보뉴클레오티드이나트륨					규칙	확인		
+건조김치	crustacean:shrimp:I fish:I				규칙	확인	F27,C09	
+구아닐산Na					규칙	확인		
+국간장	soy:C wheat:I				규칙	확인	W03,S01	
+그린빈스					규칙	확인		
+글루콘산칼슘					규칙	확인		
+닭육수	chicken:C				규칙	확인	X15	
+대두에스테르화유	soy:R				규칙	확인	S03,S04	
+대파엑기스					규칙	확인		
+돈골엑기스	pork:C				규칙	확인	X13	
+딸기잼					규칙	확인		
+레몬농축과즙액					규칙	확인		
+맛나베이스		O			규칙	확인		
+매실엑기스					규칙	확인		
+무수유지방	milk:C				규칙	확인	M01	
+미나리					규칙	확인		
+바나나농축분말					규칙	확인		
+바나나칩					규칙	확인		
+바닐라					규칙	확인		
+베이컨	pork:C				규칙	확인	X13	
+보드람생빵가루	wheat:C				규칙	확인	W01,W02	
+볶음양파분					규칙	확인		
+불고기맛분말		O			규칙	확인		
+비타민Eα-TE					규칙	확인		
+비프시즈닝오일	beef:C	O			규칙	확인	X14	
+실당근					규칙	확인		
+쑥					규칙	확인		
+알긴산에스테르					규칙	확인		
+양파추출베이스		O			규칙	확인		
+에틸바닐린					규칙	확인		
+연근					규칙	확인		
+올레오레진로즈마리					규칙	확인		
+육수추출농축액	fish:P				규칙	확인	F26	
+이노신산Na					규칙	확인		
+일반증류주					규칙	확인		
+적두					규칙	확인		
+조미대두단백	soy:C	O			규칙	확인	S01	
+죽염					규칙	확인		
+진한맛조미분		O			규칙	확인		
+짜장풍미유	soy:I wheat:I	O			규칙	확인	W03,S02	
+청포도과즙					규칙	확인		
+치킨추출농축액	chicken:C				규칙	확인	X15	
+크랜베리농축액					규칙	확인		
+팜핵경화에스테르화유	soy:F				규칙	확인	S04	
+해물베이스	crustacean:P fish:P	O			규칙	확인	F26,C08	
+향신료믹스					규칙	확인		
+현미시럽					규칙	확인		
+홍차					규칙	확인		
+홍화유					규칙	확인		
+후르츠향		V			규칙	확인		
+흑후추가루					규칙	확인		
+가쓰오부시추출물	fish:bonito:C				규칙	확인	F03	
+감귤농축과즙					규칙	확인		
+고추엑기스					규칙	확인		
+녹차향		V			규칙	확인		
+마늘시즈닝		O			규칙	확인		
+마늘추출물분말					규칙	확인		
+만니톨					규칙	확인		
+말티톨					규칙	확인		
+맛내기양념		O			규칙	확인		
+매실과즙					규칙	확인		
+매운향신양념		O			규칙	확인		
+메론향		V			규칙	확인		
+멸치조미분	fish:anchovy:C	O			규칙	확인	F02	
+모짜렐라	milk:C				규칙	확인	M01	
+배향		V			규칙	확인		
+백포도농축과즙					규칙	확인		
+볶음콩가루	soy:C				규칙	확인	S01	
+식물성유지II	soy:F				규칙	확인	S04	
+아스코르빈산					규칙	확인		
+알로에베라겔					규칙	확인		
+야채발효균					규칙	확인		
+양념간장액	soy:C wheat:I	O			규칙	확인	W03,S01	
+양조간장-HO	soy:C wheat:I				규칙	확인	W03,S01	
+연성가공치즈	milk:C				규칙	확인	M01	
+원유또는환원유	milk:C				규칙	확인	M01	
+유자과즙					규칙	확인		
+육수맛분말	fish:P	O			규칙	확인	F26	
+인산철					규칙	확인		
+질산나트륨					규칙	확인		
+찰보리가루	barley:C				규칙	확인	X05	
+채소류					규칙	확인		
+콜라향		V			규칙	확인		
+콩발효농축액	soy:C				규칙	확인	S01	
+크러쉬드토마토					규칙	확인		
+키실로오스					규칙	확인		
+파인애플즙					규칙	확인		
+팜핵에스테르화유	soy:F				규칙	확인	S04	
+포도당시럽					규칙	확인		
+표고엑기스					규칙	확인		
+한우뼈	beef:C				규칙	확인	X14	
+홍합맛분말	mollusk:shellfish:I	O			규칙	확인	X03	
+화이트체다씨즈닝	milk:C	O			규칙	확인	M01	
+CJ새우액젓	crustacean:shrimp:C				규칙	확인	C01	
+가릭스파이스		O			규칙	확인		
+건빵가루	wheat:C				규칙	확인	W01,W02	
+건새우분말	crustacean:shrimp:C				규칙	확인	C01	
+건오징어	mollusk:squid:C				규칙	확인	X01	
+구운김					규칙	확인		
+구운캐슈넛	tree_nut:cashew:C				규칙	확인	N04	
+글루코만난					규칙	확인		
+녹차가루					규칙	확인		
+녹차추출물					규칙	확인		
+느타리버섯					규칙	확인		
+링홍고추					규칙	확인		
+망고농축과즙					규칙	확인		
+매운풍미분		O			규칙	확인		
+멸치가루	fish:anchovy:C				규칙	확인	F02	
+벌꿀향		V			규칙	확인		
+분말흰후추					규칙	확인		
+비프씨즈닝파우다	beef:C	O			규칙	확인	X14	
+소정육					규칙	확인		
+쇠고기양념분말	beef:C	O			규칙	확인	X14	
+쇠고기조미분말	beef:C	O			규칙	확인	X14	
+슈가시럽					규칙	확인		
+신선초					규칙	확인		
+알파락트알부민	milk:C				규칙	확인	M01	
+양송이버섯					규칙	확인		
+에르쏘르빈산나트륨					규칙	확인		
+오이피클					규칙	확인		
+우지방	beef:C				규칙	확인	X14	
+유기황설탕					규칙	확인		
+유당분해효소					규칙	확인		
+의성마늘					규칙	확인		
+자몽농축액					규칙	확인		
+조미쇠고기맛후레이크	beef:I	O			규칙	확인	X14	
+조미유		O			규칙	확인		
+진피					규칙	확인		
+찰현미					규칙	확인		
+천연블루베리향		V			규칙	확인		
+카나우바왁스					규칙	확인		
+코코넛유	coconut:C				규칙	확인	X09	
+토마토분말					규칙	확인		
+토마토퓨레					규칙	확인		
+혼합올리브유					규칙	확인		
+후추스파이스		O			규칙	확인		
+감자플레이크					규칙	확인		
+건목이버섯					규칙	확인		
+고추씨					규칙	확인		
+고형차					규칙	확인		
+기타가공품II		O			규칙	확인		
+나타드코코젤리					규칙	확인		
+냉동양파					규칙	확인		
+대두분말	soy:C				규칙	확인	S01	
+독일화인빵가루	wheat:C				규칙	확인	W01,W02	
+로스팅양파분					규칙	확인		
+류코노스톡					규칙	확인		
+메주된장	soy:C wheat:I				규칙	확인	W03,S01	
+목심					규칙	확인		
+무농축액					규칙	확인		
+무지방우유	milk:C				규칙	확인	M01	
+발효알콜					규칙	확인		
+버터리체다씨즈닝	milk:C	O			규칙	확인	M01	
+베타카로틴혼합제제					규칙	확인		
+복합간장조미분말	soy:C wheat:I	O			규칙	확인	W03,S01	
+복합스파이스DWP		O			규칙	확인		
+볶음캐슈넛	tree_nut:cashew:C				규칙	확인	N04	
+사골엑기스분말	beef:C				규칙	확인	X14	
+사골추출농축액	beef:C				규칙	확인	X14	
+산분해간장원액	soy:C wheat:I				규칙	확인	W03,S01	
+셀러리					규칙	확인		
+셀룰로스검					규칙	확인		
+쇠고기진국다시	beef:C	O			규칙	확인	X14	
+쇠고기추출분말	beef:C				규칙	확인	X14	
+스위트향		V			규칙	확인		
+식용색소황색제5호					규칙	확인		
+쌀눈					규칙	확인		
+알로에베라겔분말					규칙	확인		
+액젓	fish:I				규칙	확인	F25	
+야채농축액					규칙	확인		
+약콩	soy:C				규칙	확인	S01	
+양파추출물					규칙	확인		
+에스프레소커피추출액					규칙	확인		
+오렌지추출물					규칙	확인		
+유기농우유	milk:C				규칙	확인	M01	
+이온물엿					규칙	확인		
+자두					규칙	확인		
+자색고구마분말					규칙	확인		
+제삼인산칼륨					규칙	확인		
+조개농축액	mollusk:shellfish:C				규칙	확인	X03	
+조미오일		O			규칙	확인		
+차카테킨					규칙	확인		
+참치조미간장	fish:tuna:C soy:C wheat:I	O			규칙	확인	W03,S01,F04	
+체다	milk:C				규칙	확인	M01	
+초유농축유청단백	milk:C				규칙	확인	M01	
+초유단백분말	milk:C				규칙	확인	M01	
+카복시메틸셀룰로스나트륨					규칙	확인		
+코리안더분말					규칙	확인		
+크림치즈분말	milk:C				규칙	확인	M01,M02	
+클로렐라원말					규칙	확인		
+통팥앙금					규칙	확인		
+폴리글리세린지방산에스테르					규칙	확인		
+표고버섯베이스		O			규칙	확인		
+헛개나무열매					규칙	확인		
+혼합양념분말		O			규칙	확인		
+홍삼근					규칙	확인		
+황산망간					규칙	확인		
+효모조미액분말		O			규칙	확인		
+DHA비타민PremixNDM	fish:I				규칙	확인	F25	
+DHA함유	fish:I				규칙	확인	F25	
+L-페닐알라닌					규칙	확인		
+가루녹차					규칙	확인		
+갈비	beef:C				규칙	확인	X14	
+감귤					규칙	확인		
+건조당밀					규칙	확인		
+고구마분말					규칙	확인		
+과라나추출물					규칙	확인		
+굴농축액	mollusk:shellfish:C				규칙	확인	X03	
+날개					규칙	확인		
+녹용					규칙	확인		
+녹차분					규칙	확인		
+농축사과즙					규칙	확인		
+닭정육	chicken:C				규칙	확인	X15	
+대파농축액					규칙	확인		
+레드와인					규칙	확인		
+레몬쥬스					규칙	확인		
+맥문동					규칙	확인		
+무국베이스		O			규칙	확인		
+민트향		V			규칙	확인		
+바나나과즙					규칙	확인		
+밤다이스	chestnut:C				규칙	확인	X10	
+백포도과즙					규칙	확인		
+백포도농축액					규칙	확인		
+볶음검정깨	sesame:C				규칙	확인	G01	
+분리유단백	milk:C				규칙	확인	M01	
+분말양파					규칙	확인		
+블렌디드시즈닝		O			규칙	확인		
+사골육수	beef:C				규칙	확인	X14	
+샐러드베이스		O			규칙	확인		
+석류향		V			규칙	확인		
+소비톨					규칙	확인		
+소암모늄명반					규칙	확인		
+쇠고기효모농축액	beef:C				규칙	확인	X14	
+수산화칼슘					규칙	확인		
+스테비아					규칙	확인		
+스파이스믹스		O			규칙	확인		
+식물성부분경화유	soy:F				규칙	확인	S04	
+쌀눈가루					규칙	확인		
+쑥분말					규칙	확인		
+아미노산원액	soy:I				규칙	확인	S02	
+아카시아꿀분말					규칙	확인		
+알로에베라겔절편					규칙	확인		
+알로에베라겔주스					규칙	확인		
+알타리무					규칙	확인		
+야채짬뽕베이스	crustacean:P fish:P	O			규칙	확인	F26,C08	
+양파페이스트					규칙	확인		
+오뚜기참치간장분말	fish:tuna:C soy:C wheat:I				규칙	확인	W03,S01,F04	
+오레가노분말					규칙	확인		
+오징어풍미분말	mollusk:squid:I	O			규칙	확인	X01	
+올레오레진터메릭					규칙	확인		
+우롱차추출물					규칙	확인		
+우유칼슘	milk:C				규칙	확인	M01	
+유크림혼합분	milk:C				규칙	확인	M01,M02	
+육수풍미분말	fish:P	O			규칙	확인	F26	
+육포씨즈닝		O			규칙	확인		
+정제어유DHA	fish:I				규칙	확인	F25	
+조미분말		O			규칙	확인		
+청양고추가루					규칙	확인		
+청양고추추출물분말					규칙	확인		
+초코칩	milk:I				규칙	확인	M02	
+칠리맛분말		O			규칙	확인		
+칼슘혼합제					규칙	확인		
+콩단백발효물	soy:C				규칙	확인	S01	
+크림치즈향	milk:I	V			규칙	확인	M01,M02	
+타피오카산화전분					규칙	확인		
+팜올레인에스테르화유	soy:F				규칙	확인	S04	
+페퍼민트					규칙	확인		
+풋고추					규칙	확인		
+피자소스		O			규칙	확인		
+호두분태	tree_nut:walnut:C				규칙	확인	N02	
+홍삼분말					규칙	확인		
+dl-a-토코페롤					규칙	확인		
+가공유크림분	milk:C				규칙	확인	M01,M02	
+건당근후레이크					규칙	확인		
+건조맛살어묵	fish:surimi:C				규칙	확인	F22	
+검은콩농축액	soy:C				규칙	확인	S01	
+겨자					규칙	확인		
+고농축간장분말	soy:C wheat:I				규칙	확인	W03,S01	
+구아닐산이나트륨					규칙	확인		
+난백파우더	egg:C				규칙	확인	E01	
+너트메그코팅					규칙	확인		
+농축간장	soy:C wheat:I				규칙	확인	W03,S01	
+다이스드토마토					규칙	확인		
+닭육수분말	chicken:C				규칙	확인	X15	
+당근추출액					규칙	확인		
+돼지등심	pork:C				규칙	확인	X13	
+두유향	soy:I	V			규칙	확인	S01	
+둥글레					규칙	확인		
+뒷다리					규칙	확인		
+딸기퓨레					규칙	확인		
+떡갈비양념장	beef:C	O			규칙	확인	X14	
+레몬과즙농축액					규칙	확인		
+로진					규칙	확인		
+마늘맛오일					규칙	확인		
+매실액					규칙	확인		
+매운맛풍미유		O			규칙	확인		
+무우					규칙	확인		
+미강					규칙	확인		
+미분당					규칙	확인		
+바질홀					규칙	확인		
+발사믹식초					규칙	확인		
+복분자농축액					규칙	확인		
+복합향신료		O			규칙	확인		
+볶음아몬드	tree_nut:almond:C				규칙	확인	N01	
+분말비타민A혼합제제					규칙	확인		
+분말비타민E					규칙	확인		
+블랙커런트색소					규칙	확인		
+비타민B2스프류		O			규칙	확인		
+사과과즙농축액					규칙	확인		
+산도조절제II					규칙	확인		
+세이지분말					규칙	확인		
+숯불갈비소스	beef:C	O			규칙	확인	X14	
+식물성기름	soy:F				규칙	확인	S04	
+식물혼합농축액					규칙	확인		
+아카시아식이섬유					규칙	확인		
+알파쌀분말					규칙	확인		
+앞다리					규칙	확인		
+양념간장분	soy:C wheat:I	O			규칙	확인	W03,S01	
+영지버섯					규칙	확인		
+올레오레진세이지					규칙	확인		
+요구르트혼합분말	milk:C				규칙	확인	M01	
+우사골	beef:C				규칙	확인	X14	
+유기농대두유	soy:R				규칙	확인	S03	
+유화철					규칙	확인		
+이스트분말					규칙	확인		
+저지방우유	milk:C				규칙	확인	M01	
+조미베이스		O			규칙	확인		
+조미씨즈닝		O			규칙	확인		
+지미강화육수분말	fish:P				규칙	확인	F26	
+지미맛분말		O			규칙	확인		
+짬뽕향미유	crustacean:P fish:P	O			규칙	확인	F26,C08	
+참치간장	fish:tuna:C soy:C wheat:I				규칙	확인	W03,S01,F04	
+천연딸기향		V			규칙	확인		
+초산비타민E					규칙	확인		
+카라기난검					규칙	확인		
+커피땅콩	peanut:C				규칙	확인	P01	
+코코아					규칙	확인		
+탈염유청혼합탈지분유	milk:C				규칙	확인	M01	
+토란대					규칙	확인		
+토마토쥬스					규칙	확인		
+하선정남해안명품멸치액젓	fish:I fish:anchovy:C				규칙	확인	F02,F25	
+할라피뇨					규칙	확인		
+해물맛베이스	crustacean:P fish:P	O			규칙	확인	F26,C08	
+햄	pork:C				규칙	확인	X13	
+향신식물					규칙	확인		
+헛개나무열매추출농축액					규칙	확인		
+혼합식물성유지	soy:F				규칙	확인	S04	
+홍고추페이스트					규칙	확인		
+히드록시프로필전분					규칙	확인		
+S.thermophilus					규칙	확인		
+가공분유	milk:C				규칙	확인	M01	
+가쓰오농축액	fish:bonito:C				규칙	확인	F03	
+가쓰오후레이크	fish:bonito:C				규칙	확인	F03	
+갈근					규칙	확인		
+감자떡가루					규칙	확인		
+감자향		V			규칙	확인		
+감칠맛분에스		O			규칙	확인		
+계피분					규칙	확인		
+귀리식이섬유	oat:C				규칙	확인	X07	
+근대					규칙	확인		
+기꼬만간장	soy:C wheat:I				규칙	확인	W03,S01	
+데리야끼소스	soy:I wheat:I	O			규칙	확인	W03,S02	
+덱스트로스					규칙	확인		
+돈혈					규칙	확인		
+둥굴레					규칙	확인		
+로즈마리추출액					규칙	확인		
+리마콩					규칙	확인		
+멥쌀가루					규칙	확인		
+밀키페이스트	milk:I				규칙	확인	M02	
+바나나농축과즙					규칙	확인		
+발효간장베이스	soy:C wheat:I	O			규칙	확인	W03,S01	
+발효농축액					규칙	확인		
+백후추가루					규칙	확인		
+복합스파이스엘		O			규칙	확인		
+볶은현미					규칙	확인		
+볶음참깨분말	sesame:C				규칙	확인	G01	
+분말비프향미료	beef:C	O			규칙	확인	X14	
+불고기맛시즈닝		O			규칙	확인		
+블랙커런트농축액					규칙	확인		
+비프엑기스분말	beef:C				규칙	확인	X14	
+사과즙					규칙	확인		
+시금치후레이크					규칙	확인		
+아미노산간장3호	soy:C wheat:I				규칙	확인	W03,S01	
+양배추농축액					규칙	확인		
+오뚜기비프분말	beef:C				규칙	확인	X14	
+오이향		V			규칙	확인		
+오징어족	mollusk:squid:C				규칙	확인	X01	
+올스파이스코팅					규칙	확인		
+와인					규칙	확인		
+우리밀빵가루	wheat:C				규칙	확인	W01,W02	
+우리밀진간장	soy:C wheat:C				규칙	확인	W01,W03,S01	
+유기농갈색설탕					규칙	확인		
+유기농녹차					규칙	확인		
+유기팜유					규칙	확인		
+유산균배양액혼합분말					규칙	확인		
+유산균혼합분말					규칙	확인		
+육수맛혼합분	fish:P				규칙	확인	F26	
+인산염혼합제제					규칙	확인		
+적강낭콩					규칙	확인		
+전란분말	egg:C				규칙	확인	E01	
+정제야자유	coconut:C				규칙	확인	X09	
+젖산철					규칙	확인		
+조미건조홍고추링		O			규칙	확인		
+조미고추맛분말		O			규칙	확인		
+조미분말후추		O			규칙	확인		
+조미후추분		O			규칙	확인		
+종균					규칙	확인		
+주정식초					규칙	확인		
+참치뼈엑기스	fish:tuna:C				규칙	확인	F04	
+찹쌀분					규칙	확인		
+천연사과향		V			규칙	확인		
+청양고추시즈닝분말		O			규칙	확인		
+청포도농축액					규칙	확인		
+체다치즈향	milk:I	V			규칙	확인	M01	
+튀김땅콩	peanut:C				규칙	확인	P01	
+트리폴리인산나트륨					규칙	확인		
+파인애플시럽					규칙	확인		
+팜분별유					규칙	확인		
+팜올레인경화유					규칙	확인		
+팬더굴소스	mollusk:shellfish:C soy:I wheat:I	O			규칙	확인	W03,S02,X03	
+한우갈비	beef:C				규칙	확인	X14	
+햄스파이스디비	pork:C	O			규칙	확인	X13	
+호화옥수수분					규칙	확인		
+혼합해물베이스분말	crustacean:P fish:P	O			규칙	확인	F26,C08	
+흑깨	sesame:C				규칙	확인	G01	
+흑당					규칙	확인		
+BB12					규칙	확인		
+DL-알파토코페릴아세테이트					규칙	확인		
+가당딸기					규칙	확인		
+건멸치	fish:anchovy:C				규칙	확인	F02	
+겨자소스		O			규칙	확인		
+견과류가공품	tree_nut:I	O			규칙	확인	N10	
+고구마줄기					규칙	확인		
+꿀분말					규칙	확인		
+낫토추출물	soy:C				규칙	확인	S01	
+녹차농축액					규칙	확인		
+농축유청단백분말	milk:C				규칙	확인	M01	
+농축유청액	milk:C				규칙	확인	M01	
+다시마가루					규칙	확인		
+대합엑기스분말	mollusk:shellfish:C				규칙	확인	X03	
+데히드로초산나트륨					규칙	확인		
+디-소르비톨액					규칙	확인		
+땅콩분말	peanut:C				규칙	확인	P01	
+로커스트빈검					규칙	확인		
+루이보스					규칙	확인		
+마늘오일					규칙	확인		
+망고퓨레농축액					규칙	확인		
+머스타드					규칙	확인		
+메이플향		V			규칙	확인		
+메틸셀룰로오스					규칙	확인		
+무즙분말					규칙	확인		
+밀식이섬유	wheat:C				규칙	확인	W01	
+바닐라향분말		V			규칙	확인		
+바지락농축액	mollusk:shellfish:C				규칙	확인	X03	
+발효균					규칙	확인		
+발효홍삼농축액					규칙	확인		
+배과즙					규칙	확인		
+배농축과즙액					규칙	확인		
+버터지방	milk:C				규칙	확인	M01	
+복합시즈닝		O			규칙	확인		
+복합양념		O			규칙	확인		
+볶음땅콩	peanut:C				규칙	확인	P01	
+볶음땅콩분태	peanut:C				규칙	확인	P01	
+볶음마늘분					규칙	확인		
+볶음마늘분말					규칙	확인		
+볶음조미소맥분	wheat:C	O			규칙	확인	W01	
+비타민프리믹스NDM					규칙	확인		
+비프농축액	beef:C				규칙	확인	X14	
+비프본오일분말	beef:C				규칙	확인	X14	
+새우살	crustacean:shrimp:C				규칙	확인	C01	
+새우풍미유	crustacean:shrimp:I	O			규칙	확인	C01	
+생선추출물	fish:C				규칙	확인	F24	
+소맥글루텐	wheat:C				규칙	확인	W01	
+숯불갈비양념	beef:C	O			규칙	확인	X14	
+스위트칠리소스		O			규칙	확인		
+스테비오사이드					규칙	확인		
+스파게티	wheat:I				규칙	확인	W02	
+스피룰리나색소					규칙	확인		
+식물성가공유지	soy:F				규칙	확인	S04	
+아디핀산					규칙	확인		
+알로에베라겔파우더					규칙	확인		
+야채베이스		O			규칙	확인		
+엘더베리색소					규칙	확인		
+우유단백질	milk:C				규칙	확인	M01	
+유기설탕					규칙	확인		
+유산균결정					규칙	확인		
+육수베이스	fish:P	O			규칙	확인	F26	
+잡어	fish:C				규칙	확인	F24	
+제제소금					규칙	확인		
+찰옥수수					규칙	확인		
+천연라임향		V			규칙	확인		
+천연바나나향		V			규칙	확인		
+치커리					규칙	확인		
+치킨카레맛베이스	chicken:I	O			규칙	확인	X15	
+카라멜분말					규칙	확인		
+텍스트린					규칙	확인		
+통후추					규칙	확인		
+팥페이스트					규칙	확인		
+페퍼로얄					규칙	확인		
+포도과즙농축액					규칙	확인		
+한우고기	beef:C				규칙	확인	X14	
+한우잡뼈	beef:C				규칙	확인	X14	
+해물엑기스	crustacean:P fish:P				규칙	확인	F26,C08	
+햇반					규칙	확인		
+현미향		V			규칙	확인		
+혼합비타민					규칙	확인		
+혼합야채분말					규칙	확인		
+혼합유산균					규칙	확인		
+홍미삼					규칙	확인		
+홍삼향		V			규칙	확인		
+화인빵용가루	wheat:I				규칙	확인	W02	
+효모추출물분말					규칙	확인		
+MCT오일					규칙	확인		
+가다랑어분말	fish:C fish:bonito:C				규칙	확인	F03,F24	
+가라기난					규칙	확인		
+가쓰오추출액	fish:bonito:C				규칙	확인	F03	
