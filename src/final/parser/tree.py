@@ -3,16 +3,19 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
-from .names import GROUP_RE, GROUP_WORD, clean_name, is_origin, split_pieces
+from .names import BULLETS, GROUP_RE, GROUP_SEP, GROUP_WORD, clean_name, is_origin, split_pieces
 
 OPEN = {"(": ")", "[": "]", "{": "}", "<": ">", "〈": "〉", "《": "》", "【": "】", "「": "」", "『": "』"}
 CLOSE = {v: k for k, v in OPEN.items()}
 SEPARATORS = {",", "、"}
 
 _HEADER_RE = re.compile(rf"[\[【〈《<「『]\s*({GROUP_WORD})\s*[\]】〉》>」』]\s*")
-_BEFORE_GROUP_RE = re.compile(rf"(?:\s*/\s*|\s+|(?<=[)\]}}]))(?=(?:{GROUP_WORD})\s*[:/])")
-# 밀키트 라벨의 '*구성품이름:' 또는 '*스프-' (별표가 구성품을 나눈다)
+# 머리말 앞: ' / 스프:', ' 스프-', ')스프:', ' ·스프:' (글머리 기호는 같이 지운다)
+_BEFORE_GROUP_RE = re.compile(rf"(?:\s*/\s*|\s+|(?<=[)\]}}]))[{BULLETS}]*\s*(?=(?:{GROUP_WORD})\s*{GROUP_SEP})")
+# 밀키트 라벨의 '*구성품이름:' 또는 '*스프-' (별표가 구성품을 나눈다). 별표 머리말 표시(STAR)를 붙여 둔다
 _STAR_RE = re.compile(r"(?:(?<=[)\]}])|(?<=\s)|^)\*\s*([가-힣A-Za-z][^,:()\[\]{}*\-]{0,20}?)\s*[:\-]\s*")
+STAR = "\x02"
+_STAR_HEAD_RE = re.compile(rf"^\s*{STAR}\s*([^:]+?)\s*:\s*(.*)$", re.S)     # '*삼립호빵순백우유:우유카스타드'
 _LEAD_RE = re.compile(r"^\s*원재료\s*명?\s*(?:및\s*함량)?\s*[:\]]?\s*")
 
 
@@ -45,8 +48,8 @@ def normalize(text):
 
 
 def mark_groups(s):
-    """'[면]', ' / 액상스프 :', ' 스프/', ' *양념장:' 같은 머리말 앞을 쉼표로 끊어 둔다."""
-    s = _STAR_RE.sub(r", \1: ", s)
+    """'[면]', ' / 액상스프 :', ' 스프/', ' *양념장:', ' 스프-' 같은 머리말 앞을 쉼표로 끊어 둔다."""
+    s = _STAR_RE.sub(rf", {STAR}\1: ", s)
     s = _HEADER_RE.sub(r", \1: ", s)
     return _BEFORE_GROUP_RE.sub(", ", s)
 
@@ -98,10 +101,13 @@ def _parse_brackets(s):
 
 
 def _group_top(items):
-    """맨 위 항목에 '면:' '스프/' 머리말이 있으면 다음 머리말이 나올 때까지 그 아래로 묶는다."""
+    """맨 위 항목에 '면:' '스프/' 머리말이 있으면 다음 머리말이 나올 때까지 그 아래로 묶는다.
+
+    별표로 시작한 구성품 이름('*삼립호빵순백우유:', '*순두부찌개양념장:')도 머리말이다. 이름이 원재료로 읽히지 않게 한다.
+    """
     out, current = [], None
     for item in items:
-        m = GROUP_RE.match(item.text)
+        m = _STAR_HEAD_RE.match(item.text) or GROUP_RE.match(item.text)
         if m and is_origin(clean_name(m.group(2))):
             m = None                  # '소스:일본산(...)'의 콜론 뒤는 원산지라 머리말이 아님
         if m:
@@ -122,7 +128,7 @@ def _build(raws):
     nodes = []
     for r in raws:
         kids = _build(r.kids)
-        raw = r.text.strip()
+        raw = re.sub(r"\s+", " ", r.text.replace(STAR, "")).strip()
         if r.group:
             nodes.append(Node(name=raw, raw=raw, children=kids, group=True))
             continue

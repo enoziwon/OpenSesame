@@ -8,13 +8,10 @@ LLM을 쓰지 않는다. 같은 글자를 넣으면 늘 같은 결과가 나온�
 """
 from __future__ import annotations
 
-import re
 from typing import List, Optional, Tuple
 
 from src.common.schema import AnalyzeMeta
-from src.final.parser import MAX_CHARS, parse_label
-from src.final.parser.tree import normalize
-from src.final.parser.zones import FACILITY_RE
+from src.final.parser import parse_label
 from src.final.response import FinalAllergenResult, FinalAnalyzeResponse
 from src.final.verdict import AllergenVerdict, Judgement, code_info, judge
 
@@ -33,8 +30,6 @@ BLIND_KO = {"sesame": "한국 라벨은 참깨를 표시하지 않아도 된다"
             "fish": "한국 라벨은 생선 중 고등어만 표시한다"}
 NO_BOX_EN = "the Korean allergen statement was not found"
 NO_BOX_KO = "알레르기 표시란을 찾지 못했다"
-# 시설 문구의 끝: '같은 … 시설' 뒤에서 처음 나오는 쉼표·마침표까지 ('…시설에서 제조, 간장'의 간장은 원재료)
-FACILITY_END_RE = re.compile(r"(?:같은|동일한?).*?(?:시설|공장|라인)[^,.。]*[.。]?")
 
 
 # ---------- 입력 ----------
@@ -45,36 +40,12 @@ def analyze_text(text: str, ocr_engine: str = "text") -> FinalAnalyzeResponse:
 
 
 def analyze_fields(ingredients: Optional[str], declaration: Optional[str] = None) -> FinalAnalyzeResponse:
-    """원재료명(ingredients)과 표시란(declaration)이 따로 온 경우. HACCP API의 rawmtrl, allergy."""
-    body, facility = split_facility(ingredients)
-    parsed = parse_label(ingredients=body, declaration=declaration)
-    return _respond(parsed, "text", facility)
+    """원재료명(ingredients)과 표시란(declaration)이 따로 온 경우. HACCP API의 rawmtrl, allergy.
 
-
-def split_facility(ingredients: Optional[str]) -> Tuple[str, Optional[str]]:
-    """원재료 칸에 섞여 온 같은 시설 문구를 떼어 낸다. (남은 원재료 글자, 문구 원문)
-
-    파서의 칸 입력(zones_from_fields)은 이 문구를 떼지 않는다. 떼지 않으면
-    '이 제품은 땅콩, 우유를 사용한 제품과 같은 제조시설…'의 땅콩·우유가 원재료로 읽힌다.
-    문구가 마침표 없이 원재료로 이어지면 시설 낱말 뒤 첫 쉼표에서 끊는다.
+    원재료 칸에 섞여 온 같은 시설 문구와 표시란 칸이 비었을 때 원재료 칸 끝에 적힌 표시란은 파서가 떼어 낸다.
     """
-    if ingredients is None:
-        return "", None
-    if not isinstance(ingredients, str):
-        raise TypeError("ingredients에는 글자(str)만 넣을 수 있습니다")
-    if len(ingredients) > MAX_CHARS:
-        raise ValueError(f"ingredients이(가) 너무 깁니다 (최대 {MAX_CHARS}자)")
-    s = normalize(ingredients)
-    kept, found, start = [], [], 0
-    for m in FACILITY_RE.finditer(s):
-        end_m = FACILITY_END_RE.search(m.group(0))
-        end = m.start() + (end_m.end() if end_m else len(m.group(0)))
-        found.append(s[m.start():end].strip())
-        kept.append(s[start:m.start()])
-        start = end
-    if not found:
-        return ingredients, None
-    return ", ".join(kept + [s[start:]]), " ".join(found)
+    parsed = parse_label(ingredients="" if ingredients is None else ingredients, declaration=declaration)
+    return _respond(parsed, "text", parsed.facility_text)
 
 
 # ---------- 응답 ----------
@@ -185,5 +156,4 @@ def _blind_reason(v: AllergenVerdict, kind: str) -> Tuple[str, str]:
             f"“{name}”{_josa(name, '은', '는')} {what_ko}이고, {tail_ko}.")
 
 
-__all__ = ["CLASSIFIER_NAME", "NO_BOX", "NO_INGREDIENTS", "analyze_fields", "analyze_text", "reason",
-           "split_facility"]
+__all__ = ["CLASSIFIER_NAME", "NO_BOX", "NO_INGREDIENTS", "analyze_fields", "analyze_text", "reason"]

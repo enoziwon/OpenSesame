@@ -13,7 +13,7 @@ import pytest
 
 from src.common.schema import AnalyzeResponse
 from src.final.classifier import FinalClassifier
-from src.final.pipeline import NO_BOX, NO_INGREDIENTS, analyze_fields, analyze_text, split_facility
+from src.final.pipeline import NO_BOX, NO_INGREDIENTS, analyze_fields, analyze_text
 from src.ocr import MockOcr
 from src.pipeline import analyze as team_analyze
 
@@ -197,13 +197,19 @@ def test_fields_without_declaration_means_box_not_found():
     assert res.declaration_text is None and res.warnings == [NO_BOX]
 
 
-def test_split_facility_checks_input():
-    assert split_facility(None) == ("", None)
-    assert split_facility("정제수, 설탕") == ("정제수, 설탕", None)
+def test_fields_input_is_checked():
+    assert analyze_fields(None, "없음").warnings == [NO_INGREDIENTS]         # 원재료 칸이 비었다
     with pytest.raises(TypeError):
-        split_facility(123)
+        analyze_fields(123)
     with pytest.raises(ValueError):
-        split_facility("가" * 20001)
+        analyze_fields("가" * 20001)
+
+
+def test_facility_statement_in_the_ingredient_field_is_not_an_ingredient():
+    """'…같은 제조시설에서 우유, 대두, 밀을 사용한 제품을 제조…'의 대두·밀이 원재료로 읽히면 안 된다."""
+    res = analyze_fields("정제수, 설탕, 이 제품은 같은 제조시설에서 우유, 대두, 밀을 사용한 제품을 제조하고 있습니다.", "없음")
+    assert res.allergens == []
+    assert any(n.startswith("같은 시설 문구") and "대두" in n for n in res.notes)
 
 
 def test_bracket_repairs_are_noted():
