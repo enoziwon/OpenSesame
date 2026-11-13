@@ -32,7 +32,7 @@ word	source	mandatory	note
 전복	mollusk:shellfish	Y	
 홍합	mollusk:shellfish	Y	
 잣	tree_nut:pine_nut	Y	
-참깨	sesame	N	현행 의무 아님. 2028년 추가 입법예고(공포 미확인). 적혀 있으면 근거로 쓴다
+참깨	sesame	N	현행 의무 아님. 추가하는 개정안은 입법예고 단계이고 2026-11-13 현재 공포되지 않았다. 적혀 있으면 근거로 쓴다
 들깨	perilla	N	현행 의무 아님. 미국 9개 밖
 아몬드	tree_nut:almond	N	현행 의무 아님. 적혀 있으면 근거로 쓴다
 캐슈너트	tree_nut:cashew	N	현행 의무 아님. 적혀 있으면 근거로 쓴다
