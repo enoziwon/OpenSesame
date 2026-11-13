@@ -18,6 +18,7 @@ class Fake:
     sources: tuple = ()
     opaque: bool = False
     opaque_sesame: bool = False
+    opaque_meat: bool = False
     compound: bool = False
     flavor: bool = False
     not_ingredient: bool = False
@@ -56,7 +57,11 @@ TABLE = {f.name: f for f in [
     Fake("맛베이스", opaque=True),                          # 국물·조미 계열: 생선만
     Fake("혼합조미분말", opaque=True),
     Fake("양념분말", opaque=True, opaque_sesame=True),      # 양념·소스 계열: 생선과 참깨
+    Fake("쇠고기다시", opaque=True, opaque_meat=True),      # 고기 바탕이 적힌 것: 생선 범위 밖
+    Fake("불고기양념", opaque=True, opaque_sesame=True, opaque_meat=True),
+    Fake("누룽지분말"),
     Fake("해물", (("crustacean", "P"), ("fish", "P"))),
+    Fake("해물베이스", (("crustacean", "P"), ("fish", "P")), opaque=True),
     Fake("키토산", (("crustacean", "I"),)),
     Fake("산양유", (("milk:goat", "C"),)),
     Fake("시즈닝", compound=True),
@@ -247,6 +252,31 @@ def test_opaque_with_box_targets_fish_and_sesame_by_family():
     assert one(j, "sesame").basis == ("OPAQUE",)
 
 
+def test_meat_based_opaque_is_not_a_fish_basis():
+    """가이드 N14: 고기 바탕이 이름에 적힌 속 모를 원료는 생선 판정 불가의 근거가 아니다."""
+    j = run("쇠고기다시, 설탕", "없음")
+    assert got(j) == {} and j.undecidable_ingredients == ("쇠고기다시",)       # 속 모를 원료 목록에는 남는다
+    assert got(run("불고기양념, 설탕", "없음")) == {"sesame": "undecidable"}    # 참깨는 그대로
+    j = run("쇠고기다시, 맛베이스, 설탕", "없음")
+    assert got(j) == {"fish": "undecidable"} and one(j, "fish").evidence == "맛베이스"
+    assert one(j, "fish").other_evidence == ()
+    no_box = {a: "undecidable" for a in ("milk", "egg", "crustacean", "wheat", "soy")}
+    assert got(run("쇠고기다시, 설탕")) == no_box                              # 표시란이 없을 때 더하는 것은 그대로
+
+
+def test_single_percent_child_does_not_disclose_the_blend():
+    """가이드 N13: 속 모를 원료의 괄호에 대표 원료 하나와 함량만 적혀 있으면 배합을 밝힌 것이 아니다."""
+    j = run("맛베이스(누룽지분말 42.47%), 설탕", "없음")
+    assert got(j) == {"fish": "undecidable"} and one(j, "fish").evidence == "맛베이스"
+    assert j.undecidable_ingredients == ("맛베이스",)
+    assert got(run("맛베이스(누룽지분말 100%), 설탕", "없음")) == {}           # 100%면 전부 밝힌 것
+    assert got(run("맛베이스(누룽지분말), 설탕", "없음")) == {}                 # 함량이 없으면 자식으로 본다
+    assert got(run("맛베이스(누룽지분말 42%, 정제소금), 설탕", "없음")) == {}    # 둘 이상 적으면 밝힌 것으로 본다
+    j = run("양념분말(멸치액젓 3%), 설탕", "없음")                              # 자식의 확정 근거는 그대로 쓴다
+    assert got(j) == {"fish": "confirmed", "sesame": "undecidable"}
+    assert got(run("시즈닝(누룽지분말 5%), 설탕")) == {a: "undecidable" for a in ("milk", "egg", "wheat", "soy")}
+
+
 def test_opaque_without_box_adds_box_allergens():
     expected = {a: "undecidable" for a in ("milk", "egg", "fish", "crustacean", "wheat", "soy")}
     assert got(run("맛베이스, 설탕")) == expected               # 땅콩·견과류는 넣지 않는다
@@ -292,9 +322,14 @@ def test_strongest_wins_and_others_follow_strength():
     assert v.other_evidence == ("액젓", "육수")
 
 
-def test_undecidable_lists_possible_then_opaque():
+def test_undecidable_evidence_follows_label_order():
+    """가능 근거와 속 모를 원료는 같은 세기라, 라벨에서 먼저 나온 것이 대표 근거다 (가이드 7장)."""
     v = one(run("맛베이스, 육수, 혼합조미분말", "없음"), "fish")
-    assert (v.evidence, v.other_evidence, v.basis) == ("육수", ("맛베이스", "혼합조미분말"), ("POSSIBLE", "OPAQUE"))
+    assert (v.evidence, v.other_evidence, v.basis) == ("맛베이스", ("육수", "혼합조미분말"), ("OPAQUE", "POSSIBLE"))
+    v = one(run("육수, 맛베이스", "없음"), "fish")
+    assert (v.evidence, v.other_evidence, v.basis) == ("육수", ("맛베이스",), ("POSSIBLE", "OPAQUE"))
+    v = one(run("해물베이스, 설탕", "없음"), "fish")            # 한 원재료가 둘 다면 가능 근거가 먼저다
+    assert (v.evidence, v.other_evidence, v.basis) == ("해물베이스", (), ("POSSIBLE", "OPAQUE"))
 
 
 def test_first_confirmed_in_label_order():

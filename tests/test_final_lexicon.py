@@ -34,7 +34,7 @@ def test_every_code_grade_and_status_in_entries_is_known():
             code, grade = token.rsplit(":", 1)
             assert code in codes, r["name"]
             assert grade in GRADES, r["name"]
-        assert set(r["flags"]) <= set("OSMVX"), r["name"]
+        assert set(r["flags"]) <= set("OSBMVX"), r["name"]
         assert "S" not in r["flags"] or "O" in r["flags"], r["name"]         # 참깨 범위(S)는 속 모를 원료(O)에만 붙는다
         assert not ("O" in r["flags"] and "M" in r["flags"]), r["name"]     # 양념·국물 계열이면서 그 밖의 섞은 원료일 수는 없다
         assert r["status"] in STATUSES, r["name"]
@@ -80,16 +80,17 @@ def test_kr_box_words_point_to_known_codes():
 # ---------- 헷갈리는 이름 (가이드 3·5·6장) ----------
 CASES = [
     # 밀: 미국 기준은 Triticum 속 전체
-    ("밀", {"wheat": "C"}), ("밀-미국산", {"wheat": "C"}), ("소맥분", {"wheat": "C"}), ("빵가루", {"wheat": "C"}),
+    ("밀", {"wheat": "C"}), ("밀-미국산", {"wheat": "C"}), ("소맥분", {"wheat": "C"}), ("빵가루", {"wheat": "I"}),
     ("글루텐", {"wheat": "C"}), ("당밀", {}), ("오트밀분말", {}), ("메밀가루", {"wheat": "P"}), ("보리", {}), ("당면", {}),
     ("전분", {"wheat": "P"}), ("쌀국수", {"wheat": "I"}), ("스펠트밀", {"wheat": "C"}), ("라이밀", {"wheat": "C"}),
     ("호밀", {}), ("귀리", {}), ("만두피", {"wheat": "I"}), ("소백분", {"wheat": "C"}), ("합성팽창제", {"wheat": "P"}),
+    ("생빵가루", {"wheat": "I"}), ("쌀빵가루", {}), ("우리밀빵가루", {"wheat": "C", "milk": "P"}), ("파스타", {"wheat": "I"}),
     # 대두와 정제유
     ("간장", {"soy": "C", "wheat": "I"}), ("한식간장", {"soy": "C"}), ("된장", {"soy": "C", "wheat": "I"}),
     ("산분해간장", {"soy": "I", "wheat": "P"}), ("아미노산간장", {"soy": "I"}), ("메주된장", {"soy": "C"}), ("고추장", {"soy": "I", "wheat": "I"}), ("대두유", {"soy": "R"}),
     ("d-토코페롤", {"soy": "R"}), ("DL-α-토코페롤", {}), ("식물성유지", {"soy": "F"}), ("레시틴", {"soy": "I"}),
     ("대두레시틴", {"soy": "C"}), ("유화제", {"soy": "P"}), ("콩나물", {"soy": "C"}), ("완두콩", {}), ("두유", {"soy": "C"}),
-    ("ISP", {"soy": "C"}), ("탄산칼슘혼합제제", {"soy": "I"}),
+    ("ISP", {"soy": "C"}), ("탄산칼슘혼합제제", {"soy": "I"}), ("대두유액", {"soy": "I"}), ("두유액", {"soy": "C"}),
     # 땅콩
     ("땅콩버터", {"peanut": "C"}), ("땅콩호박", {}), ("땅콩기름", {"peanut": "I"}), ("낙화생유", {"peanut": "I"}),
     ("비타민A혼합제제", {"peanut": "P"}),
@@ -110,10 +111,11 @@ CASES = [
     ("오징어", {}), ("김치", {"fish": "I", "crustacean": "I"}), ("홍어", {"fish": "C"}), ("명란", {"fish": "C"}),
     ("육수", {"fish": "P"}), ("사골육수", {}), ("닭발육수", {}), ("팜에스테르화유", {}), ("쇼트닝", {"soy": "F"}),
     ("불고기양념장", {"soy": "I", "wheat": "P"}), ("콜라겐", {"fish": "P"}), ("콜라겐케이싱", {}),
+    ("젤라틴", {}), ("어류젤라틴", {"fish": "C"}), ("간짜장페이스트", {"soy": "I", "wheat": "I"}),
     ("까나리액젓", {"fish": "C", "crustacean": "P"}), ("짬뽕분말", {"crustacean": "P"}),
     # 견과류: 미국 기준은 FDA 표 1의 12종만
     ("아몬드", {"tree_nut": "C"}), ("잣", {"tree_nut": "C"}), ("호두기름", {"tree_nut": "I"}), ("코코넛", {}), ("밤", {}),
-    ("은행", {}), ("견과류", {"tree_nut": "I"}), ("시리얼", {"tree_nut": "P"}),
+    ("은행", {}), ("견과류", {"tree_nut": "I"}), ("시리얼", {"tree_nut": "P"}), ("씨리얼", {"tree_nut": "P"}),
     ("견과혼합페이스트", {"tree_nut": "I", "peanut": "I"}),
     # 규칙이 속기 쉬운 글자
     ("발아귀리", {}), ("차조기농축액", {}), ("수크랄로스", {}), ("커피시럽", {}), ("다시마엑기스", {}),
@@ -154,6 +156,20 @@ def test_sesame_scope_is_only_for_sauce_and_seasoning_paste_families():
         assert lookup(name).opaque and not lookup(name).opaque_sesame, name
     for name in ("풍미유", "향미유"):                                       # 식품공전: 향미유의 바탕 기름에서 압착참기름은 빠진다
         assert lookup(name).compound and not lookup(name).opaque, name
+
+
+def test_meat_based_opaque_is_marked():
+    """가이드 N14: 고기 바탕이 이름에 적힌 속 모를 원료는 생선 판정 불가의 근거가 아니다 (하위 원료가 적힌 사례의 0.5%)."""
+    for name in ("쇠고기다시", "소고기베이스", "치킨스톡", "사골설렁탕분말스프", "비프조미분"):
+        hit = lookup(name)
+        assert hit.opaque and hit.opaque_meat and not hit.opaque_sesame, name
+    for name in ("불고기양념", "갈비소스", "돼지갈비양념"):                   # 양념·소스 계열이면 참깨 범위는 그대로
+        hit = lookup(name)
+        assert hit.opaque and hit.opaque_meat and hit.opaque_sesame, name
+    for name in ("맛베이스", "혼합조미분말", "양념분말", "해물베이스", "물고기소스"):
+        assert lookup(name).opaque and not lookup(name).opaque_meat, name
+    assert not lookup("쇠고기").opaque_meat and not lookup("사골엑기스").opaque_meat      # 속 모를 원료가 아니면 붙지 않는다
+    assert not lookup("간짜장페이스트").opaque                               # 페이스트는 속 모를 원료의 낱말이 아니다
 
 
 def test_goat_milk_has_its_own_code():

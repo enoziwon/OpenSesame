@@ -19,12 +19,12 @@ from src.final.lexicon import lookup
 from src.final.verdict import code_info
 
 GRADE_VERDICT = {"C": Verdict.confirmed, "I": Verdict.inferable, "P": Verdict.undecidable}   # R·F는 세지 않는다
-OPAQUE_TARGETS = (Allergen.fish, Allergen.sesame)       # 속 모를 원료는 참깨·생선만 판정 불가 (가이드 v1)
 
 
 class FinalClassifier:
-    """C -> confirmed, I -> inferable, P -> undecidable, 속 모를 원료 -> 참깨·생선 undecidable,
-    모르는 이름·일반 향료 -> source_unknown, 정제유(R)·종류 모를 유지(F) -> 없음."""
+    """C -> confirmed, I -> inferable, P -> undecidable, 모르는 이름·일반 향료 -> source_unknown,
+    정제유(R)·종류 모를 유지(F) -> 없음. 속 모를 원료는 가이드 v1 5장대로 생선(고기 바탕이 적힌 것은 빼고)과
+    참깨(양념·소스 계열만)를 undecidable로 낸다."""
 
     name = "final-lexicon"
     prompt_version: Optional[str] = None
@@ -47,8 +47,10 @@ class FinalClassifier:
             if us9 and verdict is not None:
                 _keep_stronger(best, Allergen(us9), verdict)
         if hit.opaque and not general_flavor:
-            for allergen in OPAQUE_TARGETS:
-                _keep_stronger(best, allergen, Verdict.undecidable)
+            if not getattr(hit, "opaque_meat", False):
+                _keep_stronger(best, Allergen.fish, Verdict.undecidable)
+            if getattr(hit, "opaque_sesame", False):
+                _keep_stronger(best, Allergen.sesame, Verdict.undecidable)
         matches = [AllergenMatch(allergen=a, verdict=best[a]) for a in Allergen if a in best]
         unknown = hit.via == "unknown" or general_flavor
         return IngredientClassification(ingredient=name, matches=matches, source_unknown=unknown)

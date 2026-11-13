@@ -8,7 +8,8 @@
 
 등급: C 확정, I 추정, P 가능, R 정제유(대두, 세지 않음), F 종류 모를 유지(대두).
 표시: opaque 속을 알 수 없는 양념·국물 계열 복합 원료(생선 판정 불가의 근거), opaque_sesame 그중 양념·소스 계열(참깨도),
-compound 그 밖의 섞은 원료, flavor 일반 향료, not_ingredient 원재료가 아닌 표기.
+opaque_meat 그중 고기 바탕이 이름에 적힌 것(생선 판정 불가의 근거가 아니다), compound 그 밖의 섞은 원료, flavor 일반 향료,
+not_ingredient 원재료가 아닌 표기.
 표는 같은 폴더의 TSV이고, 뜻과 만든 방법은 README.md에 적었다.
 """
 from __future__ import annotations
@@ -25,7 +26,7 @@ from typing import Dict, List, NamedTuple, Pattern, Tuple
 HERE = Path(os.environ.get("OPENSESAME_LEXICON_DIR") or Path(__file__).parent)
 ORDER = {"C": 5, "I": 4, "P": 3, "R": 2, "F": 1}      # R(이름에 대두유)이 F(종류 모를 유지)보다 구체적이다
 GRADES = frozenset(ORDER)
-SPECIAL = ("OPAQUE", "OPAQUE_SESAME", "COMPOUND", "FLAVOR", "FLAVOR_END", "BENIGN", "BENIGN_END", "STATEMENT", "ORIGIN", "ORIGIN_WORD")   # rules.tsv의 낱말 줄
+SPECIAL = ("OPAQUE", "OPAQUE_SESAME", "OPAQUE_MEAT", "COMPOUND", "FLAVOR", "FLAVOR_END", "BENIGN", "BENIGN_END", "STATEMENT", "ORIGIN", "ORIGIN_WORD")   # rules.tsv의 낱말 줄
 
 
 @dataclass(frozen=True)
@@ -34,6 +35,7 @@ class Lookup:
     sources: Tuple[Tuple[str, str], ...] = ()   # ((출처 코드, 등급), ...)
     opaque: bool = False                        # 속을 알 수 없는 양념·국물 계열 복합 원료 (가이드 5장). 생선 판정 불가의 근거
     opaque_sesame: bool = False                 # 그중 양념·소스 계열. 참깨 판정 불가의 근거도 된다
+    opaque_meat: bool = False                   # 그중 고기 바탕이 이름에 적힌 것 (쇠고기다시, 치킨스톡). 생선 판정 불가의 근거가 아니다
     compound: bool = False                      # 그 밖의 섞은 원료 (시즈닝, 혼합제제, 가공품, 믹스). 표시란이 없을 때만 근거가 된다
     flavor: bool = False                        # 일반 향료 (가이드 D5)
     not_ingredient: bool = False                # 원산지·기준 문구처럼 원재료가 아닌 표기
@@ -79,6 +81,7 @@ class RuleHit(NamedTuple):
     benign: bool
     compound: bool = False
     opaque_sesame: bool = False
+    opaque_meat: bool = False
 
 
 class _Tables(NamedTuple):
@@ -168,6 +171,8 @@ def match_rules(key: str, rs: RuleSet) -> RuleHit:
             if i < 0:
                 continue
             g = rule.grade
+            if flavor and g == "P":
+                continue                               # 가능 원료의 이름을 딴 향료(시리얼향, 카라멜향)는 근거로 쓰지 않는다
             if flavor and g in ("C", "I"):
                 g = "P"                                # 향료 이름: 실제 원료가 들었는지 알 수 없다 (땅콩향의 표시란 근거 7%)
             elif g == "C" and _taste_follows(key, i + len(k)):
@@ -189,7 +194,8 @@ def match_rules(key: str, rs: RuleSet) -> RuleHit:
     opaque = _has(key, rs, "OPAQUE")
     compound = not opaque and _has(key, rs, "COMPOUND")     # 둘 다 맞으면 양념·국물 계열로 본다
     sesame = opaque and _has(key, rs, "OPAQUE_SESAME")      # 양념·소스 계열이면 참깨도 판정 불가 범위
-    return RuleHit(found, tuple(used), opaque, flavor, benign, compound, sesame)
+    meat = opaque and _has(key, rs, "OPAQUE_MEAT")          # 고기 바탕이 적혀 있으면 생선 판정 불가 범위에서 뺀다
+    return RuleHit(found, tuple(used), opaque, flavor, benign, compound, sesame, meat)
 
 
 def strip_origin_with(name: str, rs: RuleSet) -> str:
@@ -222,7 +228,7 @@ def _tables() -> _Tables:
     for r in _read("entries.tsv"):
         entries[norm(r["name"])] = Lookup(
             name=r["name"], sources=_parse_sources(r["sources"]), opaque="O" in r["flags"],
-            opaque_sesame="S" in r["flags"], compound="M" in r["flags"],
+            opaque_sesame="S" in r["flags"], opaque_meat="B" in r["flags"], compound="M" in r["flags"],
             flavor="V" in r["flags"], not_ingredient="X" in r["flags"], via="entry", en=r["en"], note=r["note"],
             status=r["status"])
     auto = frozenset(norm(r["name"]) for r in _read("entries_auto.tsv"))
@@ -256,7 +262,8 @@ def lookup(name: str) -> Lookup:
     hit = match_rules(key, rs)
     if hit.sources or hit.opaque or hit.compound or hit.flavor:
         return Lookup(name=name, sources=tuple(sorted(hit.sources.items())), opaque=hit.opaque,
-                      opaque_sesame=hit.opaque_sesame, compound=hit.compound, flavor=hit.flavor, via="rule")
+                      opaque_sesame=hit.opaque_sesame, opaque_meat=hit.opaque_meat, compound=hit.compound,
+                      flavor=hit.flavor, via="rule")
     if hit.benign:
         return Lookup(name=name, via="benign")
     if key in tables.auto:

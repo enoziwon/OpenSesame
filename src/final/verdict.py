@@ -11,6 +11,7 @@
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Callable, Dict, List, Optional, Tuple
@@ -24,6 +25,7 @@ FULL = frozenset({"milk", "egg", "wheat", "soy", "peanut"})      # 한국 표시
 GENERIC_COVERED = {"crustacean": ("crustacean:shrimp", "crustacean:crab")}
 OPAQUE_NO_BOX = frozenset({"milk", "egg", "wheat", "soy", "crustacean"})    # 표시란을 못 읽었을 때 속 모를 원료가 더하는 것
 COMPOUND_NO_BOX = frozenset({"milk", "egg", "wheat", "soy"})
+PERCENT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*%")
 
 
 @dataclass(frozen=True)
@@ -46,6 +48,7 @@ class Leaf:
     en: str = ""
     opaque: bool = False      # 속 모를 양념·국물 원료 (생선 판정 불가의 근거)
     opaque_sesame: bool = False  # 그중 양념·소스 계열 (참깨 판정 불가의 근거도 된다)
+    opaque_meat: bool = False  # 그중 고기 바탕이 이름에 적힌 것 (생선 판정 불가의 근거가 아니다, 가이드 N14)
     compound: bool = False    # 그 밖의 섞은 원료
     flavor_only: bool = False  # 일반 향료 (출처 없는 향료). 어떤 판정의 근거도 아니다
     unknown: bool = False     # 사전에 없는 이름
@@ -108,6 +111,7 @@ def _make_leaf(name: str, order: int, hit) -> Leaf:
     opaque = bool(hit.opaque) and not flavor_only
     return Leaf(name, order, hit.en,
                 opaque=opaque, opaque_sesame=opaque and bool(getattr(hit, "opaque_sesame", False)),
+                opaque_meat=opaque and bool(getattr(hit, "opaque_meat", False)),
                 compound=bool(getattr(hit, "compound", False)) and not flavor_only,
                 flavor_only=flavor_only, unknown=hit.via == "unknown")
 
@@ -178,9 +182,21 @@ class _Collector:
             self.evidence.append(Evidence(name, code, "C", order, hit.en, word=word))
         self.leaves.append(_make_leaf(name, order, hit))
 
+    def is_partial(self, hit, kids: list) -> bool:
+        """가이드 N13: 속 모를 원료의 괄호에 대표 원료 하나와 함량(100% 미만)만 적혀 있으면 배합을 밝힌 것이 아니다.
+
+        '누룽지맛베이스(누룽지분말 42.47%)'처럼 제품 이름에 쓴 원료의 함량만 적은 경우다.
+        """
+        if len(kids) != 1 or not (hit.opaque or getattr(hit, "compound", False)):
+            return False
+        m = PERCENT_RE.search(kids[0].raw or "")
+        return bool(m) and float(m.group(1)) < 100
+
     def add_parent(self, name: str, hit, kids: list) -> None:
         """속이 공개된 원료: 부모 이름에서는 확정(C) 근거만 남기고 자식으로 판단한다."""
         order = self.next_order()
+        if self.is_partial(hit, kids):
+            self.leaves.append(_make_leaf(name, order, hit))       # 속 모를 원료로도 남긴다
         oil = _is_soy_oil(hit) and any(self.is_soy_leaf(k) for k in kids)
         for code, grade in hit.sources:
             keep_oil = oil and _us9(code) == "soy" and grade in ("R", "F")
@@ -270,21 +286,23 @@ def _blind_leaves(allergen: str, leaves: List[Leaf], box_read: bool) -> List[Lea
     by_compound = not box_read and allergen in COMPOUND_NO_BOX
     out = []
     for leaf in leaves:
-        by_opaque = allergen == "fish" or (allergen == "sesame" and leaf.opaque_sesame) or no_box
+        by_fish = allergen == "fish" and not leaf.opaque_meat          # 고기 바탕이 적힌 것은 생선 범위 밖 (N14)
+        by_opaque = by_fish or (allergen == "sesame" and leaf.opaque_sesame) or no_box
         if (leaf.opaque and by_opaque) or (leaf.compound and by_compound):
             out.append(leaf)
     return out
 
 
 def _undecidable(allergen: str, ps: List[Evidence], blind: List[Leaf]) -> AllergenVerdict:
-    kinds = tuple(dict.fromkeys("OPAQUE" if leaf.opaque else "COMPOUND" for leaf in blind))
-    if ps:
-        v = _from_weak(allergen, "undecidable", "POSSIBLE", ps, [leaf.name for leaf in blind])
-        return AllergenVerdict(v.allergen, v.verdict, v.evidence, v.other_evidence, v.basis + kinds,
-                               v.species, v.evidence_en, v.word)
-    first = blind[0]
-    return AllergenVerdict(allergen, "undecidable", first.name, _names([leaf.name for leaf in blind], first.name),
-                           kinds, (), first.en or None)
+    """가능 근거와 속 모를 원료는 같은 세기다. 라벨에서 먼저 나온 것을 대표 근거로 삼는다 (가이드 7장)."""
+    items = [(e.order, 0, "POSSIBLE", e.name, e.en) for e in ps]          # 같은 원재료면 가능 근거를 앞에 둔다
+    items += [(leaf.order, 1, "OPAQUE" if leaf.opaque else "COMPOUND", leaf.name, leaf.en) for leaf in blind]
+    items.sort(key=lambda item: item[:2])
+    _, _, _, name, en = items[0]
+    kinds = tuple(dict.fromkeys(item[2] for item in items))
+    word = next((e.word for e in ps if e.name == name), "")
+    return AllergenVerdict(allergen, "undecidable", name, _names([item[3] for item in items], name),
+                           kinds, _species(ps), en or None, word)
 
 
 def _missing_notes(cs: List[Evidence], box: Box) -> List[str]:

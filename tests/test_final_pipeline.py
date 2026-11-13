@@ -219,13 +219,15 @@ def test_bracket_repairs_are_noted():
 
 # ---------- 팀 분류기 인터페이스 ----------
 def test_final_classifier_grades():
-    names = ["간장", "대두유", "맛베이스", "참기름", "멸치액젓", "향료", "모르는원재료xyz"]
+    names = ["간장", "대두유", "맛베이스", "양념분말", "쇠고기다시", "참기름", "멸치액젓", "향료", "모르는원재료xyz"]
     out = {r.ingredient: r for r in FinalClassifier().classify(names)}
     assert [r.ingredient for r in FinalClassifier().classify(names)] == names
     matches = {n: {m.allergen.value: m.verdict.value for m in r.matches} for n, r in out.items()}
     assert matches["간장"] == {"soy": "confirmed", "wheat": "inferable"}
     assert matches["대두유"] == {} and not out["대두유"].source_unknown
-    assert matches["맛베이스"] == {"fish": "undecidable", "sesame": "undecidable"}
+    assert matches["맛베이스"] == {"fish": "undecidable"}                           # 국물·조미 계열: 생선만
+    assert matches["양념분말"] == {"fish": "undecidable", "sesame": "undecidable"}   # 양념·소스 계열: 참깨도
+    assert matches["쇠고기다시"] == {}                                               # 고기 바탕이 적힌 것 (N14)
     assert matches["참기름"] == {"sesame": "confirmed"}
     assert matches["멸치액젓"] == {"fish": "confirmed"}
     assert out["향료"].source_unknown and out["모르는원재료xyz"].source_unknown
