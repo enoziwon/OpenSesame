@@ -94,7 +94,7 @@ CASES = [
     ("비타민A혼합제제", {"peanut": "P"}),
     # 우유: 미국 기준은 반추동물의 젖 전체
     ("코코아버터", {}), ("코코넛밀크", {}), ("카제인나트륨", {"milk": "C"}), ("유청분말", {"milk": "C"}), ("젖산", {}),
-    ("유산균", {}), ("유산균배양액", {"milk": "I"}), ("식물성크림", {"milk": "I"}), ("산양유", {"milk": "C"}),
+    ("유산균", {}), ("유산균배양액", {"milk": "I"}), ("식물성크림", {"milk": "I", "soy": "F"}), ("산양유", {"milk": "C"}),
     ("염소젖", {"milk": "C"}), ("유당", {"milk": "C"}), ("화이트초콜릿", {"milk": "C"}), ("초콜릿", {"milk": "I"}),
     ("유단백가수분해물", {"milk": "C"}), ("헤미셀룰라아제", {"milk": "P"}),
     # 달걀
@@ -105,9 +105,10 @@ CASES = [
     ("조미김", {"sesame": "I"}), ("만두", {"sesame": "I"}), ("만두시즈닝분말", {}),
     # 생선, 갑각류, 연체류
     ("멸치액젓", {"fish": "C"}), ("액젓", {"fish": "I"}), ("고등어", {"fish": "C"}), ("연육", {"fish": "C"}),
-    ("게맛살", {"fish": "C", "crustacean": "I"}), ("새우젓", {"crustacean": "C"}), ("크릴", {"crustacean": "C"}),
+    ("게맛살", {"fish": "C", "crustacean": "I", "wheat": "I", "egg": "P"}), ("어묵", {"fish": "C", "wheat": "I"}), ("새우젓", {"crustacean": "C"}), ("크릴", {"crustacean": "C"}),
     ("오징어", {}), ("김치", {"fish": "I", "crustacean": "I"}), ("홍어", {"fish": "C"}), ("명란", {"fish": "C"}),
-    ("육수", {"fish": "P"}), ("사골육수", {}), ("닭발육수", {}), ("콜라겐", {"fish": "P"}), ("콜라겐케이싱", {}),
+    ("육수", {"fish": "P"}), ("사골육수", {}), ("닭발육수", {}), ("팜에스테르화유", {}), ("쇼트닝", {"soy": "F"}),
+    ("불고기양념장", {"soy": "I", "wheat": "P"}), ("콜라겐", {"fish": "P"}), ("콜라겐케이싱", {}),
     ("까나리액젓", {"fish": "C", "crustacean": "P"}), ("짬뽕분말", {"crustacean": "P"}),
     # 견과류: 미국 기준은 FDA 표 1의 12종만
     ("아몬드", {"tree_nut": "C"}), ("잣", {"tree_nut": "C"}), ("호두기름", {"tree_nut": "I"}), ("코코넛", {}), ("밤", {}),
@@ -158,7 +159,7 @@ def test_compound_is_not_a_seasoning_type_opaque():
 def test_flavored_names_are_downgraded():
     assert lookup("새우맛분말").us == {"crustacean": "I"}            # 맛 이름은 추정
     assert lookup("명란마요맛시즈닝").us["fish"] == "I"
-    assert lookup("홍게맛살").us == {"fish": "C", "crustacean": "I"}
+    assert lookup("홍게맛살").us == {"fish": "C", "crustacean": "I", "wheat": "I"}     # 맛살류는 대개 밀 전분을 넣는다
     for name, allergen in (("헤이즐넛향", "tree_nut"), ("버터향", "milk"), ("땅콩향", "peanut"), ("참깨향", "sesame"),
                            ("초콜릿향", "milk")):
         hit = lookup(name)                                          # 향료 이름은 가능까지만 (땅콩향의 표시란 근거 7%)

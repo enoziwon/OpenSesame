@@ -13,13 +13,15 @@
 from __future__ import annotations
 
 import csv
+import os
 import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Pattern, Tuple
 
-HERE = Path(__file__).parent
+# 표가 있는 폴더. 평가 때 다른 판의 사전(시험 세트 제조사를 가린 사전 등)으로 바꿔 끼울 수 있게 환경 변수로 덮어쓴다
+HERE = Path(os.environ.get("OPENSESAME_LEXICON_DIR") or Path(__file__).parent)
 ORDER = {"C": 5, "I": 4, "P": 3, "R": 2, "F": 1}      # R(이름에 대두유)이 F(종류 모를 유지)보다 구체적이다
 GRADES = frozenset(ORDER)
 SPECIAL = ("OPAQUE", "COMPOUND", "FLAVOR", "FLAVOR_END", "BENIGN", "BENIGN_END", "STATEMENT", "ORIGIN", "ORIGIN_WORD")   # rules.tsv의 낱말 줄
