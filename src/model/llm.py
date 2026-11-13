@@ -84,6 +84,15 @@ def extract_json(text: str) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def merge_results(parts: list[dict[str, Any]]) -> dict[str, Any]:
+    """여러 tool 호출의 results를 하나로 합친다. 같은 원재료가 두 번 오면 pipeline.validate가 첫 답을 쓴다."""
+    results: list[Any] = []
+    for p in parts:
+        if isinstance(p, dict) and isinstance(p.get("results"), list):
+            results.extend(p["results"])
+    return {"results": results}
+
+
 def parse_tool_output(raw: Any) -> list[IngredientClassification]:
     """LLM 출력을 검사한다. 잘못된 match는 버리고 그 원재료를 source_unknown으로 표시한다."""
     out: list[IngredientClassification] = []
@@ -138,9 +147,9 @@ def _openai_call(
                 kwargs["messages"][0]["content"] = system + TOOL_ONLY_SUFFIX
         resp = client.chat.completions.create(**kwargs)
         msg = resp.choices[0].message
-        for tc in msg.tool_calls or []:
-            if tc.function.name == TOOL_NAME:
-                return extract_json(tc.function.arguments)
+        parts = [extract_json(tc.function.arguments) for tc in (msg.tool_calls or []) if tc.function.name == TOOL_NAME]
+        if parts:
+            return merge_results(parts)  # 결과를 여러 번의 tool 호출로 나눠 보낸 경우 모두 합친다
         return extract_json(msg.content or "")  # tool을 무시하고 글로 답한 경우
 
     return call
@@ -162,10 +171,8 @@ def _anthropic_call(api_key: str, model: str, temperature: float) -> CallFn:
             tool_choice={"type": "tool", "name": TOOL_NAME},
             messages=[{"role": "user", "content": user}],
         )
-        for block in resp.content:
-            if block.type == "tool_use":
-                return dict(block.input)
-        return {}
+        parts = [dict(b.input) for b in resp.content if b.type == "tool_use" and b.name == TOOL_NAME]
+        return merge_results(parts)
 
     return call
 

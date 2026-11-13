@@ -102,3 +102,19 @@ def test_openai_default_tool_choice_is_auto(monkeypatch):
     sent = created["client"].sent
     assert sent["tool_choice"] == "auto"
     assert "report_allergens" in sent["messages"][0]["content"]
+
+
+def test_multiple_tool_calls_are_merged(monkeypatch):
+    import openai
+
+    def tc(name):
+        return types.SimpleNamespace(function=types.SimpleNamespace(
+            name="report_allergens",
+            arguments='{"results": [{"ingredient": "%s", "matches": [], "source_unknown": false}]}' % name,
+        ))
+
+    msg = types.SimpleNamespace(content=None, tool_calls=[tc("정제수"), tc("설탕")])
+    monkeypatch.setattr(openai, "OpenAI", _fake_openai(msg))
+    call = llm._openai_call("http://x", "k", "m", use_tools=True, temperature=0)
+    got = [r["ingredient"] for r in call("s", "u")["results"]]
+    assert got == ["정제수", "설탕"]
