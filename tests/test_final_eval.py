@@ -2,7 +2,7 @@
 
 손으로 계산한 제품 4개짜리 가상의 예(GOLD, 시스템 PRED_A·PRED_B)로 모든 지표 값을 고정한다.
 A가 틀린 곳: p1 fish C→없음(놓침), p1 wheat C→I, p1 milk 없음→I(헛경고), p2 egg I→없음(놓침), p2 fish U→C,
-p3 soy 없음→U(헛경고 아님), p4 peanut 없음→C(헛경고). 근거는 p2 sesame '맛베이스'와 '맛베이스#6'만 불일치.
+p3 soy 없음→U(헛경고 아님), p4 peanut 없음→C(헛경고). 근거는 p2 sesame '맛베이스'와 '조미분말'만 불일치.
 혼동 행렬(행 정답, 열 A; C I U absent): C [4 1 0 1], I [0 1 0 1], U [1 0 1 0], absent [1 1 1 23].
 B = A에서 p1 soy(놓침)·p2 fish(정답 U라 놓침 아님)·p4 peanut을 지우고, p1 fish C·p2 egg I를 더한 것.
 """
@@ -58,7 +58,7 @@ GOLD = [
 PRED_A = [
     resp("p1", [("soy", "confirmed", "대두"), ("wheat", "inferable", "간장"), ("sesame", "confirmed", "참기름"),
                 ("milk", "inferable", "유청")], 1.0),
-    resp("p2", [("milk", "confirmed", "표시란: 우유"), ("sesame", "undecidable", "맛베이스#6"),
+    resp("p2", [("milk", "confirmed", "표시란: 우유"), ("sesame", "undecidable", "조미분말"),
                 ("fish", "confirmed", "멸치")], 2.0),
     resp("p3", [("crustacean", "confirmed", "새우젓"), ("wheat", "inferable", "간장 "),
                 ("soy", "undecidable", "맛베이스")], 3.0, warnings=("경고 하나",)),
@@ -67,7 +67,7 @@ PRED_A = [
 PRED_B = [
     resp("p1", [("wheat", "inferable", "간장"), ("sesame", "confirmed", "참기름"), ("milk", "inferable", "유청"),
                 ("fish", "confirmed", "멸치분말")], 10.0),
-    resp("p2", [("milk", "confirmed", "표시란: 우유"), ("sesame", "undecidable", "맛베이스#6"), ("egg", "inferable", "난각칼슘")], 10.0),
+    resp("p2", [("milk", "confirmed", "표시란: 우유"), ("sesame", "undecidable", "조미분말"), ("egg", "inferable", "난각칼슘")], 10.0),
     resp("p3", [("crustacean", "confirmed", "새우젓"), ("wheat", "inferable", "간장 "), ("soy", "undecidable", "맛베이스")], 10.0),
     resp("p4", [], 10.0),
 ]
@@ -126,7 +126,7 @@ def test_alerts_undecidable_evidence_and_time(m):
     assert (nd(m["alert_recall"]), nd(m["alert_precision"])) == ((8, 10), (8, 11))
     u = m["undecidable"]
     assert [nd(u[k]) for k in ("precision", "recall", "pred_rate", "gold_rate")] == [(1, 2), (1, 2), (2, 36), (2, 36)]
-    assert (nd(m["evidence"]["match"]), m["evidence"]["gold_empty"]) == ((5, 6), 0)    # '맛베이스#6'만 불일치
+    assert (nd(m["evidence"]["match"]), m["evidence"]["gold_empty"]) == ((5, 6), 0)    # p2 sesame의 '조미분말'만 불일치
     assert m["time_ms"] == {"mean": 3.0, "n": 4, "products": 4}
     assert m["warned_products"] == 1 and m["classifiers"] == ["fake"]
 
@@ -219,10 +219,14 @@ def test_bootstrap_is_seeded_and_brackets_the_estimate(files):
     ("간장(대두, 밀)", "간장(대두)", True), ("간장(대두, 밀)", "된장", False), ("참기름 3%", "참기름", True),
     ("참기름3%", "참 기름", True), ("대두 레시틴", "대두레시틴", True), ("비타민B1 0.5%", "비타민B1", True),
     ("소맥분 (밀:미국산)", "소맥분", True), ("혼합조미분말[멸치분말(멸치), 정제소금]", "멸치분말", True),
-    ("혼합조미분말[멸치분말(멸치), 정제소금]", "멸치", False),          # 손자는 보지 않는다
+    ("혼합조미분말[멸치분말(멸치), 정제소금]", "멸치", True),           # 덩어리 안이면 깊이는 따지지 않는다
+    ("크래미[연육(미국산), 소맥전분(밀:미국산), 정제염]", "소맥전분", True), ("크래미[연육(미국산), 소맥전분(밀:미국산)]", "밀", True),
+    ("찌개양념베이스3", "찌개양념베이스", True), ("치즈복합시즈닝-2", "치즈복합시즈닝", True),      # 뒤에 붙은 번호
+    ("소맥분(미국산,호주산)", "면-소맥분", True),                       # 시스템 이름 앞에 남은 머리말
+    ("연유(우유)", "밀크런치", False), ("우리밀", "밀현미", False), ("밀가루", "밀", False),    # 한 글자 이름은 같을 때만
     ("혼합조미분말（멸치분말）", "멸치분말", True),
     ("멸치분말", "혼합조미분말(멸치분말)", False),                      # 시스템 쪽 자식은 보지 않는다
-    ("맛베이스", "맛베이스#6", False), ("표시란: 우유", "표시란: 우유", True), ("표시란: 우유", "표시란:우유", False),
+    ("맛베이스", "맛베이스#6", True), ("맛베이스", "조미분말", False), ("표시란: 우유", "표시란: 우유", True), ("표시란: 우유", "표시란:우유", False),
     ("표시란: 우유", "우유", False), ("우유", "표시란: 우유", False), ("", "", False), ("간장", "", False),
 ])
 def test_evidence_rules(gold, pred, same):
@@ -365,6 +369,20 @@ def test_run_final_feeds_fields_and_writes_lines(files, tmp_path):
     assert calls == [("p1 원재료", "대두, 밀 함유"), ("p2 원재료", "우유 함유"), ("p3 원재료", "새우 함유"), ("p4 원재료", "없음")]
     assert not (tmp_path / "final.jsonl.part").exists()
     assert load_pred(out, gold).products["p1"].classifier == "fake-final"      # 채점 코드가 그대로 읽는다
+
+
+def test_run_final_can_drop_the_declaration(files, tmp_path):
+    run_final = _tool("run_final")
+    gold = load_gold(files[0])
+    seen = []
+
+    def fake(ingredients, declaration):
+        seen.append(declaration)
+        return {"ingredients_text": ingredients, "ingredients": [], "allergens": [], "undecidable_ingredients": [],
+                "warnings": [], "meta": {"ocr_engine": "text", "classifier": "fake", "prompt_version": None}}
+
+    run_final.run(gold.products, fake, tmp_path / "nobox.jsonl", use_box=False)
+    assert seen == [None] * len(gold.products)
 
 
 def test_run_final_stops_with_id_but_without_text(files, tmp_path, monkeypatch):
