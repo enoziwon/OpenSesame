@@ -1,17 +1,23 @@
-"""최종본 파이프라인: 라벨 글자 -> 파서 -> 원재료 사전 -> 판정 -> 팀 응답 형식(넓힌 판).
+"""최종본 파이프라인: 라벨 글자 -> 파서 -> 원재료 사전(+ 모르는 이름 맞추기) -> 판정 -> 팀 응답 형식(넓힌 판).
 
     from src.final.pipeline import analyze_fields, analyze_text
     analyze_text("원재료명: 간장, 설탕, 대두 함유")          # 사진에서 읽은 글자 전체
     analyze_fields("간장, 설탕", "대두 함유")                # HACCP API처럼 원재료명과 표시란이 따로 온 경우
 
 LLM을 쓰지 않는다. 같은 글자를 넣으면 늘 같은 결과가 나온다.
+사전이 모르는 이름은 끝에 붙은 기호를 떼거나 자모 하나가 틀린 오타로 보고 사전 항목과 맞춰 본다(src/final/resolve.py).
+맞춘 것은 참고(notes)에 '오타로 보고 맞춤: 탈지븐유 → 탈지분유'처럼 남는다. 환경 변수 OPENSESAME_FINAL_FUZZY=0이면 끈다.
+OPENSESAME_FINAL_FALLBACK=llm이고 LLM 키가 있을 때만 끝까지 모르는 이름을 팀 LLM 분류기에 묻는다(기본은 꺼짐).
 """
 from __future__ import annotations
 
+import os
+from functools import lru_cache
 from typing import List, Optional, Tuple
 
 from src.common.schema import AnalyzeMeta
 from src.final.parser import parse_label
+from src.final.resolve import Resolver, fallback_from_env
 from src.final.response import FinalAllergenResult, FinalAnalyzeResponse
 from src.final.verdict import AllergenVerdict, Judgement, code_info, judge
 
@@ -30,6 +36,7 @@ BLIND_KO = {"sesame": "한국 라벨은 참깨를 표시하지 않아도 된다"
             "fish": "한국 라벨은 생선 중 고등어만 표시한다"}
 NO_BOX_EN = "the Korean allergen statement was not found"
 NO_BOX_KO = "알레르기 표시란을 찾지 못했다"
+FUZZY_ENV = "OPENSESAME_FINAL_FUZZY"      # 0·off·false·no면 모르는 이름 맞추기(끝 기호 떼기, 오타 맞추기)를 끈다
 
 
 # ---------- 입력 ----------
@@ -49,8 +56,22 @@ def analyze_fields(ingredients: Optional[str], declaration: Optional[str] = None
 
 
 # ---------- 응답 ----------
+def _fuzzy_on() -> bool:
+    return os.environ.get(FUZZY_ENV, "").strip().lower() not in ("0", "off", "false", "no")
+
+
+@lru_cache(maxsize=1)
+def _fallback():
+    """보조 분류기(기본은 없음). 환경 변수는 처음 쓸 때 한 번만 읽는다."""
+    return fallback_from_env()
+
+
 def _respond(parsed, ocr_engine: str, facility: Optional[str]) -> FinalAnalyzeResponse:
-    j = judge(parsed)
+    on = _fuzzy_on()
+    resolver = Resolver(fuzzy=on, codes=on, fallback=_fallback())     # 라벨 하나마다 새로 만든다
+    if resolver.fallback is not None:
+        resolver.resolve_many([m[0] for m in parsed.mentions()])
+    j = judge(parsed, resolve=resolver.resolve)
     return FinalAnalyzeResponse(
         ingredients_text=parsed.ingredients_text,
         ingredients=[n.to_dict() for n in parsed.tree],
@@ -60,7 +81,7 @@ def _respond(parsed, ocr_engine: str, facility: Optional[str]) -> FinalAnalyzeRe
         meta=AnalyzeMeta(ocr_engine=ocr_engine, classifier=CLASSIFIER_NAME, prompt_version=None),
         declaration_text=parsed.declaration_text,
         declared=list(parsed.declared),
-        notes=_notes(j, facility, parsed.repairs),
+        notes=_notes(j, facility, parsed.repairs) + resolver.notes(),
     )
 
 

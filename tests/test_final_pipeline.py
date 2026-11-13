@@ -212,6 +212,18 @@ def test_facility_statement_in_the_ingredient_field_is_not_an_ingredient():
     assert any(n.startswith("같은 시설 문구") and "대두" in n for n in res.notes)
 
 
+def test_unknown_name_with_a_typo_is_matched_and_noted(monkeypatch):
+    """사전에 없는 이름이 자모 하나 틀린 오타면 사전 항목의 판정을 물려받고, 무엇으로 맞췄는지 참고에 남긴다."""
+    res = analyze_fields("정제수, 설탕, 볶음참께", "없음")
+    assert (one(res, "sesame").verdict.value, one(res, "sesame").evidence_ingredient) == ("confirmed", "볶음참께")
+    assert "오타로 보고 맞춤: 볶음참께 → 볶음참깨" in res.notes
+    assert res.undecidable_ingredients == []
+    monkeypatch.setenv("OPENSESAME_FINAL_FUZZY", "0")              # 끄면 모르는 이름으로 남는다
+    off = analyze_fields("정제수, 설탕, 볶음참께", "없음")
+    assert off.allergens == [] and off.undecidable_ingredients == ["볶음참께"]
+    assert not any("맞춤" in n for n in off.notes)
+
+
 def test_bracket_repairs_are_noted():
     res = analyze_text("소스(간장, 설탕")
     assert any("괄호 짝을 1번" in n for n in res.notes)
