@@ -34,7 +34,8 @@ def test_every_code_grade_and_status_in_entries_is_known():
             code, grade = token.rsplit(":", 1)
             assert code in codes, r["name"]
             assert grade in GRADES, r["name"]
-        assert set(r["flags"]) <= set("OVX"), r["name"]
+        assert set(r["flags"]) <= set("OMVX"), r["name"]
+        assert not ("O" in r["flags"] and "M" in r["flags"]), r["name"]     # 양념·국물 계열이면서 그 밖의 섞은 원료일 수는 없다
         assert r["status"] in STATUSES, r["name"]
 
 
@@ -135,20 +136,33 @@ def test_species_is_kept_for_display():
 
 
 def test_opaque_flavor_and_non_ingredient_flags():
-    assert lookup("복합조미식품").opaque and lookup("맛베이스").opaque
+    assert lookup("복합조미식품").opaque and lookup("맛베이스").opaque and lookup("혼합조미분말").opaque
     assert lookup("굴소스").opaque and lookup("굴소스").us == {"soy": "I", "wheat": "I"}
     assert lookup("합성착향료").flavor and not lookup("합성착향료").us
-    assert lookup("헤이즐넛향").flavor and lookup("헤이즐넛향").us == {"tree_nut": "I"}
     assert lookup("알수없음").not_ingredient
     assert not lookup("다시마엑기스").opaque             # 원료 하나의 추출물은 속 모를 원료가 아니다
-    assert lookup("미트인헨서").opaque and lookup("채소밑국물").opaque
+    assert lookup("채소밑국물").opaque and lookup("조미액").opaque
+
+
+def test_compound_is_not_a_seasoning_type_opaque():
+    """가이드 v1 5장: 시즈닝·혼합제제·가공품·믹스는 섞은 원료지만 참깨·생선 판정 불가의 근거가 아니다."""
+    for name in ("시즈닝", "혼합제제", "기타가공품", "허니버터시즈닝", "미트인헨서", "조미건조홍고추", "커피믹스"):
+        hit = lookup(name)
+        assert hit.compound and not hit.opaque, name
+    for name in ("향료", "합성향료", "천연향료", "영양강화제", "향신료"):      # 일반 향료와 용도 이름은 어느 쪽도 아니다
+        hit = lookup(name)
+        assert not hit.opaque and not hit.compound, name
+    assert lookup("조미씨즈닝").opaque and not lookup("조미씨즈닝").compound    # 둘 다 맞으면 양념·국물 계열
 
 
 def test_flavored_names_are_downgraded():
-    assert lookup("새우맛분말").us == {"crustacean": "I"}
+    assert lookup("새우맛분말").us == {"crustacean": "I"}            # 맛 이름은 추정
     assert lookup("명란마요맛시즈닝").us["fish"] == "I"
     assert lookup("홍게맛살").us == {"fish": "C", "crustacean": "I"}
-    assert lookup("초콜릿향").us == {"milk": "P"}
+    for name, allergen in (("헤이즐넛향", "tree_nut"), ("버터향", "milk"), ("땅콩향", "peanut"), ("참깨향", "sesame"),
+                           ("초콜릿향", "milk")):
+        hit = lookup(name)                                          # 향료 이름은 가능까지만 (땅콩향의 표시란 근거 7%)
+        assert hit.flavor and hit.us == {allergen: "P"}, name
 
 
 def test_origin_is_stripped_only_for_place_names():
