@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenSesame 정답 달기</title>
+<!-- 정답지 라벨링 도구. 서버·외부 자원 없이 브라우저에서 이 파일만 연다. 시스템 결과나 사전 판정은 보여 주지 않는다. -->
+<style>
+:root{--fg:#1d1d1f;--muted:#5f6368;--line:#d5d7db;--soft:#f5f6f8;--act:#fff4cc;--set:#eef6ee;--warn:#8a4b00;
+--d1:#1a56c4;--d2:#18794e;--d3:#8a3ffc;--d4:#b3261e;--b1:#edf3fe;--b2:#e6f4ec;--b3:#f3edfe;--b4:#fdeceb}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--fg);background:#fff}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:8px 14px;
+background:var(--soft);border-bottom:1px solid var(--line)}
+h1{font-size:16px;margin:0} h2{font-size:20px;margin:2px 0} h3{font-size:15px;margin:14px 0 4px}
+button,input,textarea{font:inherit}
+button{padding:3px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer}
+button[aria-pressed=true]{background:var(--d1);color:#fff;border-color:var(--d1)}
+:focus-visible{outline:3px solid #f29900;outline-offset:1px}
+kbd{font:12px ui-monospace,Menlo,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;
+padding:0 4px;margin-left:3px;background:#fff;color:var(--muted)}
+#saved{display:inline-block;min-width:12em}
+#status{min-height:1.6em;padding:3px 14px;color:var(--warn)} #warn{background:var(--b4);color:var(--d4);padding:6px 14px}
+main{display:grid;grid-template-columns:minmax(320px,5fr) 7fr;gap:18px;padding:6px 14px} main:focus{outline:none}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+@media (min-width:1101px){main>section:first-child{position:sticky;top:var(--top,56px);align-self:start;max-height:calc(100vh - var(--top,56px) - 8px);overflow:auto}}
+.meta,.keys{color:var(--muted);font-size:14px}
+#ing{font-size:21px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;border:1px solid var(--line);
+border-radius:8px;cursor:text}
+.d1{color:var(--d1);background:var(--b1)} .d2{color:var(--d2);background:var(--b2)}
+.d3{color:var(--d3);background:var(--b3)} .d4{color:var(--d4);background:var(--b4)}
+.word{margin:2px;font-weight:700} .nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.row{display:grid;grid-template-columns:96px 1fr;gap:3px 10px;padding:6px 8px;border:1px solid var(--line);
+border-radius:8px;margin-bottom:6px;scroll-margin:calc(var(--top,56px) + 6px) 0 10px}
+.row.set{background:var(--set)} .row.active{background:var(--act);border-color:#f29900;box-shadow:0 0 0 1px #f29900}
+.row .name{grid-row:span 3;font-weight:700} .row .name small{display:block;font-weight:400;color:var(--muted)}
+.verdicts,.sub{display:flex;flex-wrap:wrap;gap:3px 12px;align-items:center}
+.row input[type=text]{padding:2px 6px;border:1px solid var(--line);border-radius:6px} .ev{width:100%}
+.code{font:12px ui-monospace,Menlo,monospace;padding:1px 6px}
+#notes{width:100%;min-height:56px}
+#guide,#issues{margin:6px 14px 14px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+#issues{border-color:#e0a800;max-height:260px;overflow:auto;background:#fff}
+#guide summary{cursor:pointer;font-weight:700} #guide li{margin:2px 0}
+#guide table{border-collapse:collapse;font-size:14px} #guide td,#guide th{border:1px solid var(--line);padding:2px 8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>OpenSesame 정답 달기</h1>
+  <label>파일 <input type="file" id="file" accept=".jsonl,application/x-ndjson,application/json,text/plain"></label>
+  <label>라벨러 <input type="text" id="annotator" size="8" autocomplete="off"></label>
+  <span id="progress">파일을 여세요 (*_blank.jsonl 또는 작업 중인 jsonl)</span>
+  <progress id="bar" max="1" value="0" aria-hidden="true"></progress>
+  <button type="button" id="todo" aria-pressed="false">미완료만 보기<kbd>u</kbd></button>
+  <button type="button" id="export">내보내기<kbd>Ctrl+S</kbd></button>
+  <button type="button" id="fresh" hidden>저장본 버리고 파일 내용으로 시작</button>
+  <span id="saved" class="keys">자동 저장 대기</span>
+</header>
+<div id="warn" hidden>이 브라우저에서는 자동 저장(localStorage)이 되지 않는다. 자주 내보내기를 누르세요.</div>
+<div id="status" role="status" aria-live="polite"></div>
+<main id="main" tabindex="-1" hidden>
+  <section aria-label="제품 정보">
+    <div class="meta" id="pid"></div>
+    <h2 id="pname"></h2>
+    <div class="meta" id="pkind"></div>
+    <div class="meta" id="pmaker"></div>
+    <div class="nav" id="photos"></div>
+    <h3>원재료명 <span class="keys">글자를 드래그하면 고른 줄의 근거로 들어간다. 색은 괄호 깊이(1 파랑, 2 초록, 3 보라, 4+ 빨강)</span></h3>
+    <div id="ing" tabindex="0" aria-label="원재료명 전문"></div>
+    <h3>표시란 <span class="keys">누르면 고른 줄의 근거가 "표시란: 낱말"이 된다</span></h3>
+    <div id="decl"></div>
+    <div class="meta" id="declraw"></div>
+    <h3><label for="notes">제품 메모 (notes)<kbd>m</kbd></label></h3>
+    <textarea id="notes" placeholder="US-OIL: 대두유 / 표시란 누락 의심 / 같은 시설 문구 원문 등"></textarea>
+    <div class="nav">
+      <button type="button" id="prev">← 이전</button>
+      <button type="button" id="next">다음 →</button>
+      <button type="button" id="complete">완료하고 다음<kbd>Enter</kbd></button>
+      <label><input type="checkbox" id="done"> 이 제품 완료</label>
+    </div>
+    <p class="keys">단축키: 1~9 알레르기 줄 · q 없음 · w 확인됨 · e 추정 · r 판정 불가 · t 근거 입력칸 · h 숨은·유래 · k 표시란에 있음 ·
+      Shift+1~8 근거 코드 · n 예외 메모 · m 제품 메모 · Enter 완료하고 다음 · ←/→ 이전/다음 · u 미완료만 · g 가이드 · Esc 입력칸에서 나오기</p>
+  </section>
+  <section aria-label="미국 9개 알레르기 판정"><div id="rows"></div></section>
+  <datalist id="cands"></datalist>
+</main>
+<section id="issues" hidden aria-live="polite"><h3 id="issues-title"></h3><ul id="issues-list"></ul></section>
+<details id="guide">
+<summary>판정 가이드 요약<kbd>g</kbd> (정답지 가이드 v1의 2·4·5·6·7장)</summary>
+<h3>판정 네 가지 (2장)</h3>
+<ul>
+<li><b>확인됨</b>: 원재료명(괄호 속 하위 원료 포함)에 그 알레르기 원료나 그 단백질이 든 원료가 분명히 적혀 있다. 또는 한국 표시란에 적혀 있다(대두는 R1-1 예외). 예: 참기름→참깨, 멸치분말→생선, 카제인나트륨→우유, 표시란 '새우'→갑각류.</li>
+<li><b>추정</b>: 근거는 있지만 라벨만으로 확정할 수 없다. 그 알레르기 원료가 대개 들어가는 식품이거나, 출처가 적히지 않았지만 대개 그 알레르기 원료에서 얻는 원료다. 예: 하위 원료 없는 간장→밀, 출처 없는 레시틴→대두, 종류 없이 적힌 액젓→생선.</li>
+<li><b>판정 불가</b>: 라벨로는 들었는지 가릴 수 없다. (가) 속을 알 수 없는 양념·국물 계열 원료가 있고 그 알레르기가 한국 표시 의무 밖이다(고등어 외 생선, 양념·소스 계열이면 참깨도). (나) 가능 원료가 있고 그 알레르기를 표시란으로 확인할 수 없다. 예: (가) 맛베이스→고등어 외 생선, 양념분말→생선과 참깨. (나) 바탕 없는 육수→생선, 시리얼→견과류.</li>
+<li><b>없음</b>: 위 셋 어디에도 해당하지 않는다. annotations에 적지 않는다.</li>
+<li>추정과 가능은 근거의 세기로 가른다(N1): 대개 들어가면 추정, 드물지 않지만 대개라고 할 수 없으면 가능. 가능은 판정 이름이 아니다. 가능 근거만 있으면 판정 불가로 달되, 표시란이 덮는 알레르기(우유·달걀·밀·대두·땅콩, 게·새우, 호두·잣, 고등어)는 표시란이 정한다(있으면 확인됨, 없으면 없음).</li>
+<li>알레르기마다 가장 강한 근거 하나를 남긴다(확인됨 &gt; 추정 &gt; 판정 불가). R2·R4가 추정과 판정 불가를 지울 수 있다.</li>
+</ul>
+<h3>한국 표시란 (4장)</h3>
+<table><tr><th>미국 알레르기</th><th>표시란이 덮는 범위</th><th>표시란에 없을 때</th></tr>
+<tr><td>milk, egg, wheat, soy, peanut</td><td>전부</td><td>없다고 본다(R2)</td></tr>
+<tr><td>fish</td><td>고등어만</td><td>고등어만 없다고 본다</td></tr>
+<tr><td>crustacean</td><td>게, 새우만</td><td>게·새우만 없다고 본다(+N12)</td></tr>
+<tr><td>tree_nut</td><td>호두, 잣만</td><td>호두·잣만 없다고 본다</td></tr>
+<tr><td>sesame</td><td>덮지 않는다</td><td>근거가 되지 못한다</td></tr></table>
+<ul>
+<li><b>R1</b>: 표시란에 적힌 항목은 그 알레르기의 확인됨 근거다('새우'→갑각류, '호두'→견과류, '알류'→달걀). 오징어·조개류·메밀처럼 9개 밖은 무시한다. '대두'는 R1-1.</li>
+<li><b>R1-1</b>: 표시란에 대두가 있고 원재료에 대두의 확인됨·추정 근거가 없을 때. 기름(대두유·콩기름·토코페롤, 종류 모를 유지)이 전혀 없으면 확인됨. 종류 모를 유지(식물성유지, 가공유지, 쇼트닝, 마가린 등, '식물성유지(대두)' 포함)가 있거나, 정제유와 함께 가능 원료(유화제 등)·속 모를 원료·섞은 원료(시즈닝·혼합제제 등)가 있으면 추정. 정제유만 있으면 세지 않고 notes에 'US-OIL'. 기름 이름 뒤 괄호의 '대두'는 확인됨으로 세지 않고 이 규칙으로 본다.</li>
+<li><b>R2</b>: 표시란을 읽었고 우유·달걀·밀·대두·땅콩이 표시란에 없으면, 원재료에 확인됨 근거가 없는 한 없음이다. 추정·판정 불가도 지운다(하위 원료 없는 간장이 있어도 표시란에 밀이 없으면 밀은 없음).</li>
+<li><b>R3</b>: 원재료에 확인됨 근거가 있는데 표시란에 없으면 확인됨으로 달고 notes에 '표시란 누락 의심'.</li>
+<li><b>R4</b>: 일부만 덮는 줄(고등어, 게·새우, 호두·잣)은 그 종에만 R2를 쓴다. 다른 생선·갑각류·견과류는 표시란으로 판단하지 않는다. <b>N12</b>: 해물·짬뽕·키토산처럼 어느 갑각류인지 적히지 않은 근거는 표시란에 게와 새우가 둘 다 없으면 지운다. 랍스터·크릴·가재처럼 이름에 적힌 갑각류는 그대로 확인됨. 종류 없이 적힌 액젓의 생선, 종류 없이 적힌 '견과류'는 지우지 않는다.</li>
+</ul>
+<h3>속을 알 수 없는 원료 (5장)</h3>
+<ul>
+<li>하위 원료가 괄호로 적혀 있지 않은 양념·국물 계열 원료다. 두 갈래다. <b>국물·조미 계열</b>(조미분말·조미액·조미료·복합조미식품, 맛베이스 같은 베이스, 스프·스톡·다시·밑국물): 고등어 외 생선만 판정 불가. <b>양념·소스 계열</b>(양념, 소스, 다대기, 혼합 엑기스, 드레싱): 생선과 참깨 판정 불가.</li>
+<li>시즈닝·혼합제제·○○가공품·믹스·향신료 혼합·염지제·풍미유·향미유·영양강화제·증점제·일반 향료는 근거가 아니다. 이름에 알레르기 원료가 드러날 때만 그 판정을 따르고, 가능 원료 표에 있는 이름(비타민A혼합제제 등)은 그 표를 따른다.</li>
+<li>갑각류·견과류는 속 모를 원료만으로는 달지 않는다. 우유·달걀·밀·대두·땅콩은 R2로 판단하므로 판정 불가가 되지 않는다.</li>
+<li>괄호로 하위 원료가 적혀 있으면 하위 원료로 판단한다(N9). 부모 이름이 알레르기 원료면 그것도 확인됨(멸치액젓(식염)→생선). 부모 이름의 추정·가능 근거는 쓰지 않는다(간장(탈지대두, 천일염)의 밀은 근거 없음). 괄호 속이 대두·밀처럼 표시란 낱말뿐이면 속을 밝힌 것이 아니다(N8): 혼합조미분말(대두, 밀)→대두·밀 확인됨 + 고등어 외 생선 판정 불가.</li>
+<li>이름에 알레르기 원료가 든 향료(헤이즐넛향, 참깨향, 버터향, 땅콩향, 새우향)는 가능 근거다(N7). 새우맛분말 같은 '맛' 이름은 추정. 효모추출물은 대상 아님.</li>
+</ul>
+<h3>가능 원료 (6장)</h3>
+<ul>
+<li>육수(바탕이 적히지 않은 것)→생선 · 해물·해산물→생선·갑각류 · 짬뽕→갑각류 · 콜라겐(출처 없음)→생선 · 전분(출처 없음)→밀 · 유화제→대두 · 드레싱→참깨 · 시리얼·그래놀라→견과류 · 알레르기 이름이 든 향료→그 알레르기 · 카라멜→우유 · 합성팽창제·이스트후드→밀 · 비타민A혼합제제→땅콩, 비타민E혼합제제→우유.</li>
+<li>표시란이 덮는 알레르기는 표시란이 정리하므로, 실제로 판정 불가로 남는 것은 주로 생선·참깨·견과류(호두·잣 외)다. 사골·닭·냉면처럼 바탕이 적힌 육수, 소시지 껍질(콜라겐케이싱)은 해당 없음.</li>
+</ul>
+<h3>헷갈리는 원료 (6장)</h3>
+<ul>
+<li>대두유·콩기름·대두경화유, 토코페롤: 대두로 세지 않음(notes 'US-OIL'). 종류 모를 유지: 그 자체로는 근거가 아님(R1-1).</li>
+<li>참기름·볶음참깨유·통참깨참기름: 참깨 확인됨. 추출참깨유: 추정. 땅콩유·호두유·아몬드유: 추정.</li>
+<li>대두레시틴·두유: 대두 확인됨. 레시틴(출처 없음): 대두 추정(R2). 간장·양조간장·혼합간장(하위 원료 없음): 대두 확인됨·밀 추정. 한식간장: 대두 확인됨, 밀 근거 없음. 산분해·효소분해·아미노산간장: 대두 추정·밀 가능. 된장: 대두 확인됨·밀 추정. 고추장: 대두·밀 추정.</li>
+<li>난각칼슘: 달걀 추정. 리소짐: 달걀 확인됨. 유청·카제인·유당·기·산양유·염소젖·양유: 우유 확인됨. 초콜릿·준초콜릿·식물성크림·유산균배양액: 우유 추정(밀크·화이트초콜릿은 확인됨). 카레: 밀·우유 추정.</li>
+<li>액젓·젓갈(종류 없음): 생선 추정, 젓갈은 갑각류도 추정(새우젓은 갑각류 확인됨). 김치(하위 원료 없음): 생선 추정(새우는 표시란으로). 어육·연육·어묵·게맛살·어류 젤라틴·어류 콜라겐: 생선 확인됨. 어유·DHA·EPA: 생선 추정.</li>
+<li>크릴: 갑각류 확인됨. 키토산·글루코사민: 갑각류 추정(게·새우 둘 다 표시란에 없으면 지움). 견과류(종류 없음): 견과류 추정(지우지 않음). 조미김·김자반·만두(하위 원료 없음): 참깨 추정.</li>
+<li>대상 아님: 오징어·문어·조개·굴·전복·홍합, 코코넛·밤·은행·도토리, 보리·맥아·호밀·귀리·메밀, 들깨·들기름, 땅콩호박·코코넛밀크·카카오버터. 같은 시설 문구는 판정에 쓰지 않는다.</li>
+</ul>
+<h3>기록 (7장)</h3>
+<ul>
+<li>근거 원재료: 가장 강한 근거를 라벨에 적힌 그대로. 같은 세기의 근거가 여럿이면 라벨에서 먼저 나온 원재료. 표시란이 근거면 "표시란: 새우"(쌍점 뒤 한 칸).</li>
+<li>숨은·유래(hidden_or_derived): 근거가 복합 원료의 괄호 속에서만 나오거나(혼합조미분말(멸치분말)), 단백질 성분 이름이라 원료 이름이 드러나지 않을 때(카제인나트륨, 유청) 참. 표시란만 근거면 거짓. 표시란에 있음(declared_in_kr): 표시란에 그 항목이 있으면 참.</li>
+<li>근거 코드(legal_basis, 하나 이상): US-SRC 원재료 자체가 알레르기 원료 · US-DER 알레르기 원료에서 나온 단백질 성분 · US-ADD 향료·색소·부수 첨가물 속 알레르기 · US-OIL 고도 정제유라 제외 · US-TN FDA 견과류 12종 표 · KR-DECL 한국 표시란에 적힘 · OPAQUE 속 모를 양념·국물 계열 원료 + 표시 의무 밖 · POSSIBLE 가능 원료 + 표시란으로 확인 불가.</li>
+<li>예외 메모(exception_note): 예외 규칙을 써서 단 판정의 이유(예: 표시란에 대두가 있고 쇼트닝이 있어 대두를 추정으로 단 경우, R1-1). 제품 메모(notes): 'US-OIL: 대두유', '표시란 누락 의심', 같은 시설 문구 원문.</li>
+</ul>
+</details>
+<script id="core">
+// 순수 로직(화면 없음): 읽기, 기록 변환, 스키마 검사, 괄호 깊이 구간. node에서도 그대로 검사한다.
+(function (root) {
+  "use strict";
+  const ALLERGENS = [["milk", "우유"], ["egg", "달걀"], ["fish", "생선"], ["crustacean", "갑각류"], ["tree_nut", "견과류"],
+    ["peanut", "땅콩"], ["wheat", "밀"], ["soy", "대두"], ["sesame", "참깨"]];
+  const VERDICTS = [["none", "없음"], ["confirmed", "확인됨"], ["inferable", "추정"], ["undecidable", "판정 불가"]];
+  const CODES = [["US-SRC", "원재료 자체가 알레르기 원료"], ["US-DER", "알레르기 원료에서 나온 단백질 성분"],
+    ["US-ADD", "향료·색소·부수 첨가물 속 알레르기"], ["US-OIL", "고도 정제유라 제외"], ["US-TN", "FDA 견과류 12종 표"],
+    ["KR-DECL", "한국 표시란에 적힘"],
+    ["OPAQUE", "속을 알 수 없는 양념·국물 계열 원료 + 한국 표시 의무 밖(고등어 외 생선, 양념·소스 계열이면 참깨도)"],
+    ["POSSIBLE", "가능 원료 + 표시란으로 확인 불가"]];
+  const PRODUCT_TYPES = ["snack", "sauce_seasoning", "instant", "frozen", "beverage_dairy", "other"];
+  const MATERIALS = ["foil", "plastic_film", "paper", "can_bottle", "other"];
+  const RECORD_KEYS = ["id", "annotator", "product_type", "package_material", "report_number", "image_files",
+    "ingredients_text", "kr_declared_allergens", "annotations", "notes"];
+  const REQUIRED = ["id", "product_type", "package_material", "ingredients_text", "kr_declared_allergens", "annotations"];
+  const ANN_KEYS = ["allergen", "verdict", "evidence_ingredient", "hidden_or_derived", "declared_in_kr", "legal_basis",
+    "exception_note", "annotator_agreement"];
+  const META_KEYS = ["제품명", "식품유형", "제조사", "표시란 원문"];
+  // 한국 표시란 낱말 -> 미국 9개 (9개 밖인 오징어·조개류·메밀 등은 없다)
+  const DECL_MAP = { "우유": "milk", "알류": "egg", "난류": "egg", "가금류": "egg", "계란": "egg", "달걀": "egg",
+    "메추리알": "egg", "오리알": "egg", "밀": "wheat", "대두": "soy", "콩": "soy", "땅콩": "peanut", "고등어": "fish",
+    "게": "crustacean", "새우": "crustacean", "호두": "tree_nut", "잣": "tree_nut", "아몬드": "tree_nut",
+    "캐슈너트": "tree_nut", "참깨": "sesame" };
+  const OPEN = "([{<〈《【「『", CLOSE = ")]}>〉》】」』";
+  const isStrList = x => Array.isArray(x) && x.every(v => typeof v === "string");
+
+  function parseJsonl(text) {
+    const out = [];
+    String(text).replace(/^﻿/, "").split(/\r?\n/).forEach((line, i) => {
+      if (!line.trim()) return;
+      let rec;
+      try { rec = JSON.parse(line); } catch (e) { throw new Error(`${i + 1}번째 줄이 JSON이 아니다`); }
+      if (!rec || typeof rec !== "object" || Array.isArray(rec) || typeof rec.id !== "string" || !rec.id) {
+        throw new Error(`${i + 1}번째 줄에 id가 없다`);
+      }
+      if (typeof rec.ingredients_text !== "string" || !isStrList(rec.kr_declared_allergens)) {
+        throw new Error(`${i + 1}번째 줄(${rec.id})의 ingredients_text나 kr_declared_allergens가 이상하다`);
+      }
+      out.push(rec);
+    });
+    if (!out.length) throw new Error("레코드가 하나도 없다");
+    return out;
+  }
+
+  function splitNotes(notes) {
+    const meta = {}, metaLines = [], user = [];
+    String(notes || "").split("\n").forEach(line => {
+      const m = line.match(/^([^:]+): (.*)$/);
+      if (m && META_KEYS.includes(m[1]) && !(m[1] in meta)) { meta[m[1]] = m[2]; metaLines.push(line); } else user.push(line);
+    });
+    return { meta, metaLines, user: user.join("\n").trim() };
+  }
+
+  function joinNotes(metaLines, user) {
+    const text = metaLines.concat(String(user || "").trim() ? [String(user).trim()] : []).join("\n");
+    return text || null;
+  }
+
+  function declaredSet(words) {
+    return new Set((words || []).map(w => DECL_MAP[String(w).trim()]).filter(Boolean));
+  }
+
+  function emptyRow(declared) {
+    return { verdict: "none", evidence: "", hidden: false, declared, legal: "", note: "", agreement: null };
+  }
+
+  // 레코드 -> 작업 상태. 이미 단 annotations가 있으면 이어서 단다. 읽다 걸린 문제는 issues에 모은다.
+  function fromRecord(rec) {
+    const declared = declaredSet(rec.kr_declared_allergens), rows = {}, issues = [];
+    ALLERGENS.forEach(([a]) => { rows[a] = emptyRow(declared.has(a)); });
+    (Array.isArray(rec.annotations) ? rec.annotations : []).forEach(an => {
+      if (!an || !rows[an.allergen] || !VERDICTS.some(([v]) => v === an.verdict && v !== "none")) {
+        issues.push(`${rec.id}: 읽지 못한 판정 ${JSON.stringify(an)}`);
+        return;
+      }
+      rows[an.allergen] = { verdict: an.verdict, evidence: String(an.evidence_ingredient || ""),
+        hidden: an.hidden_or_derived === true, legal: String(an.legal_basis || ""), note: String(an.exception_note || ""),
+        declared: typeof an.declared_in_kr === "boolean" ? an.declared_in_kr : declared.has(an.allergen),
+        agreement: typeof an.annotator_agreement === "string" ? an.annotator_agreement : null };
+    });
+    Object.keys(rec).filter(k => !RECORD_KEYS.includes(k)).forEach(k => issues.push(`${rec.id}: 스키마 밖 칸 ${k}는 내보낼 때 빠진다`));
+    const n = splitNotes(rec.notes);
+    return { rec, rows, notes: n.user, metaLines: n.metaLines, meta: n.meta, annotator: String(rec.annotator || ""),
+      done: Boolean(rec.annotator), issues };
+  }
+
+  // 자동 저장본의 작업 한 건을 믿을 수 있는 값만 골라 되살린다.
+  function applyWork(item, work) {
+    if (!work || typeof work !== "object") return item;
+    ALLERGENS.forEach(([a]) => {
+      const w = work.rows && work.rows[a];
+      if (!w || !VERDICTS.some(([v]) => v === w.verdict)) return;
+      item.rows[a] = { verdict: w.verdict, evidence: String(w.evidence || ""), hidden: w.hidden === true,
+        declared: w.declared === true, legal: String(w.legal || ""), note: String(w.note || ""),
+        agreement: typeof w.agreement === "string" ? w.agreement : null };
+    });
+    item.notes = String(work.notes || "");
+    item.annotator = String(work.annotator || "");
+    item.done = work.done === true && item.annotator !== "";
+    return item;
+  }
+
+  // 작업 상태 -> 스키마 레코드. '없음'인 알레르기는 적지 않는다. 완료하지 않은 제품은 annotator가 빈다.
+  function toRecord(item) {
+    const rec = item.rec, annotations = [];
+    ALLERGENS.forEach(([a]) => {
+      const r = item.rows[a];
+      if (r.verdict === "none") return;
+      annotations.push({ allergen: a, verdict: r.verdict, evidence_ingredient: r.evidence.trim(),
+        hidden_or_derived: r.hidden === true, declared_in_kr: r.declared === true, legal_basis: r.legal.trim(),
+        exception_note: r.note.trim() || null, annotator_agreement: r.agreement === undefined ? null : r.agreement });
+    });
+    return { id: rec.id, annotator: item.done ? item.annotator : "", product_type: rec.product_type,
+      package_material: rec.package_material, report_number: rec.report_number === undefined ? null : rec.report_number,
+      image_files: Array.isArray(rec.image_files) ? rec.image_files : [], ingredients_text: rec.ingredients_text,
+      kr_declared_allergens: rec.kr_declared_allergens, annotations, notes: joinNotes(item.metaLines, item.notes) };
+  }
+
+  function checkAnnotation(an, at, seen, errors, warnings) {
+    if (!an || typeof an !== "object") { errors.push(`${at}: 판정 하나가 객체가 아니다`); return; }
+    const where = `${at} ${an.allergen}`;
+    Object.keys(an).filter(k => !ANN_KEYS.includes(k)).forEach(k => errors.push(`${where}: 스키마 밖 칸 ${k}`));
+    ["allergen", "verdict", "evidence_ingredient", "legal_basis"].filter(k => !(k in an))
+      .forEach(k => errors.push(`${where}: 필수 칸 ${k}가 없다`));
+    if (!ALLERGENS.some(([a]) => a === an.allergen)) errors.push(`${where}: 알레르기 이름이 9개 밖이다`);
+    else if (seen.has(an.allergen)) errors.push(`${where}: 같은 알레르기가 두 번 있다`);
+    seen.add(an.allergen);
+    if (!["confirmed", "inferable", "undecidable"].includes(an.verdict)) errors.push(`${where}: 판정 값이 범위 밖이다`);
+    if (typeof an.evidence_ingredient !== "string") errors.push(`${where}: 근거가 글자가 아니다`);
+    else if (!an.evidence_ingredient.trim()) warnings.push(`${where}: 판정이 있는데 근거가 비었다`);
+    if (typeof an.legal_basis !== "string") errors.push(`${where}: legal_basis가 글자가 아니다`);
+    else if (!CODES.some(([c]) => hasCode(an.legal_basis, c))) warnings.push(`${where}: legal_basis에 근거 코드가 없다`);
+    else if (String(an.evidence_ingredient).startsWith("표시란:") && !hasCode(an.legal_basis, "KR-DECL")) {
+      warnings.push(`${where}: 근거가 표시란인데 legal_basis에 KR-DECL이 없다`);
+    }
+    if (/^표시란:(?! \S)/.test(String(an.evidence_ingredient))) warnings.push(`${where}: 표시란 근거는 "표시란: 낱말"(쌍점 뒤 한 칸)로 적는다`);
+    ["hidden_or_derived", "declared_in_kr"].filter(k => k in an && typeof an[k] !== "boolean")
+      .forEach(k => errors.push(`${where}: ${k}는 true/false여야 한다`));
+    ["exception_note", "annotator_agreement"].filter(k => k in an && an[k] !== null && typeof an[k] !== "string")
+      .forEach(k => errors.push(`${where}: ${k}는 글자나 null이어야 한다`));
+  }
+
+  function checkRecord(r, i, ids, errors, warnings) {
+    const at = `${i + 1}번째(${r && r.id})`;
+    if (!r || typeof r !== "object") { errors.push(`${at}: 레코드가 객체가 아니다`); return; }
+    Object.keys(r).filter(k => !RECORD_KEYS.includes(k)).forEach(k => errors.push(`${at}: 스키마 밖 칸 ${k}`));
+    REQUIRED.filter(k => !(k in r)).forEach(k => errors.push(`${at}: 필수 칸 ${k}가 없다`));
+    if (typeof r.id !== "string" || !r.id) errors.push(`${at}: id가 비었다`);
+    else if (ids.has(r.id)) errors.push(`${at}: id가 겹친다`);
+    ids.add(r.id);
+    if ("annotator" in r && typeof r.annotator !== "string") errors.push(`${at}: annotator가 글자가 아니다`);
+    if (!PRODUCT_TYPES.includes(r.product_type)) errors.push(`${at}: product_type 값이 범위 밖이다`);
+    if (!MATERIALS.includes(r.package_material)) errors.push(`${at}: package_material 값이 범위 밖이다`);
+    if ("report_number" in r && r.report_number !== null && typeof r.report_number !== "string") errors.push(`${at}: report_number`);
+    if ("image_files" in r && !isStrList(r.image_files)) errors.push(`${at}: image_files는 글자 목록이어야 한다`);
+    if (typeof r.ingredients_text !== "string") errors.push(`${at}: ingredients_text가 글자가 아니다`);
+    if (!isStrList(r.kr_declared_allergens)) errors.push(`${at}: kr_declared_allergens는 글자 목록이어야 한다`);
+    if ("notes" in r && r.notes !== null && typeof r.notes !== "string") errors.push(`${at}: notes는 글자나 null이어야 한다`);
+    if (!Array.isArray(r.annotations)) { errors.push(`${at}: annotations는 목록이어야 한다`); return; }
+    const seen = new Set();
+    r.annotations.forEach(an => checkAnnotation(an, at, seen, errors, warnings));
+  }
+
+  // 내보낼 레코드 목록 검사: 스키마(필수 칸, 값 범위, 스키마 밖 칸)는 오류, 근거 빔·코드 없음·미완료는 경고.
+  function validate(records) {
+    const errors = [], warnings = [], ids = new Set();
+    records.forEach((r, i) => checkRecord(r, i, ids, errors, warnings));
+    const todo = records.filter(r => r && !r.annotator).map(r => r.id);
+    if (todo.length) warnings.push(`완료하지 않은 제품 ${todo.length}개: ${todo.slice(0, 10).join(", ")}${todo.length > 10 ? " …" : ""}`);
+    return { errors, warnings };
+  }
+
+  function hasCode(text, code) { return String(text).split(/[\s,;/]+/).includes(code); }
+
+  function toggleCode(text, code) {
+    const parts = String(text).split(/[\s,;/]+/).filter(Boolean);
+    return (parts.includes(code) ? parts.filter(p => p !== code) : parts.concat([code])).join(", ");
+  }
+
+  // 원재료 글자를 괄호 깊이가 같은 구간으로 나눈다. 괄호 글자는 안쪽 깊이로 친다.
+  function segments(text) {
+    const out = [];
+    let depth = 0, cur = 0, buf = "";
+    for (const ch of String(text)) {
+      let d = depth;
+      if (OPEN.includes(ch)) { depth += 1; d = depth; } else if (CLOSE.includes(ch)) { d = depth; depth = Math.max(0, depth - 1); }
+      if (d !== cur && buf) { out.push({ text: buf, depth: cur }); buf = ""; }
+      cur = d;
+      buf += ch;
+    }
+    if (buf) out.push({ text: buf, depth: cur });
+    return out;
+  }
+
+  // 괄호 밖 쉼표로 나눈 조각들 (괄호 깊이를 따진다)
+  function splitTop(s) {
+    const parts = [];
+    let depth = 0, start = 0;
+    for (let i = 0; i < s.length; i += 1) {
+      if (OPEN.includes(s[i])) depth += 1; else if (CLOSE.includes(s[i])) depth = Math.max(0, depth - 1);
+      else if (depth === 0 && (s[i] === "," || s[i] === "、")) { parts.push(s.slice(start, i)); start = i + 1; }
+    }
+    parts.push(s.slice(start));
+    return parts;
+  }
+
+  // 근거 입력칸 자동 완성: 쉼표로 나눈 원재료(괄호 내용 포함), 괄호 앞 이름, 괄호 속 원재료, "표시란: 낱말"
+  function candidates(text, declared) {
+    const out = new Set();
+    const walk = (s, level) => splitTop(s).forEach(part => {
+      const p = part.replace(/\s+/g, " ").trim(), i = [...OPEN].map(c => p.indexOf(c)).filter(x => x >= 0).sort((x, y) => x - y)[0];
+      if (!p) return;
+      out.add(p);
+      if (i === undefined || level > 4) return;
+      if (i > 0) out.add(p.slice(0, i).trim());
+      const close = p.lastIndexOf(CLOSE[OPEN.indexOf(p[i])]);
+      walk(close > i ? p.slice(i + 1, close) : p.slice(i + 1), level + 1);
+    });
+    walk(String(text), 0);
+    (declared || []).forEach(w => out.add(`표시란: ${w}`));
+    return [...out].filter(x => x && x.length <= 80);
+  }
+
+  function toJsonl(records) { return records.map(r => JSON.stringify(r)).join("\n") + "\n"; }
+
+  function exportName(name) {
+    return String(name || "gold").replace(/\.jsonl?$/i, "").replace(/_(?:blank|labeled)$/, "") + "_labeled.jsonl";
+  }
+
+  root.LabelCore = { ALLERGENS, VERDICTS, CODES, parseJsonl, splitNotes, joinNotes, declaredSet, fromRecord, applyWork,
+    toRecord, validate, hasCode, toggleCode, segments, candidates, toJsonl, exportName };
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script id="ui">
+// 화면: 파일 열기, 한 제품씩 보여 주기, 단축키, 자동 저장(localStorage, 파일 이름별), 내보내기.
+(function () {
+  "use strict";
+  const C = window.LabelCore, KEY = "opensesame-label-v1:";
+  const $ = id => document.getElementById(id);
+  const S = { file: "", text: "", items: [], index: 0, active: "milk", onlyTodo: false, annotator: "", dirty: false };
+  let saveTimer = null, storageOk = true;
+  const cur = () => S.items[S.index];
+  const status = msg => { $("status").textContent = msg; };
+
+  function store(op, key, value) {
+    try {
+      if (op === "get") return localStorage.getItem(KEY + key);
+      if (op === "set") localStorage.setItem(KEY + key, value); else localStorage.removeItem(KEY + key);
+    } catch (e) {
+      storageOk = false;
+      $("warn").hidden = false;
+      status(`자동 저장 실패: ${e.name}`);
+    }
+    return null;
+  }
+
+  function rowHtml(a, ko, i) {
+    const radios = C.VERDICTS.map(([v, label], j) =>
+      `<label><input type="radio" name="v-${a}" value="${v}">${label}<kbd>${"qwer"[j]}</kbd></label>`).join("");
+    const codes = C.CODES.map(([c, desc], j) =>
+      `<button type="button" class="code" data-code="${c}" title="${desc} (Shift+${j + 1})" aria-pressed="false">${c}</button>`).join("");
+    return `<div class="name"><kbd>${i + 1}</kbd> ${ko}<small>${a}</small></div>
+      <div class="verdicts" role="radiogroup" aria-label="${ko} 판정">${radios}</div>
+      <input type="text" class="ev" list="cands" aria-label="${ko} 근거 원재료" placeholder="근거 원재료: 원재료 글자를 드래그하거나 입력 (t)">
+      <div class="sub"><label><input type="checkbox" class="hid">숨은·유래<kbd>h</kbd></label>
+        <label><input type="checkbox" class="dec">표시란에 있음<kbd>k</kbd></label>${codes}
+        <input type="text" class="legal" size="16" aria-label="${ko} legal_basis" placeholder="legal_basis">
+        <input type="text" class="note" size="22" aria-label="${ko} 예외 메모" placeholder="exception_note (n)"></div>`;
+  }
+
+  function buildRows() {
+    C.ALLERGENS.forEach(([a, ko], i) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.dataset.a = a;
+      row.setAttribute("role", "group");
+      row.setAttribute("aria-label", `${i + 1}번 ${ko} ${a}`);
+      row.innerHTML = rowHtml(a, ko, i);
+      $("rows").appendChild(row);
+    });
+  }
+
+  function setVal(el, v) { if (el !== document.activeElement && el.value !== v) el.value = v; }
+
+  function renderRows() {
+    const it = cur();
+    document.querySelectorAll("#rows .row").forEach(row => {
+      const a = row.dataset.a, r = it.rows[a];
+      row.querySelectorAll("input[type=radio]").forEach(x => { x.checked = x.value === r.verdict; });
+      setVal(row.querySelector(".ev"), r.evidence);
+      setVal(row.querySelector(".legal"), r.legal);
+      setVal(row.querySelector(".note"), r.note);
+      row.querySelector(".hid").checked = r.hidden;
+      row.querySelector(".dec").checked = r.declared;
+      row.querySelectorAll(".code").forEach(b => b.setAttribute("aria-pressed", String(C.hasCode(r.legal, b.dataset.code))));
+      row.classList.toggle("active", a === S.active);
+      row.classList.toggle("set", r.verdict !== "none");
+      row.setAttribute("aria-current", String(a === S.active));
+    });
+  }
+
+  function renderText(it) {
+    const box = $("ing"), list = $("cands");
+    box.textContent = "";
+    C.segments(it.rec.ingredients_text).forEach(seg => {
+      const span = document.createElement("span");
+      if (seg.depth) span.className = "d" + Math.min(seg.depth, 4);
+      span.textContent = seg.text;
+      box.appendChild(span);
+    });
+    list.textContent = "";
+    C.candidates(it.rec.ingredients_text, it.rec.kr_declared_allergens).forEach(c => {
+      const o = document.createElement("option");
+      o.value = c;
+      list.appendChild(o);
+    });
+  }
+
+  function renderSide(it) {
+    const words = it.rec.kr_declared_allergens, decl = $("decl"), photos = $("photos");
+    decl.textContent = words.length ? "" : "적힌 알레르기 없음(표시란을 읽었음)";
+    words.forEach(w => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "word";
+      b.textContent = w;
+      b.addEventListener("click", () => setEvidence(`표시란: ${w}`));
+      decl.appendChild(b);
+    });
+    $("declraw").textContent = it.meta["표시란 원문"] ? `표시란 원문: ${it.meta["표시란 원문"]}` : "";
+    photos.textContent = "";
+    (it.rec.image_files || []).forEach((url, i) => {
+      const ok = /^https?:\/\//i.test(url), el = document.createElement(ok ? "a" : "span");
+      if (ok) Object.assign(el, { href: url, target: "_blank", rel: "noopener noreferrer" });
+      el.textContent = ok ? `라벨 사진 ${i + 1} ↗` : `사진 파일: ${url}`;
+      photos.appendChild(el);
+    });
+  }
+
+  function render() {
+    const it = cur();
+    $("main").hidden = !it;
+    if (!it) return;
+    $("pid").textContent = `${it.rec.id} · ${S.index + 1}번째 / ${S.items.length}${it.done ? " · 완료" : ""}`;
+    $("pname").textContent = it.meta["제품명"] || "(제품명 없음)";
+    $("pkind").textContent = `식품유형: ${it.meta["식품유형"] || "-"} · product_type: ${it.rec.product_type} · 품목보고번호: ${it.rec.report_number || "-"}`;
+    $("pmaker").textContent = it.meta["제조사"] ? `제조사: ${it.meta["제조사"]}` : "";
+    renderText(it);
+    renderSide(it);
+    setVal($("notes"), it.notes);
+    $("done").checked = it.done;
+    renderRows();
+    renderProgress();
+  }
+
+  function renderProgress() {
+    const done = S.items.filter(x => x.done).length;
+    $("progress").textContent = `완료 ${done} / ${S.items.length} (${S.file})`;
+    Object.assign($("bar"), { max: Math.max(S.items.length, 1), value: done });
+    $("todo").setAttribute("aria-pressed", String(S.onlyTodo));
+  }
+
+  function saveNow() {
+    clearTimeout(saveTimer);
+    if (!S.file || !S.items.length) return;
+    const work = S.items.map(x => ({ rows: x.rows, done: x.done, annotator: x.annotator, notes: x.notes }));
+    store("set", "file:" + S.file, JSON.stringify({ v: 1, savedAt: new Date().toISOString(), index: S.index,
+      ids: S.items.map(x => x.rec.id), work }));
+    if (storageOk) $("saved").textContent = `자동 저장 ${new Date().toLocaleTimeString("ko-KR")}`;
+  }
+
+  function changed() {
+    S.dirty = true;
+    renderRows();
+    renderProgress();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveNow, 300);
+  }
+
+  function setActive(a) {
+    S.active = a;
+    renderRows();
+    const row = document.querySelector(`#rows .row[data-a="${a}"]`);
+    if (row) row.scrollIntoView({ block: "nearest" });
+  }
+  function setVerdict(v) { cur().rows[S.active].verdict = v; changed(); }
+  function toggleFlag(f) { const r = cur().rows[S.active]; r[f] = !r[f]; changed(); }
+  function toggleCode(code) { const r = cur().rows[S.active]; r.legal = C.toggleCode(r.legal, code); changed(); }
+
+  function setEvidence(text) {
+    cur().rows[S.active].evidence = text;
+    changed();
+    status(`${C.ALLERGENS.find(x => x[0] === S.active)[1]} 근거: ${text}`);
+  }
+
+  function focusMain() { $("main").focus({ preventScroll: true }); }
+  function focusField(cls) { document.querySelector(`#rows .row[data-a="${S.active}"] .${cls}`).focus(); }
+
+  function setDone(flag) {
+    if (flag && !S.annotator) {
+      status("라벨러 이름을 먼저 넣어 주세요");
+      $("done").checked = false;
+      $("annotator").focus();
+      return false;
+    }
+    Object.assign(cur(), { done: flag, annotator: flag ? S.annotator : cur().annotator });
+    changed();
+    render();
+    return true;
+  }
+
+  function go(step) {
+    const order = S.items.map((x, i) => i).filter(i => !S.onlyTodo || !S.items[i].done || i === S.index);
+    const next = order[order.indexOf(S.index) + step];
+    if (next === undefined) { status(step > 0 ? "마지막 제품이다" : "첫 제품이다"); return; }
+    Object.assign(S, { index: next, active: "milk" });
+    render();
+    saveNow();
+    focusMain();
+    window.scrollTo(0, 0);
+  }
+
+  function completeAndNext() {
+    const it = cur(), empty = C.ALLERGENS.filter(([a]) => it.rows[a].verdict !== "none" && !it.rows[a].evidence.trim());
+    if (!setDone(true)) return;
+    const after = S.items.findIndex((x, i) => i > S.index && !x.done), first = S.items.findIndex(x => !x.done);
+    const next = after >= 0 ? after : first;
+    if (next < 0) { render(); saveNow(); status("모든 제품을 완료했다. 내보내기를 누르세요."); return; }
+    Object.assign(S, { index: next, active: "milk" });
+    render();
+    saveNow();
+    focusMain();
+    window.scrollTo(0, 0);
+    status(empty.length ? `방금 제품에 근거가 빈 줄이 있다: ${empty.map(x => x[1]).join(", ")}` : `${it.rec.id} 완료`);
+  }
+
+  // 자동 저장본을 되살린다. 돌려주는 값: null(사용자가 취소), false(되살린 것 없음), {index, savedAt}
+  function restore(name, items) {
+    const raw = store("get", "file:" + name);
+    if (!raw) return false;
+    let saved = null;
+    try { saved = JSON.parse(raw); } catch (e) { status(`저장본이 깨져 있어 백업하고 파일 내용으로 연다 (${e.name})`); }
+    const same = saved && Array.isArray(saved.ids) && Array.isArray(saved.work) &&
+      saved.ids.join("\n") === items.map(x => x.rec.id).join("\n");
+    if (!same) {
+      if (saved && !confirm("이 파일 이름으로 저장된 진행이 있지만 제품 목록이 다르다. 저장본을 백업으로 옮기고 파일 내용으로 열까?")) return null;
+      store("set", `backup:${name}:${Date.now()}`, raw);
+      store("del", "file:" + name);
+      return false;
+    }
+    items.forEach((x, i) => C.applyWork(x, saved.work[i]));
+    return { index: Math.min(Math.max(Number(saved.index) || 0, 0), items.length - 1), savedAt: saved.savedAt };
+  }
+
+  function openText(name, text, fresh) {
+    const items = C.parseJsonl(text).map(C.fromRecord);
+    const restored = fresh ? false : restore(name, items);
+    if (restored === null) return;
+    Object.assign(S, { file: name, text, items, index: restored ? restored.index : 0, active: "milk", dirty: false });
+    $("fresh").hidden = !restored;
+    $("issues").hidden = true;
+    render();
+    focusMain();
+    const issues = items.reduce((n, x) => n + x.issues.length, 0);
+    status(`${name}: ${items.length}개를 열었다.${restored ? ` 자동 저장본(${restored.savedAt})에서 이어서 단다.` : ""}` +
+      (issues ? ` 읽다 걸린 문제 ${issues}건: ${items.flatMap(x => x.issues).slice(0, 3).join(" / ")}` : ""));
+  }
+
+  function showIssues(errors, warnings) {
+    const list = $("issues-list");
+    list.textContent = "";
+    errors.map(m => `오류: ${m}`).concat(warnings.map(m => `경고: ${m}`)).slice(0, 300).forEach(m => {
+      const li = document.createElement("li");
+      li.textContent = m;
+      list.appendChild(li);
+    });
+    $("issues-title").textContent = `내보내기 검사: 오류 ${errors.length}개, 경고 ${warnings.length}개`;
+    $("issues").hidden = !(errors.length || warnings.length);
+  }
+
+  function doExport() {
+    if (!S.items.length) { status("먼저 파일을 여세요"); return; }
+    saveNow();
+    const records = S.items.map(C.toRecord), check = C.validate(records);
+    showIssues(check.errors, check.warnings);
+    if (check.errors.length && !confirm(`스키마 오류 ${check.errors.length}개(아래 목록). 그래도 내보낼까?`)) return;
+    if (!check.errors.length && check.warnings.length && !confirm(`경고 ${check.warnings.length}개(아래 목록). 내보낼까?`)) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([C.toJsonl(records)], { type: "application/x-ndjson;charset=utf-8" }));
+    a.download = C.exportName(S.file);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    S.dirty = false;
+    status(`내보냈다: ${a.download} (${records.length}개)`);
+  }
+
+  function onRowEvent(e) {
+    const t = e.target, row = t.closest(".row");
+    if (!row || !S.items.length) return;
+    const r = cur().rows[row.dataset.a];
+    S.active = row.dataset.a;
+    if (t.type === "radio") r.verdict = t.value;
+    else if (t.classList.contains("ev")) r.evidence = t.value;
+    else if (t.classList.contains("legal")) r.legal = t.value;
+    else if (t.classList.contains("note")) r.note = t.value;
+    else if (t.classList.contains("hid")) r.hidden = t.checked;
+    else if (t.classList.contains("dec")) r.declared = t.checked;
+    else if (t.classList.contains("code") && e.type === "click") r.legal = C.toggleCode(r.legal, t.dataset.code);
+    else return;
+    changed();
+  }
+
+  function onTyping(e) {
+    const t = e.target;
+    if (e.key === "Escape" || (e.key === "Enter" && t.tagName !== "TEXTAREA")) {
+      setTimeout(() => { t.blur(); focusMain(); }, 0);    // 자동 완성 목록에서 고르는 Enter는 막지 않는다
+    }
+  }
+
+  function toggleTodo() { S.onlyTodo = !S.onlyTodo; renderProgress(); status(S.onlyTodo ? "미완료만 본다" : "모두 본다"); }
+
+  // 한글 입력기가 켜져 있어도 듣도록 글자(e.key)가 아니라 자판 위치(e.code)로 받는다.
+  const KEYS = { Enter: completeAndNext, NumpadEnter: completeAndNext, ArrowRight: () => go(1), ArrowLeft: () => go(-1),
+    KeyQ: () => setVerdict("none"), KeyW: () => setVerdict("confirmed"), KeyE: () => setVerdict("inferable"),
+    KeyR: () => setVerdict("undecidable"), KeyT: () => focusField("ev"), KeyN: () => focusField("note"),
+    KeyM: () => $("notes").focus(), KeyH: () => toggleFlag("hidden"), KeyK: () => toggleFlag("declared"),
+    KeyU: toggleTodo, KeyG: () => { $("guide").open = !$("guide").open; } };
+
+  function onKey(e) {
+    const t = e.target;
+    if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") { e.preventDefault(); doExport(); return; }
+    if (!S.items.length || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+    if (t.matches("textarea, input[type=text], input:not([type])")) { onTyping(e); return; }
+    if (e.key === "Enter" && t.matches("button, a, summary, input[type=file]")) return;    // 버튼은 원래대로 누른다
+    const digit = /^(?:Digit|Numpad)([1-9])$/.exec(e.code), n = digit ? Number(digit[1]) : 0;
+    if (n && e.shiftKey && n <= C.CODES.length) toggleCode(C.CODES[n - 1][0]);
+    else if (n && !e.shiftKey) setActive(C.ALLERGENS[n - 1][0]);
+    else if (KEYS[e.code] && !e.shiftKey) KEYS[e.code]();
+    else return;
+    e.preventDefault();
+  }
+
+  function init() {
+    buildRows();
+    S.annotator = store("get", "annotator") || "";
+    $("annotator").value = S.annotator;
+    $("annotator").addEventListener("input", e => { S.annotator = e.target.value.trim(); store("set", "annotator", S.annotator); });
+    $("file").addEventListener("change", e => {
+      const f = e.target.files[0];
+      e.target.value = "";
+      if (f) f.text().then(text => openText(f.name, text, false)).catch(err => status(`열지 못했다: ${err.message}`));
+    });
+    ["input", "change", "click"].forEach(ev => $("rows").addEventListener(ev, onRowEvent));
+    $("rows").addEventListener("focusin", e => { const row = e.target.closest(".row"); if (row && row.dataset.a !== S.active) setActive(row.dataset.a); });
+    $("ing").addEventListener("mouseup", () => {
+      const sel = window.getSelection(), box = $("ing");
+      if (!sel || sel.isCollapsed || !box.contains(sel.anchorNode) || !box.contains(sel.focusNode)) return;
+      const text = sel.toString().replace(/\s+/g, " ").trim();
+      if (text) setEvidence(text);
+    });
+    $("notes").addEventListener("input", e => { cur().notes = e.target.value; changed(); });
+    $("done").addEventListener("change", e => setDone(e.target.checked));
+    $("prev").addEventListener("click", () => go(-1));
+    $("next").addEventListener("click", () => go(1));
+    $("complete").addEventListener("click", completeAndNext);
+    $("todo").addEventListener("click", toggleTodo);
+    $("export").addEventListener("click", doExport);
+    $("fresh").addEventListener("click", () => {
+      if (!confirm("자동 저장본을 백업으로 옮기고 파일 내용으로 다시 열까?")) return;
+      store("set", `backup:${S.file}:${Date.now()}`, store("get", "file:" + S.file) || "");
+      store("del", "file:" + S.file);
+      try { openText(S.file, S.text, true); } catch (err) { status(`열지 못했다: ${err.message}`); }
+    });
+    const head = document.querySelector("header");
+    const fit = () => document.documentElement.style.setProperty("--top", head.offsetHeight + "px");
+    fit();
+    window.addEventListener("resize", fit);
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(head);    // 머리글 글자가 바뀌어 줄이 늘 때
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("visibilitychange", () => { if (document.hidden) saveNow(); });
+    window.addEventListener("pagehide", saveNow);
+    window.addEventListener("beforeunload", e => { if (!storageOk && S.dirty) { e.preventDefault(); e.returnValue = ""; } });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
