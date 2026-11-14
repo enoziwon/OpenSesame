@@ -41,9 +41,9 @@ npm run dev
 
 ## 실제 LLM 응답 확인
 
-**선행 조건:** BAZE 연결 구현은 아직 미머지 상태인 [백엔드 PR #7](https://github.com/enoziwon/OpenSesame/pull/7)에 있습니다(2026-11-12 확인). 현재 프론트엔드 브랜치의 백엔드는 Anthropic 직접 연결 방식이므로 BAZE 키만 넣어서는 해당 검증을 할 수 없습니다. PR #7을 별도 통합 테스트 브랜치에 반영하거나, 머지 후 최신 백엔드를 받은 다음 진행합니다. PR #7의 `.env.example`에 따라 `LLM_PROVIDER`, `LLM_BASE_URL`, `LLM_MODEL` 등도 설정하고 갱신된 `requirements.txt`를 설치해야 합니다.
+현재 브랜치의 일반 백엔드는 Anthropic 직접 연결 방식입니다. BAZE 검증에는 [평가·개발 실행기 안내](evaluation/README.md)의 `python -m frontend.evaluation.serve_llm`을 사용합니다. 이 실행기는 [백엔드 PR #7](https://github.com/enoziwon/OpenSesame/pull/7) 커밋의 개발 검증용 분류기 사본을 로드하며, 공용 백엔드 파일은 변경하지 않습니다. PR #7 통합 후 임시 사본은 제거할 예정입니다.
 
-루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`과 BAZE에서 각자 발급한 `LLM_API_KEY`를 설정하고 백엔드를 다시 실행합니다. 키는 프론트엔드 환경 변수나 Git에 넣지 않습니다. 위 데모 명령의 `OPENSESAME_CLASSIFIER=mock` 환경 변수도 해제하거나 `llm`으로 변경해야 합니다. 환경 변수가 `.env`보다 우선합니다.
+루트에서 `python -m pip install -r frontend/evaluation/requirements.txt`를 실행하고, 루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`, `OPENSESAME_OCR=mock`, `LLM_PROVIDER=openai`, `LLM_BASE_URL=https://api.baze.co/v1/gateway`, `LLM_MODEL=claude-sonnet-5-5`와 본인 `LLM_API_KEY`를 설정합니다. 이후 위 개발 실행기로 백엔드를 다시 실행합니다. 키는 프론트엔드 환경 변수나 Git에 넣지 않습니다. 개발 실행기는 루트 `.env`를 기존 환경 변수보다 우선하며, 일반 uvicorn 실행과 구분해야 합니다.
 
 OCR을 `mock`으로 유지하면 고정된 OCR 원재료에 대한 실제 LLM 분류만 확인합니다. 사진을 실제로 읽는 검증과는 구분합니다. 결과 화면에서 `confirmed` → `Confirmed`, `inferable` → `Likely`, `undecidable` → `Cannot determine` 표시와 근거 성분, 선택 항목의 주의 안내를 확인합니다. 판정 배지에는 `Safe`를 사용하지 않고, 결과가 없는 항목은 `Not detected`, 분석이 불완전하면 `Cannot determine`으로 표시합니다. 안전 안내의 `Not detected does not mean safe.`는 유지합니다.
 

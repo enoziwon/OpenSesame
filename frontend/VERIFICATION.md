@@ -1,5 +1,15 @@
 # 프론트엔드 검증 보고서 — 2026-11-11
 
+## 실제 LLM 및 평가 스크립트 검증 — 2026-11-14
+
+- BAZE Base URL은 `https://api.baze.co/v1/gateway`입니다. 같은 키로 이전 주소는 401, 현재 주소의 `/models/`는 Bearer·x-api-key 모두 200을 확인했습니다. 키는 출력하거나 커밋하지 않았습니다.
+- 프론트 브라우저에서 파일 업로드 → 실제 `/analyze` 200 → Results 표시 확인. 응답 메타데이터는 `ocr_engine: mock`, `classifier: llm`, `prompt_version: classify_v1`입니다. 해당 호출은 5개 알레르겐 모두 confirmed였으며, 혼합 판정 표시는 구성 응답을 사용하는 별도 브라우저 테스트로 검증했습니다.
+- 현재 브랜치의 일반 백엔드는 Anthropic 직접 연결입니다. PR #7 커밋 `630ec8d`의 분류기 사본을 `frontend/evaluation/gateway_pr7.py`에 두고 개발 실행기로 로드해 검증했습니다. 공용 백엔드 및 API 계약은 변경하지 않았습니다. PR #7 통합 후 임시 사본 제거가 필요합니다.
+- 사진을 읽는 테스트가 아닙니다. 프론트는 고정 Mock OCR 원재료를 실제 LLM으로 분류했습니다. 커피 사진에 맞는 OCR 결과는 검증하지 않았습니다.
+- 별도로 사용자가 검수한 전사 10건을 실제 LLM으로 분류했습니다. 원재료 전사만 보내고 gold 판정·검수 메모는 보내지 않았습니다. 교차 검수 전 라벨과의 예비 비교: TP 14, FN 1, FP 1, TN 74, 재현율 93.3%, 과잉 경고율 1.3%. 베지밀의 땅콩 추가 판정과 육수의 밀 누락은 교차 검수 대상입니다. 사진·전사·gold·실제 예측 파일은 Git에서 제외합니다.
+- 평가 정책 `presence_v1`: confirmed·inferable 양성, gold undecidable 제외, 예측 undecidable은 검출 성공으로 세지 않고 별도 집계. FPR은 FP/(FP+TN)이며 제품×9개 단위입니다. 최종 평가 정책은 팀 합의 필요.
+- 최종 `python -m pytest -q tests frontend/evaluation/tests`: **25개 통과**, 6.40초. 네트워크 없이 지표 계산·입력 오류·CLI·게이트웨이 다중 도구 호출 병합을 검사합니다. 프론트 브라우저 12개 통과 기록은 아래 추가 리뷰 대응 실행 결과이며 이번 Python 추가 후 재실행하지 않았습니다.
+
 ## 추가 리뷰 대응 — 2026-11-14
 
 - My Allergies에 기기·브라우저 저장 안내와 `Clear My Information` 버튼을 추가했습니다. 알레르기 선택 상태와 저장 키만 삭제하며 다른 localStorage 키는 유지합니다.
