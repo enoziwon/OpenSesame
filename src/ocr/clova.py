@@ -153,7 +153,12 @@ def extract_section(segs: list) -> dict:
     def in_col(s):
         w = max(1.0, s["x1"] - s["x0"])
         return _xoverlap(s, {"x0": cx0, "x1": cx1}) > 0.5 * w or (s["x0"] >= cx0 - s["h"] and s["x1"] <= cx1 + 3 * s["h"] and s["x0"] < cx1)
-    cand = [s for s in others if s is not seed and in_col(s) and not FACILITY_RE.search(s["text"])]
+
+    def neighbor_overhang(s):
+        """오른쪽 옆 칸의 글자 조각('·마', '·소' ...)이 칸 경계에 걸친 것. 원재료명 칸의 줄이 아니다."""
+        return s["x1"] > cx1 + 0.5 * s["h"] and s["x0"] > cx1 - 3 * s["h"]
+    cand = [s for s in others if s is not seed and in_col(s) and not neighbor_overhang(s)
+            and not FACILITY_RE.search(s["text"])]
     cand.sort(key=lambda s: s["y0"])
     picked = [seed]
     lab_parts = re.compile(r"^[\s및함량:：()]*$")
@@ -199,27 +204,39 @@ def extract_section(segs: list) -> dict:
             if (o not in picked and o["x0"] >= s["x1"] - s["h"] and o["x0"] - s["x1"] < 8 * s["h"]
                     and _yoverlap(o, s) > 0.5 * min(o["h"], s["h"]) and ALLERGEN_TAIL_RE.search(o["text"])):
                 picked.append(o)
-    # 줄 정렬: 세로로 절반 이상 겹치면 같은 행, 행 안에서는 왼->오
+    # 줄 정렬: 세로로 절반 이상 겹치고 옆으로 나란히 있으면 같은 행, 행 안에서는 왼->오.
+    # 기울어진 사진은 위아래 줄의 상자가 크게 겹치므로, 가로로 포개진 줄은 다른 행으로 본다.
+    def same_row(a, b):
+        side_by_side = _xoverlap(a, b) < 0.5 * min(a["x1"] - a["x0"], b["x1"] - b["x0"])
+        return side_by_side and _yoverlap(a, b) > 0.5 * min(a["h"], b["h"])
+
     picked.sort(key=lambda s: s["y0"])
     rows = []
     for s in picked:
-        if rows and _yoverlap(rows[-1][-1], s) > 0.5 * min(rows[-1][-1]["h"], s["h"]):
+        if rows and same_row(rows[-1][-1], s):
             rows[-1].append(s)
         else:
             rows.append([s])
     ordered = [s for r in rows for s in sorted(r, key=lambda s: s["x0"])]
-    texts = [first_text if s is seed else s["text"] for s in ordered]
-    return {"body": [t for t in texts if t.strip()], "facility": facility}
+    body, spaced = [], []
+    for s in ordered:
+        t = first_text if s is seed else s["text"]
+        if t.strip():
+            body.append(t)
+            # 칸 왼쪽 끝에서 시작하지 않는 줄은 앞 줄에서 넘어온 단어가 아니다 (따로 떨어진 덩어리)
+            spaced.append(s is not seed and s["x0"] > cx0 + 3 * s["h"])
+    return {"body": body, "spaced": spaced, "facility": facility}
 
 
 # ---------- 4) 줄 잇기 ----------
-def join_lines(body: list) -> str:
+def join_lines(body: list, spaced=None) -> str:
+    """spaced[i]가 참이면 i번째 줄은 앞 줄과 떨어진 덩어리라 붙이지 않고 띄운다."""
     out = ""
-    for ln in body:
+    for i, ln in enumerate(body):
         ln = ln.strip()
         if not out:
             out = ln
-        elif ALLERGEN_TAIL_RE.search(ln):           # '밀, 대두 함유' 같은 표시란 줄은 띄어서
+        elif ALLERGEN_TAIL_RE.search(ln) or (spaced and spaced[i]):  # '밀, 대두 함유' 표시란·떨어진 덩어리는 띄어서
             out += " " + ln
         elif re.search(r"[,，、)\]}]$", out) or re.match(r"^[(\[{]", ln):
             out += ln if out.endswith((",", "，", "、")) else " " + ln
@@ -236,7 +253,7 @@ def extract_label(raw: dict) -> dict:
     segs = segments(fields)
     sec = extract_section(segs)
     return {
-        "text": join_lines(sec["body"]),
+        "text": join_lines(sec["body"], sec.get("spaced")),
         "facility": " ".join(sec["facility"]),
         "lines": [s["text"] for s in sorted(segs, key=lambda s: (s["y0"], s["x0"]))],
     }

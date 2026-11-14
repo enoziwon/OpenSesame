@@ -46,6 +46,28 @@ def test_label_vertically_centered_content_above_and_below():
     assert info["text"] == "정제수, 양파(국내산), 카레분(밀, 우유), 강황분말 밀, 우유 함유"
 
 
+def _box_field(text, x, y, w, h):
+    return {"inferText": text, "lineBreak": True,
+            "boundingPoly": {"vertices": [{"x": x, "y": y}, {"x": x + w, "y": y}, {"x": x + w, "y": y + h}, {"x": x, "y": y + h}]}}
+
+
+def test_tilted_photo_with_neighbor_column_bullets():
+    # 구겨진 비닐(p08): 기울어져 위아래 줄 상자가 겹치고, 오른쪽 옆 칸의 '·마' 조각이 칸 경계에 걸침.
+    # 함유 표시는 '밀, 대두,'가 오른쪽 위, '계란, 우유'가 아래 줄, '함유'가 그 오른쪽.
+    f = [
+        _box_field("원료명 *면:밀가루(밀),변성전분,감", 10, 0, 600, 40),
+        _box_field("자전분,정제소금,로스팅조", 10, 24, 600, 40),
+        _box_field("·마", 605, 30, 25, 16),
+        _box_field("미분말,건파,건미역", 10, 48, 600, 40),
+        _box_field("밀, 대두,", 540, 72, 60, 20),
+        _box_field("계란, 우유", 10, 88, 300, 40),
+        _box_field("함유", 560, 90, 40, 20),
+        _box_field("내용량 120g", 10, 140, 200, 20),
+    ]
+    info = extract_label(_raw(f))
+    assert info["text"] == "*면:밀가루(밀), 변성전분, 감자전분, 정제소금, 로스팅조미분말, 건파, 건미역 밀, 대두, 계란, 우유 함유"
+
+
 def test_inline_label_stops_at_next_item():
     f = _line(["원재료명:", "설탕,", "코코아버터(카카오:가나산),", "유청분말(우유)"], 10, 10) + _line(["우유", "함유"], 10, 34)
     f += _line(["소비기한", "2027.01.01"], 10, 58)
