@@ -6,9 +6,11 @@ import { AllergenCard } from "../components/AllergenCard";
 export default function AllergiesPage({
   selected,
   toggle,
+  clear,
 }: {
   selected: Allergen[];
   toggle: (id: Allergen) => void;
+  clear: () => void;
 }) {
   const navigate = useNavigate();
   return (
@@ -29,7 +31,14 @@ export default function AllergiesPage({
             />
           ))}
         </div>
+        <p className="safety-note">
+          Your allergy selections are saved only in this browser on this device
+          and remain after you close it. They are not sent to the server.
+        </p>
         <div className="bottom-actions">
+          <button className="secondary" onClick={clear}>
+            Clear My Information
+          </button>
           <PrimaryButton onClick={() => navigate("/scan")}>
             Next →
           </PrimaryButton>

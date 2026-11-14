@@ -11,6 +11,63 @@ const image = {
     '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50"><rect width="100" height="50" fill="orange"/></svg>',
   ),
 };
+test("clear saved allergy information", async ({ page }) => {
+  await page.goto("/allergies");
+  await expect(
+    page.getByText(/saved only in this browser on this device/),
+  ).toBeVisible();
+  await page.getByRole("checkbox", { name: "Milk", exact: true }).check();
+  await page.evaluate(() => localStorage.setItem("unrelated", "keep"));
+  await page.getByRole("button", { name: "Clear My Information" }).click();
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
+  expect(
+    await page.evaluate(() => localStorage.getItem("opensesame.allergies")),
+  ).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("unrelated"))).toBe(
+    "keep",
+  );
+  await page.reload();
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
+  await page.getByRole("checkbox", { name: "Sesame", exact: true }).check();
+  await page.reload();
+  await expect(
+    page.getByRole("checkbox", { name: "Sesame", exact: true }),
+  ).toBeChecked();
+});
+
+test("successful analysis warns about unclassified ingredients without server warnings", async ({
+  page,
+}) => {
+  await page.goto("/allergies");
+  await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.locator("input[type=file]").nth(1).setInputFiles(image);
+  await page.route("**/analyze", (route) =>
+    route.fulfill({
+      json: {
+        ...sample,
+        ingredients_text: "설탕, 향료",
+        ingredients: ["설탕", "향료"],
+        allergens: [],
+        warnings: [],
+        undecidable_ingredients: ["향료"],
+      },
+    }),
+  );
+  await page.getByRole("button", { name: "Analyze" }).click();
+  await expect(
+    page.locator(".result-row").filter({ hasText: "Peanuts" }),
+  ).toContainText("Not detected");
+  await expect(
+    page.getByText("Analysis needs review", { exact: true }),
+  ).toBeVisible();
+  await expect(page.locator(".analysis-warning")).toContainText(
+    "Results may be incomplete",
+  );
+  await expect(page.locator(".analysis-warning")).toContainText(
+    "Cannot determine the source of: 향료",
+  );
+});
 for (const [width, height] of [
   [375, 812],
   [360, 800],
@@ -153,7 +210,9 @@ test("real FastAPI mock endpoint", async ({ page }) => {
     ocr_engine: "mock",
     classifier: "mock",
   });
-  expect(uploadedBody.match(/Content-Disposition: form-data; name="/g)).toHaveLength(1);
+  expect(
+    uploadedBody.match(/Content-Disposition: form-data; name="/g),
+  ).toHaveLength(1);
   expect(uploadedBody).toContain('name="file"');
   expect(uploadedBody).not.toContain("opensesame.allergies");
   await expect(page.getByText(/Demo analysis/)).toBeVisible();
@@ -204,17 +263,23 @@ test("localStorage survives closing and relaunching Chromium", async () => {
   fs.mkdirSync("test-results", { recursive: true });
   const directory = fs.mkdtempSync("test-results/persistent-profile-");
   let context = await test.step("Launch the first persistent browser", () =>
-    chromium.launchPersistentContext(directory, { headless: true, timeout: 45000 }),
-  );
+    chromium.launchPersistentContext(directory, {
+      headless: true,
+      timeout: 45000,
+    }));
   try {
     let page = await context.newPage();
     await page.goto("http://127.0.0.1:5173/allergies");
     await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
     await page.getByRole("checkbox", { name: "Sesame", exact: true }).check();
-    await test.step("Close the first browser", () => context.close(), { timeout: 45000 });
+    await test.step("Close the first browser", () => context.close(), {
+      timeout: 45000,
+    });
     context = await test.step("Relaunch with the same disk profile", () =>
-      chromium.launchPersistentContext(directory, { headless: true, timeout: 45000 }),
-    );
+      chromium.launchPersistentContext(directory, {
+        headless: true,
+        timeout: 45000,
+      }));
     page = await context.newPage();
     await page.goto("http://127.0.0.1:5173/allergies");
     await expect(
@@ -224,7 +289,9 @@ test("localStorage survives closing and relaunching Chromium", async () => {
       page.getByRole("checkbox", { name: "Sesame", exact: true }),
     ).toBeChecked();
   } finally {
-    await test.step("Close the returning browser", () => context.close(), { timeout: 45000 });
+    await test.step("Close the returning browser", () => context.close(), {
+      timeout: 45000,
+    });
   }
 });
 

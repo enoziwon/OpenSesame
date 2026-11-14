@@ -5,6 +5,10 @@ export function useAllergies() {
   const [selected, setSelected] = useState(profileStorage.read);
   return {
     selected,
+    clear() {
+      profileStorage.clear();
+      setSelected([]);
+    },
     toggle(id: Allergen) {
       setSelected((old) => {
         const next = old.includes(id)

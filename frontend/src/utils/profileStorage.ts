@@ -3,6 +3,13 @@ import type { Allergen } from "../types/analysis";
 // The profile stays in this browser and is never part of an API request.
 const key = "opensesame.allergies";
 export const profileStorage = {
+  clear() {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* In-memory state can still be cleared when storage is blocked. */
+    }
+  },
   read(): Allergen[] {
     try {
       const value: unknown = JSON.parse(localStorage.getItem(key) ?? "[]");
