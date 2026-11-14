@@ -27,3 +27,23 @@ def test_unclosed_bracket_does_not_crash():
 def test_flatten_dedup_order():
     tree = parse("간장(대두, 밀), 소맥분(밀)")
     assert flatten(tree) == ["간장", "대두", "밀", "소맥분"]
+
+
+def test_origin_and_purpose_are_not_ingredients():
+    tree = parse("소맥분(밀:미국산, 호주산), 팜유(말레이시아산), L-글루탐산나트륨(향미증진제)")
+    assert flatten(tree) == ["소맥분", "밀", "팜유", "L-글루탐산나트륨"]
+
+
+def test_ocr_swapped_bracket_types():
+    # OCR이 '{'를 '('로 읽어도 깊이만 맞으면 같은 트리
+    tree = parse("옥수수전분(옥수수:외국산(러시아, 헝가리 등)}, 정백당")
+    assert names(tree) == ["옥수수전분", "정백당"]
+    assert names(tree[0].children) == ["옥수수"]
+
+
+def test_korean_declaration_tail_removed():
+    from src.parser import declared_allergens
+
+    text = "원재료명 및 함량 소맥분(밀), 정제소금 밀, 대두, 우유 함유"
+    assert flatten(parse(text)) == ["소맥분", "밀", "정제소금"]
+    assert declared_allergens(text) == ["밀", "대두", "우유"]
