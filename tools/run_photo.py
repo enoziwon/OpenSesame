@@ -63,11 +63,11 @@ class TextOcr:
 
 
 def make_runner(system: str, classifier_name: str, engine: str):
-    """글자 하나를 받아 응답 dict를 돌려주는 함수."""
+    """(글자 하나를 받아 응답 dict를 돌려주는 함수, 분류기 또는 None)."""
     if system == "final":
         from src.final.pipeline import analyze_text
 
-        return lambda text: analyze_text(text, ocr_engine=engine).model_dump(mode="json")
+        return (lambda text: analyze_text(text, ocr_engine=engine).model_dump(mode="json")), None
     from src.model import get_classifier
     from src.pipeline import analyze
 
@@ -83,7 +83,7 @@ def make_runner(system: str, classifier_name: str, engine: str):
 
         classifier = RetryingClassifier(classifier)
     ocr = TextOcr(engine)
-    return lambda text: analyze(text.encode("utf-8"), "text/plain", ocr=ocr, classifier=classifier).model_dump(mode="json")
+    return (lambda text: analyze(text.encode("utf-8"), "text/plain", ocr=ocr, classifier=classifier).model_dump(mode="json")), classifier
 
 
 def main(argv=None) -> int:
@@ -95,7 +95,7 @@ def main(argv=None) -> int:
     ap.add_argument("--exp-dir", default=str(ROOT / "experiments" / "EXP-003"))
     args = ap.parse_args(argv)
     texts = load_texts(Path(args.exp_dir), args.cond)
-    run = make_runner(args.system, args.classifier, "transcript" if args.cond == "clean" else "clova")
+    run, classifier = make_runner(args.system, args.classifier, "transcript" if args.cond == "clean" else "clova")
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     part = out.with_name(out.name + ".part")
@@ -112,6 +112,8 @@ def main(argv=None) -> int:
                 failed.append(pid)
             f.write(json.dumps({"id": pid, "response": res, "ms": round(ms, 3)}, ensure_ascii=False) + "\n")
             times.append(ms)
+            if getattr(classifier, "out_of_credit", False):
+                raise SystemExit(f"게이트웨이 크레딧이 부족해 {pid}에서 멈춤(402). 쓰다 만 파일: {part}")
     part.replace(out)
     label = args.system if args.system == "final" else f"team/{args.classifier}"
     print(f"{len(times)}장 -> {out} ({label}, {args.cond}, 장당 평균 {sum(times) / len(times):.1f} ms)")

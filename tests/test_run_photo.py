@@ -64,9 +64,9 @@ def test_1st_eval_stops_without_key(tmp_path, monkeypatch):
 
 
 class FakeGatewayError(Exception):
-    """openai SDK의 오류처럼 보이게 모듈 이름만 바꾼 가짜 오류."""
+    """openai SDK의 오류처럼 보이게 모듈 이름만 바꾼 가짜 오류 (호출 한도 429)."""
 
-    status_code = 403
+    status_code = 429
 
 
 FakeGatewayError.__module__ = "openai._exceptions"
@@ -120,3 +120,23 @@ def test_retry_gives_up_after_limit():
     except FakeGatewayError:
         raised = True
     assert raised and inner.calls == 3 and waits == [10, 15]
+
+
+class FakeCreditError(Exception):
+    status_code = 402
+
+
+FakeCreditError.__module__ = "openai._exceptions"
+
+
+def test_retry_stops_on_credit_shortage():
+    tool = load("run_team")
+    waits = []
+    inner = Flaky(5, FakeCreditError())
+    clf = tool.RetryingClassifier(inner, retries=3, sleep=waits.append, log=lambda m: None)
+    try:
+        clf.classify(["간장"])
+        raised = False
+    except FakeCreditError:
+        raised = True
+    assert raised and inner.calls == 1 and waits == [] and clf.out_of_credit

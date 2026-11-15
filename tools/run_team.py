@@ -60,6 +60,7 @@ def load_dotenv(path):
 
 
 RETRY_MODULES = ("openai", "anthropic", "httpx")   # 게이트웨이·네트워크 쪽 오류만 다시 보낸다
+NO_RETRY_CODES = {400, 401, 402, 403, 404, 422}     # 기다려도 풀리지 않는 거절 (402는 크레딧 부족)
 
 
 class RetryingClassifier:
@@ -76,10 +77,12 @@ class RetryingClassifier:
         self.sleep = sleep
         self.log = log or (lambda msg: print(msg, file=sys.stderr, flush=True))
         self.retried = 0
+        self.out_of_credit = False    # 게이트웨이가 크레딧 부족(402)으로 거절하면 참. 실행기가 보고 멈춘다
 
     @staticmethod
     def transient(error):
-        return type(error).__module__.split(".")[0] in RETRY_MODULES
+        code = getattr(error, "status_code", None)
+        return type(error).__module__.split(".")[0] in RETRY_MODULES and code not in NO_RETRY_CODES
 
     def classify(self, ingredients):
         delay = self.wait
@@ -87,6 +90,8 @@ class RetryingClassifier:
             try:
                 return self.inner.classify(ingredients)
             except Exception as e:
+                if getattr(e, "status_code", None) == 402:
+                    self.out_of_credit = True
                 if attempt == self.retries or not self.transient(e):
                     raise
                 code = getattr(e, "status_code", None)
@@ -133,6 +138,9 @@ def run(products, classifier, with_box, out):
                                ensure_ascii=False) + "\n")
             f.flush()
             times.append(ms)
+            if getattr(classifier, "out_of_credit", False):
+                raise SystemExit(f"게이트웨이 크레딧이 부족해 {p.id}에서 멈춤(402). 크레딧을 채우거나 다른 키로 다시 돌릴 것. "
+                                 f"쓰다 만 파일: {part}")
             if i % 10 == 0:
                 print(f"  {i}/{len(products)}", file=sys.stderr, flush=True)
     part.replace(out)
