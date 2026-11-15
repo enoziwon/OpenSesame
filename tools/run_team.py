@@ -10,6 +10,8 @@
 - 팀 파이프라인은 분류에 실패하면 경고만 남기고 알레르기를 비운다. 그런 제품은 모든 알레르기가 absent로 채점되므로
   건수와 id를 알리고 1로 끝난다(파일은 만든다).
 - 화면에는 건수와 시간만 찍는다. 원재료 글자는 찍지 않는다(시험 세트 보호).
+- --classifier llm이면 게이트웨이가 요청을 거절할 때(호출 한도, 일시 장애) 기다렸다가 같은 입력을 다시 보낸다.
+  LLM의 답이 깨져서 난 오류는 다시 보내지 않는다. 서비스에서도 실패로 처리되기 때문이다.
 """
 from __future__ import annotations
 
@@ -57,16 +59,56 @@ def load_dotenv(path):
         os.environ.setdefault(key.strip(), value.strip())
 
 
-def load_classifier(name):
-    """팀 분류기를 만든다. llm이면 .env를 먼저 읽는다."""
+RETRY_MODULES = ("openai", "anthropic", "httpx")   # 게이트웨이·네트워크 쪽 오류만 다시 보낸다
+
+
+class RetryingClassifier:
+    """게이트웨이가 요청을 거절하면(호출 한도, 일시 장애) 기다렸다가 같은 입력을 다시 보낸다.
+
+    LLM의 답이 깨져서 난 오류(파싱 실패 등)는 다시 보내지 않고 그대로 올린다. 답 자체는 바꾸지 않는다.
+    """
+
+    def __init__(self, inner, retries=6, wait=15.0, max_wait=240.0, sleep=time.sleep, log=None):
+        self.inner = inner
+        self.name = inner.name
+        self.prompt_version = getattr(inner, "prompt_version", None)
+        self.retries, self.wait, self.max_wait = retries, wait, max_wait
+        self.sleep = sleep
+        self.log = log or (lambda msg: print(msg, file=sys.stderr, flush=True))
+        self.retried = 0
+
+    @staticmethod
+    def transient(error):
+        return type(error).__module__.split(".")[0] in RETRY_MODULES
+
+    def classify(self, ingredients):
+        delay = self.wait
+        for attempt in range(self.retries + 1):
+            try:
+                return self.inner.classify(ingredients)
+            except Exception as e:
+                if attempt == self.retries or not self.transient(e):
+                    raise
+                code = getattr(e, "status_code", None)
+                self.retried += 1
+                self.log(f"  게이트웨이 거절({type(e).__name__}{' ' + str(code) if code else ''}): "
+                         f"{delay:.0f}초 뒤 다시 보냄 ({attempt + 1}/{self.retries})")
+                self.sleep(delay)
+                delay = min(delay * 2, self.max_wait)
+        raise RuntimeError("unreachable")
+
+
+def load_classifier(name, retries=6):
+    """팀 분류기를 만든다. llm이면 .env를 먼저 읽고, 게이트웨이 거절에 대비해 다시 보내기를 씌운다."""
     from src.model import get_classifier
 
     if name == "llm":
         load_dotenv(ROOT / ".env")
     try:
-        return get_classifier(name)
+        clf = get_classifier(name)
     except (ImportError, RuntimeError, ValueError) as e:
         raise SystemExit(f"분류기 {name}을(를) 준비하지 못함: {type(e).__name__}: {e}") from e
+    return RetryingClassifier(clf, retries=retries) if name == "llm" and retries > 0 else clf
 
 
 def run(products, classifier, with_box, out):
@@ -103,6 +145,7 @@ def main(argv=None):
     ap.add_argument("--out", required=True, help="응답 JSONL 경로 (예: data/raw/eval/team_mock_dev.jsonl)")
     ap.add_argument("--classifier", choices=("mock", "llm"), default="mock", help="팀 분류기 (기본 mock)")
     ap.add_argument("--with-box", action="store_true", help="원재료명 뒤에 표시란을 '…, 밀, 대두 함유'로 붙인다")
+    ap.add_argument("--retries", type=int, default=6, help="게이트웨이가 거절할 때 다시 보내는 횟수 (llm만, 0이면 끔)")
     args = ap.parse_args(argv)
     out = Path(args.out)
     if out.resolve() == Path(args.gold).resolve():
@@ -113,7 +156,7 @@ def main(argv=None):
     except (OSError, EvalInputError) as e:
         print(f"오류: {e}", file=sys.stderr)
         return 2
-    classifier = load_classifier(args.classifier)
+    classifier = load_classifier(args.classifier, args.retries)
     out.parent.mkdir(parents=True, exist_ok=True)
     times, failed = run(gold.products, classifier, args.with_box, out)
     box = "표시란 붙임" if args.with_box else "원재료명만"

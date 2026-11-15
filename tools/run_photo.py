@@ -77,6 +77,11 @@ def make_runner(system: str, classifier_name: str, engine: str):
         classifier = get_classifier(classifier_name)
     except (ImportError, RuntimeError, ValueError) as e:
         raise SystemExit(f"분류기 {classifier_name}을(를) 준비하지 못함: {type(e).__name__}: {e}") from e
+    if classifier_name == "llm":   # 게이트웨이 거절에 대비한 다시 보내기 (run_team.py와 같음)
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from run_team import RetryingClassifier
+
+        classifier = RetryingClassifier(classifier)
     ocr = TextOcr(engine)
     return lambda text: analyze(text.encode("utf-8"), "text/plain", ocr=ocr, classifier=classifier).model_dump(mode="json")
 

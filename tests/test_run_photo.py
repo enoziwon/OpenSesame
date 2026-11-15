@@ -61,3 +61,62 @@ def test_1st_eval_stops_without_key(tmp_path, monkeypatch):
     monkeypatch.delenv("LLM_MODEL", raising=False)
     assert tool.main(["--out-dir", str(tmp_path / "out")]) == 2
     assert not (tmp_path / "out").exists()
+
+
+class FakeGatewayError(Exception):
+    """openai SDK의 오류처럼 보이게 모듈 이름만 바꾼 가짜 오류."""
+
+    status_code = 403
+
+
+FakeGatewayError.__module__ = "openai._exceptions"
+
+
+class Flaky:
+    name = "llm"
+    prompt_version = "classify_v1"
+
+    def __init__(self, fails, error):
+        self.fails, self.error, self.calls = fails, error, 0
+
+    def classify(self, names):
+        self.calls += 1
+        if self.calls <= self.fails:
+            raise self.error
+        return ["ok"]
+
+
+def test_retry_resends_after_gateway_rejection():
+    tool = load("run_team")
+    waits = []
+    inner = Flaky(2, FakeGatewayError())
+    clf = tool.RetryingClassifier(inner, retries=3, wait=15, sleep=waits.append, log=lambda m: None)
+    assert clf.classify(["간장"]) == ["ok"]
+    assert inner.calls == 3 and waits == [15, 30] and clf.retried == 2
+    assert clf.name == "llm" and clf.prompt_version == "classify_v1"
+
+
+def test_retry_does_not_resend_broken_answers():
+    tool = load("run_team")
+    waits = []
+    inner = Flaky(1, ValueError("LLM 답을 읽지 못함"))
+    clf = tool.RetryingClassifier(inner, retries=3, sleep=waits.append, log=lambda m: None)
+    try:
+        clf.classify(["간장"])
+        raised = False
+    except ValueError:
+        raised = True
+    assert raised and inner.calls == 1 and waits == []
+
+
+def test_retry_gives_up_after_limit():
+    tool = load("run_team")
+    waits = []
+    inner = Flaky(10, FakeGatewayError())
+    clf = tool.RetryingClassifier(inner, retries=2, wait=10, max_wait=15, sleep=waits.append, log=lambda m: None)
+    try:
+        clf.classify(["간장"])
+        raised = False
+    except FakeGatewayError:
+        raised = True
+    assert raised and inner.calls == 3 and waits == [10, 15]
