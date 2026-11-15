@@ -41,9 +41,9 @@ npm run dev
 
 ## 실제 LLM 응답 확인
 
-현재 브랜치의 일반 백엔드는 Anthropic 직접 연결 방식입니다. BAZE 검증에는 [평가·개발 실행기 안내](evaluation/README.md)의 `python -m frontend.evaluation.serve_llm`을 사용합니다. 이 실행기는 [백엔드 PR #7](https://github.com/enoziwon/OpenSesame/pull/7) 커밋의 개발 검증용 분류기 사본을 로드하며, 공용 백엔드 파일은 변경하지 않습니다. PR #7 통합 후 임시 사본은 제거할 예정입니다.
+공용 백엔드는 BAZE(OpenAI 호환)와 Anthropic 직접 연결을 지원합니다. 별도 분류기 사본 없이 일반 `python -m uvicorn src.app.main:app --host 127.0.0.1 --port 8000`으로 실행합니다. PowerShell에서는 `python` 대신 `.\.venv\Scripts\python.exe`, Mac/Linux에서는 `.venv/bin/python`을 사용할 수 있습니다. 전사 기반 평가는 [평가 안내](evaluation/README.md)를 참고하세요.
 
-루트에서 `python -m pip install -r frontend/evaluation/requirements.txt`를 실행하고, 루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`, `OPENSESAME_OCR=mock`, `LLM_PROVIDER=openai`, `LLM_BASE_URL=https://api.baze.co/v1/gateway`, `LLM_MODEL=claude-sonnet-5-5`와 본인 `LLM_API_KEY`를 설정합니다. 이후 위 개발 실행기로 백엔드를 다시 실행합니다. 키는 프론트엔드 환경 변수나 Git에 넣지 않습니다. 개발 실행기는 루트 `.env`를 기존 환경 변수보다 우선하며, 일반 uvicorn 실행과 구분해야 합니다.
+루트에서 `python -m pip install -r requirements.txt`를 실행하고, 루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`, `OPENSESAME_OCR=mock`, `LLM_PROVIDER=openai`, `LLM_BASE_URL=https://api.baze.co/v1/gateway`, `LLM_MODEL=claude-sonnet-5-5`와 본인 `LLM_API_KEY`를 설정합니다. 이후 일반 서버를 다시 실행합니다. 키는 프론트엔드 환경 변수나 Git에 넣지 않습니다. 서버는 루트 `.env`보다 기존 프로세스 환경 변수를 우선합니다. 앞서 데모용 `OPENSESAME_CLASSIFIER=mock`을 설정했다면 해당 환경 변수를 제거하거나 `llm`으로 바꾸세요.
 
 OCR을 `mock`으로 유지하면 고정된 OCR 원재료에 대한 실제 LLM 분류만 확인합니다. 사진을 실제로 읽는 검증과는 구분합니다. 결과 화면에서 `confirmed` → `Confirmed`, `inferable` → `Likely`, `undecidable` → `Cannot determine` 표시와 근거 성분, 선택 항목의 주의 안내를 확인합니다. 판정 배지에는 `Safe`를 사용하지 않고, 결과가 없는 항목은 `Not detected`, 분석이 불완전하면 `Cannot determine`으로 표시합니다. 안전 안내의 `Not detected does not mean safe.`는 유지합니다.
 

@@ -1,5 +1,12 @@
 # 프론트엔드 검증 보고서 — 2026-11-11
 
+## 공용 분류기 통합 — 2026-11-15
+
+- 전사 평가와 게이트웨이 테스트를 공용 `src.model.llm`으로 연결하고 임시 분류기 사본과 개발 실행기를 제거했습니다.
+- 일반 `python -m uvicorn src.app.main:app`으로 BAZE를 사용합니다. 서버는 루트 `.env`보다 기존 환경 변수를 우선합니다.
+- 아래 날짜별 기록의 미머지 상태와 임시 사본 사용 설명은 당시 검증 이력입니다.
+- `python -m pytest -q tests frontend/evaluation/tests`: 31개 통과. `git diff --check` 통과. 이번 정리는 외부 API 호출 없이 검증했습니다.
+
 ## 실제 LLM 및 평가 스크립트 검증 — 2026-11-14
 
 - BAZE Base URL은 `https://api.baze.co/v1/gateway`입니다. 같은 키로 이전 주소는 401, 현재 주소의 `/models/`는 Bearer·x-api-key 모두 200을 확인했습니다. 키는 출력하거나 커밋하지 않았습니다.

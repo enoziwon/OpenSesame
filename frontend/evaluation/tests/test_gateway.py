@@ -1,7 +1,7 @@
 import sys
 import types
 
-from frontend.evaluation.gateway_pr7 import _openai_call, parse_tool_output
+from src.model.llm import _openai_call, parse_tool_output
 
 
 def test_gateway_uses_configured_credentials_and_merges_calls(monkeypatch):
