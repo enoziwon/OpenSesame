@@ -198,11 +198,37 @@
 - 입력은 HACCP 자료의 글자(사람이 친 원재료명과 표시란)다. 사진에서 OCR로 읽은 글자로는 재지 않았다.
 - 채점 뒤에 최종본의 코드와 사전은 고치지 않았다(`src/final`에서는 사전 설명서의 문장 하나만 고쳤다). 고치면 고치기 전후 수치를 함께 적는다.
 
-팀 1차와 비교하려면(S9) 키가 있는 팀원이 같은 정답 파일로 아래를 돌린 뒤, 나온 응답 파일을 같은 채점기에 넣는다.
+팀 1차와 비교하려면(S9) 키가 있는 팀원이 main, feat/ocr-clova(#8), 정형식을 합친 임시 브랜치에서 아래 한 줄을 돌린 뒤(빈 양식 test_blank.jsonl을 data/raw/gold/에 넣는다), 나온 응답 파일을 같은 채점기에 넣는다.
+#8의 파서가 끝의 '○○ 함유' 줄을 원재료 목록에서 떼어 내므로, 표시란을 원재료명 뒤에 붙이는 실행(`--with-box`)은 140개 중 134개에서 1차에 들어가는 이름이 같아져 뺐다.
 
-    python tools/run_team.py --gold data/raw/gold/test.jsonl --out data/raw/eval/test/team_llm.jsonl --classifier llm
-    python tools/run_team.py --gold data/raw/gold/test.jsonl --out data/raw/eval/test/team_llm_box.jsonl --classifier llm --with-box
-    python -m src.final.eval --gold data/raw/gold/test.jsonl --pred data/raw/eval/test/final_heldout.jsonl --pred data/raw/eval/test/team_llm.jsonl --pred data/raw/eval/test/team_llm_box.jsonl --out report.md
+    python tools/run_1st_eval.py
+    python -m src.final.eval --gold data/raw/gold/test.jsonl --pred data/raw/eval/test/final_heldout.jsonl --pred <1차 폴더>/team_llm_test.jsonl --out report.md
+
+### 라벨 사진 8장, 사진부터 판정까지 (2026-11-15)
+
+시험 세트는 HACCP 자료의 글자로 쟀다. 사진에서 읽은 글자로도 판정이 버티는지 보려고, 민재 님 EXP-003(PR #8)의 라벨 사진 10장을 썼다.
+사진 하나마다 사람이 옮겨 적은 글자(정답 전사)와 CLOVA OCR이 사진 전체에서 원재료명 칸을 자동으로 뽑은 글자가 있다.
+CLOVA 글자는 PR #8에 저장된 원본 응답에서 `src/ocr/clova.py`로 다시 뽑아 저장된 결과와 10장 모두 같음을 확인했고, CLOVA를 다시 부르지 않았다.
+서버에서 `OPENSESAME_OCR=clova`로 사진을 받으면 최종본에 들어가는 글자가 이것이다.
+
+- 정답: 정답 전사로 가이드 v1.1대로 1차 라벨과 이중 라벨을 따로 달았고, 72개 판정과 근거가 모두 같았다(조정 없음).
+  사진 2장(p06, p07)은 전사에 '○○ 함유' 줄이 없어 가이드 R5대로 정확도 계산에서 뺐다. 정답 8장: 판정 27개(확인됨 18, 추정 2, 판정 불가 7).
+  `data/raw/gold/photo8.jsonl`, SHA-256 `ad8dc482ae8549e58cecfd3b594095e4394898d0548fabd2a00d94a6f55eb43f`. 잠근 뒤에 최종본의 판정을 처음 봤다.
+- 최종본: 코드와 사전은 0b9516b와 같다(그 뒤 src/final에서는 사전 설명서만 바뀌었다). 입력은 사진 글자 한 덩어리이고, 원재료명과 표시란을 나누는 일은 파서가 한다.
+- 도구: `tools/run_photo.py`(응답 만들기), 채점은 `src.final.eval`과 팀 평가 스크립트(`frontend/evaluation`, presence_v1).
+
+| 입력 | 네 범주 정확도 | 놓침 | 헛경고 | presence_v1 재현율 / 과잉 경고율 | 근거 일치 |
+|---|---|---|---|---|---|
+| 정답 전사 | 100% (72/72) | 0/20 | 0/45 | 100% (20/20) / 0% (0/45) | 96.3% (26/27) |
+| CLOVA OCR 글자 | 100% (72/72) | 0/20 | 0/45 | 100% (20/20) / 0% (0/45) | 88.9% (24/27) |
+
+- 10장 전체(90단위)에서 정답 전사와 CLOVA 글자의 판정이 바뀐 곳은 0개다.
+- 판정은 같았지만 파서의 약점이 셋 드러났다. 고치지 않고 기록만 한다.
+  - p01: '녹차풍미유*스프류 :'처럼 쉼표 없이 붙은 구성품 머리말을 '녹차풍미유스프류'라는 원재료 하나로 읽었다. '스프'가 들어 있어 생선 판정 불가의 대표 근거가 됐다(정답은 간장베이스). 판정은 같다.
+  - p08 CLOVA: OCR이 표시란을 '쇠고기돼지고기', '토마토 오징어'처럼 붙여 읽어 표시란의 앞부분(밀, 대두, 계란, 우유)을 원재료로 읽었다. 우유·달걀이 표시란이 아니라 원재료 근거로 잡혔고 판정은 같다.
+  - p04 정답 전사: '원재료명 및 함량 메밀(국산)100% *메밀함유' 한 줄을 통째로 표시란으로 읽어 원재료가 0개가 됐고 '원재료를 읽지 못함' 경고가 붙었다. 메밀은 미국 9개 밖이라 판정은 같지만, 화면에서는 경고 때문에 미검출 칸이 'Cannot determine'으로 바뀐다. CLOVA 글자(항목명 없음)에서는 제대로 읽었다.
+- 8장뿐이라 수치의 구간은 넓다. 판정이 OCR 글자에서도 그대로였다는 것과, 어디서 틀릴 수 있는지를 본 시험으로 읽는다.
+- 팀 1차는 같은 입력으로 돌리면 `tools/run_1st_eval.py`의 사진 단계(LLM 20번 호출)로 함께 잴 수 있다. 아직 돌리지 않았다.
 
 ## 오류 사례 (개발 세트에서 고치기 전에 본 것)
 
