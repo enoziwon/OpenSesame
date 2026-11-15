@@ -34,5 +34,8 @@ def get_ocr(name: Optional[str] = None) -> OcrEngine:
     name = name or os.getenv("OPENSESAME_OCR", "mock")
     if name == "mock":
         return MockOcr()
-    # TODO(김민재): OCR 비교 후 선택한 엔진을 여기에 등록
+    if name == "clova":  # 사진 10장 비교로 선정 (experiments/EXP-003-ocr-compare.md)
+        from src.ocr.clova import ClovaOcr
+
+        return ClovaOcr.from_env()
     raise ValueError(f"알 수 없는 OCR 엔진: {name}")
