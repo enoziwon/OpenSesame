@@ -38,7 +38,19 @@ PURPOSE_WORDS = {
     "피막제", "응고제", "젤형성제", "습윤제", "향료", "착향료",
 }
 
-ORIGIN_RE = re.compile(r"^(국산|국내산|외국산|수입산|[가-힣]{1,8}산)$")
+# 원산지로 보는 나라·지역 이름. '한글+산'을 모두 원산지로 보면 구연산·젖산 같은 원재료가 사라지므로 목록으로 판단한다.
+PLACES = {
+    "국내", "제주", "강원", "경기", "충북", "충남", "전북", "전남", "경북", "경남",
+    "미국", "캐나다", "멕시코", "브라질", "아르헨티나", "칠레", "페루", "에콰도르", "콜롬비아", "파라과이", "우루과이",
+    "호주", "뉴질랜드", "중국", "일본", "대만", "홍콩", "베트남", "태국", "말레이시아", "인도네시아", "필리핀",
+    "미얀마", "캄보디아", "라오스", "싱가포르", "인도", "파키스탄", "스리랑카", "방글라데시", "몽골",
+    "러시아", "우크라이나", "카자흐스탄", "헝가리", "루마니아", "불가리아", "폴란드", "체코", "슬로바키아",
+    "오스트리아", "독일", "프랑스", "덴마크", "네덜란드", "벨기에", "룩셈부르크", "영국", "아일랜드", "스페인",
+    "포르투갈", "이탈리아", "그리스", "스위스", "스웨덴", "노르웨이", "핀란드", "아이슬란드", "세르비아", "크로아티아",
+    "터키", "튀르키예", "이스라엘", "이란", "이집트", "모로코", "남아공", "남아프리카공화국", "가나", "코트디부아르",
+    "나이지리아", "케냐", "에티오피아", "탄자니아", "마다가스카르", "우간다", "유럽",
+}
+ORIGIN_RE = re.compile(r"^(국산|외국산|수입산|(" + "|".join(sorted(PLACES, key=len, reverse=True)) + r")산)$")
 RATIO_RE = re.compile(r"^\d+(\.\d+)?\s*%$")
 
 
@@ -94,8 +106,8 @@ def _is_origin_text(s: str) -> bool:
     head_name, _, _ = _bracket_groups(head)
     if ORIGIN_RE.match(head_name):
         return True
-    words = [w.strip() for w in split_top(s, SEPARATORS)]
-    return bool(words) and all(ORIGIN_RE.match(w) or w.endswith(" 등") or w == "등" for w in words)
+    words = [re.sub(r"\s*등$", "", w.strip()) for w in split_top(s, SEPARATORS)]
+    return bool(words) and all(not w or ORIGIN_RE.match(w) or w in PLACES for w in words)
 
 
 def _new_node(name):
@@ -143,6 +155,9 @@ def parse_item(item: str):
         else:
             node["name"] = (node["name"] + " " + tail).strip()
     for a in alts[1:]:
+        if _is_origin_text(a):  # '대두유/외국산', '밀/미국산' -> 원산지
+            node["meta"]["origin"].append(a.strip())
+            continue
         a_name, a_groups, _ = _bracket_groups(a)
         node["aliases"].append(a_name)
         for g in a_groups:
@@ -151,7 +166,14 @@ def parse_item(item: str):
 
 
 def parse_list(text: str):
-    return [parse_item(p) for p in split_top(text, SEPARATORS)]
+    nodes = []
+    for p in split_top(text, SEPARATORS):
+        # '밀/미국산, 캐나다산': 원산지 나열이 쉼표로 이어진 것 -> 앞 원재료의 원산지에 붙인다
+        if nodes and nodes[-1]["meta"]["origin"] and _is_origin_text(p):
+            nodes[-1]["meta"]["origin"].append(p.strip())
+            continue
+        nodes.append(parse_item(p))
+    return nodes
 
 
 def extract_declared(text: str):

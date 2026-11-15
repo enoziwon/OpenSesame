@@ -34,6 +34,18 @@ def test_origin_and_purpose_are_not_ingredients():
     assert flatten(tree) == ["소맥분", "밀", "팜유", "L-글루탐산나트륨"]
 
 
+def test_slash_origin_is_not_ingredient():
+    # '밀/미국산, 캐나다산', '대두유/외국산': / 뒤와 이어지는 원산지는 원재료가 아니다
+    tree = parse("밀가루[밀/미국산, 캐나다산], 대두유/외국산, 코코넛밀크(태국)")
+    assert flatten(tree) == ["밀가루", "밀", "대두유", "코코넛밀크"]
+
+
+def test_acid_names_are_not_origin():
+    # '○○산'이라도 나라·지역이 아니면 원재료 (구연산, 젖산)
+    tree = parse("산도조절제(구연산, 젖산), 설탕")
+    assert names(tree[0].children) == ["구연산", "젖산"]
+
+
 def test_ocr_swapped_bracket_types():
     # OCR이 '{'를 '('로 읽어도 깊이만 맞으면 같은 트리
     tree = parse("옥수수전분(옥수수:외국산(러시아, 헝가리 등)}, 정백당")
