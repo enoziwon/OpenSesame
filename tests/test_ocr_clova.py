@@ -36,6 +36,31 @@ def test_table_label_left_with_nutrition_column_right():
     assert "땅콩" in info["facility"] and "같은 제조시설" in info["facility"]
 
 
+def _rotate(fields, deg):
+    """사진을 손에 들고 비스듬히 찍은 것처럼 모든 좌표를 deg도 돌린다."""
+    import math
+
+    a = math.radians(deg)
+    for fld in fields:
+        for v in fld["boundingPoly"]["vertices"]:
+            x, y = v["x"], v["y"] + 400  # 돌려도 좌표가 음수로 가지 않게
+            v["x"], v["y"] = x * math.cos(a) - y * math.sin(a) + 400, x * math.sin(a) + y * math.cos(a)
+    return fields
+
+
+def test_rotated_photo_same_result():
+    # 썬칩 사진처럼 약 25도 기울어진 사진에서도 똑바른 사진과 같은 결과 (기울면 주의사항 줄을 원재료로 잡던 문제)
+    for deg in (-25, 25):
+        f = []
+        f += _line(["원재료명"], 10, 40)
+        f += _line(["통옥수수(호주산),", "통밀(미국산),", "설탕,", "쌀"], 120, 40)
+        f += _line(["밀,", "달걀,", "우유,", "대두", "함유"], 120, 64)
+        f += _line(["·", "땅콩,", "호두,", "복숭아와", "같은", "제조시설에서", "제조"], 120, 100)
+        f += _line(["품목보고번호"], 10, 130) + _line(["201806030221"], 120, 130)
+        info = extract_label(_raw(_rotate(f, deg)))
+        assert info["text"] == "통옥수수(호주산), 통밀(미국산), 설탕, 쌀 밀, 달걀, 우유, 대두 함유", deg
+
+
 def test_label_vertically_centered_content_above_and_below():
     f = []
     f += _line(["보관방법"], 10, 0) + _line(["실온보관"], 120, 0)

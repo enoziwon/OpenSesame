@@ -14,7 +14,9 @@ from __future__ import annotations
 
 import base64
 import json
+import math
 import re
+import statistics
 import time
 import urllib.error
 import urllib.request
@@ -47,14 +49,32 @@ def call_clova(image_bytes: bytes, fmt: str, url: str, secret: str, lang: str = 
 
 
 # ---------- 2) CLOVA 줄(segment) 만들기 ----------
-def _box(field):
-    xs = [v.get("x", 0) for v in field["boundingPoly"]["vertices"]]
-    ys = [v.get("y", 0) for v in field["boundingPoly"]["vertices"]]
+def skew_angle(fields: list) -> float:
+    """글자 상자 윗변의 기울기 중앙값(라디안). 손에 들고 비스듬히 찍은 사진(썬칩 약 25도) 보정용."""
+    angles = []
+    for f in fields:
+        v = f["boundingPoly"]["vertices"]
+        dx = v[1].get("x", 0) - v[0].get("x", 0)
+        dy = v[1].get("y", 0) - v[0].get("y", 0)
+        if math.hypot(dx, dy) > 20:  # 너무 짧은 글자 상자는 기울기가 부정확
+            angles.append(math.atan2(dy, dx))
+    return statistics.median(angles) if angles else 0.0
+
+
+def _box(field, cos_a=1.0, sin_a=0.0):
+    """글자 상자를 (기울기만큼 되돌린 좌표에서) 축에 맞춘 사각형으로."""
+    pts = [(v.get("x", 0), v.get("y", 0)) for v in field["boundingPoly"]["vertices"]]
+    xs = [x * cos_a + y * sin_a for x, y in pts]
+    ys = [-x * sin_a + y * cos_a for x, y in pts]
     return min(xs), min(ys), max(xs), max(ys)
 
 
 def segments(fields: list) -> list:
-    """CLOVA가 lineBreak로 끊어 준 '한 줄' 단위. 칸(열)이 다르면 줄도 따로 나온다."""
+    """CLOVA가 lineBreak로 끊어 준 '한 줄' 단위. 칸(열)이 다르면 줄도 따로 나온다.
+    사진이 2도 넘게 기울어 있으면 좌표를 똑바로 돌려서 계산한다 (위아래·같은 높이 판단이 기울기에 깨지지 않게).
+    """
+    a = skew_angle(fields)
+    cos_a, sin_a = (math.cos(a), math.sin(a)) if abs(math.degrees(a)) >= 2 else (1.0, 0.0)
     out, cur = [], []
     for f in fields:
         cur.append(f)
@@ -65,7 +85,7 @@ def segments(fields: list) -> list:
         out.append(cur)
     segs = []
     for s in out:
-        bs = [_box(f) for f in s]
+        bs = [_box(f, cos_a, sin_a) for f in s]
         x0, y0 = min(b[0] for b in bs), min(b[1] for b in bs)
         x1, y1 = max(b[2] for b in bs), max(b[3] for b in bs)
         segs.append({"x0": x0, "y0": y0, "x1": x1, "y1": y1, "h": max(1.0, y1 - y0),
