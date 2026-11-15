@@ -113,7 +113,7 @@ def _make_leaf(name: str, order: int, hit) -> Leaf:
                 opaque=opaque, opaque_sesame=opaque and bool(getattr(hit, "opaque_sesame", False)),
                 opaque_meat=opaque and bool(getattr(hit, "opaque_meat", False)),
                 compound=bool(getattr(hit, "compound", False)) and not flavor_only,
-                flavor_only=flavor_only, unknown=hit.via == "unknown")
+                flavor_only=flavor_only, unknown=hit.via in ("unknown", "suspect"))   # suspect: 앞부분 오타로 보이는 이름
 
 
 # ---------- 1절: 원재료마다 근거 모으기 ----------

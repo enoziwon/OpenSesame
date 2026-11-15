@@ -52,7 +52,7 @@ class FinalClassifier:
             if getattr(hit, "opaque_sesame", False):
                 _keep_stronger(best, Allergen.sesame, Verdict.undecidable)
         matches = [AllergenMatch(allergen=a, verdict=best[a]) for a in Allergen if a in best]
-        unknown = hit.via == "unknown" or general_flavor
+        unknown = hit.via in ("unknown", "suspect") or general_flavor     # suspect: 앞부분 오타로 보이는 이름 (resolve.py)
         return IngredientClassification(ingredient=name, matches=matches, source_unknown=unknown)
 
 

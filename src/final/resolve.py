@@ -21,6 +21,15 @@
 5. 알레르기 판정을 바꾸는 항목(9개 출처, 속 모를·섞은 원료)은 4음절 이상, 자모 거리 1일 때만 물려준다.
 6. 라벨 이름이 오타가 아니라 다른 실제 이름으로 보이면 맞추지 않는다 (looks_real).
 보조 분류기(팀 Classifier, 예: LLM)는 resolve_many에서 끝까지 모르는 이름만 모아 한 번 부르고, 확정은 추정으로 낮춘다.
+
+규칙으로 찾은 이름도 앞부분 오타를 살핀다. '땅공버터'는 끝의 '버터' 규칙에 걸려 우유로만 읽히고 '땅공'(땅콩의 오타)이 묻힌다.
+7. 규칙이 설명하지 못한 조각(사전도 모르는 두 음절 이상)이 있고, 이름 전체가 사전 항목과 자모 하나만 다르며(4음절 이상),
+   그 항목에 규칙 결과에 없는 알레르기가 있으면 그 항목으로 맞춘다 (typo_behind_rule). 나머지 조건은 위 3·6과 같다.
+8. 아니면 그 조각이 알레르기 낱말(규칙의 확정·추정 포함어)과 음절 수가 같고 자모 하나만 다르면, 그 알레르기를 '가능'으로 더하고
+   이름을 판정 불가 원재료에 넣는다 (suspect_typo, via 'suspect'). '피너버터' -> 땅콩 가능. 조각이 다른 실제 이름으로 보이면 하지 않는다.
+   '새우가루'의 '가루'처럼 알레르기 낱말과 가깝지 않은 조각은 그대로 둔다. 이름 전체가 사전 항목의 오타로 보이면(7의 거리 조건)
+   조각을 따로 보지 않는다. '대두산백'은 대두단백의 오타이지 '난백'이 든 이름이 아니다.
+   두 음절 조각은 우유·계란·땅콩·피넛·호두·참깨처럼 알레르기의 대표 이름(SHORT_HEADS)과만 견준다.
 보조 분류기가 '9개와 관계없다'고 답한 이름은 모르는 이름으로 그대로 둔다. 확인할 수 없는 답으로 모르는 이름을 지우지 않는다.
 """
 from __future__ import annotations
@@ -35,13 +44,18 @@ from functools import lru_cache
 from typing import Dict, FrozenSet, List, NamedTuple, Optional, Sequence, Tuple
 
 from src.final.jamo import distance, is_syllable, syllables, to_jamo
-from src.final.lexicon import HERE, ORDER, Lookup, lookup, norm, strip_origin
+from src.final.lexicon import HERE, ORDER, Lookup, allergen_words, lookup, norm, source_info, strip_origin, unexplained_parts
 from src.final.parser.names import KEEP_CODE_RE
 
 # 정규화한 이름(소문자, 이음표·공백 없음) 끝의 관리 기호: tk, ii, ht / 53bx, 2 / s101
 CODE_TAIL_RE = re.compile(r"(?<=[가-힣])(?:[a-z]{1,3}\d{0,2}|\d{1,2}[a-z]{0,2}|[a-z]\d{1,3})$")
 CODE_VIA = ("entry", "benign")       # 기호를 뗀 이름이 이것으로 찾아질 때만 받는다
 NOTE_HEAD = {"code": "끝 기호를 떼고 맞춤", "fuzzy": "오타로 보고 맞춤"}
+US9_KO = {"milk": "우유", "egg": "달걀", "fish": "생선", "crustacean": "갑각류", "tree_nut": "견과류", "peanut": "땅콩",
+          "wheat": "밀", "soy": "대두", "sesame": "참깨"}
+# 두 음절 조각은 9개 알레르기의 대표 이름의 오타일 때만 본다. 두 음절 낱말은 진짜 낱말끼리 한 글자 차이인 경우가 많다
+# (2026년 자료에서 육장/유장, 버거/버터, 타요/마요, 로기/조기, 에쓰/에그가 걸렸다)
+SHORT_HEADS = frozenset({"우유", "밀크", "계란", "달걀", "새우", "땅콩", "피넛", "호두", "대두", "참깨", "소맥"})
 MIN_SYLLABLES = 3          # 이보다 짧은 이름은 맞추지 않는다
 MIN_SYLLABLES_RISKY = 4    # 알레르기 판정을 바꾸는 항목으로 맞출 때의 최소 음절 수
 LONG_SYLLABLES = 5         # 이 음절 수부터 자모 거리 2까지 후보로 본다 (판정이 갈리는지 살피는 범위)
@@ -64,6 +78,15 @@ class Match(NamedTuple):
     target: str          # 맞춘 사전 항목 이름
     distance: int        # 자모 거리
     hit: Lookup          # 물려준 결과 (name은 라벨 이름, via는 'fuzzy')
+
+
+class Suspect(NamedTuple):
+    """규칙이 설명하지 못한 조각이 알레르기 낱말의 오타로 보이는 경우."""
+    name: str            # 라벨에 적힌 이름
+    part: str            # 규칙이 설명하지 못한 조각 ('피너')
+    word: str            # 그 조각과 자모 하나 다른 알레르기 낱말 ('피넛')
+    allergens: Tuple[str, ...]    # 새로 '가능'으로 더한 미국 9개 알레르기
+    hit: Lookup          # 규칙 결과에 그 알레르기를 '가능'으로 더한 것 (via 'suspect')
 
 
 class _Index(NamedTuple):
@@ -213,11 +236,8 @@ def looks_real(key: str, target_key: str) -> bool:
     return False
 
 
-def nearest(name: str) -> Optional[Match]:
-    """사전이 모르는 이름을 사전 항목과 맞춘다. 조건(모듈 설명 1~6)에 맞지 않으면 None."""
-    if lookup(name).via != "unknown":
-        return None
-    key = _key(name)
+def _best(key: str) -> Optional[Tuple[int, int]]:
+    """반경 안 후보끼리 판정이 갈리지 않을 때, 물려줄 수 있는 가장 가까운 사전 항목 (번호, 자모 거리)."""
     near = _near(key)
     idx = _index()
     if not near or len({idx.tags[i] for i, _ in near}) > 1:
@@ -226,7 +246,19 @@ def nearest(name: str) -> Optional[Match]:
     tops = [i for i, d in near if d == best and idx.target[i]]
     if best == 0 or not tops:
         return None                          # 가장 가까운 것이 자동 단이나 원재료 아님뿐이다
-    i = min(tops)                            # 판정이 같은 동점이면 사전에 먼저 적힌 항목 (대개 더 흔한 이름)
+    return min(tops), best                   # 판정이 같은 동점이면 사전에 먼저 적힌 항목 (대개 더 흔한 이름)
+
+
+def nearest(name: str) -> Optional[Match]:
+    """사전이 모르는 이름을 사전 항목과 맞춘다. 조건(모듈 설명 1~6)에 맞지 않으면 None."""
+    if lookup(name).via != "unknown":
+        return None
+    key = _key(name)
+    found = _best(key)
+    if found is None:
+        return None
+    i, best = found
+    idx = _index()
     hit = idx.hits[i]
     if changes_verdict(hit) and (best > 1 or syllables(key) < MIN_SYLLABLES_RISKY):
         return None
@@ -235,6 +267,55 @@ def nearest(name: str) -> Optional[Match]:
     if looks_real(key, idx.keys[i]):
         return None
     return Match(name, idx.names[i], best, dataclasses.replace(hit, name=name, via="fuzzy"))
+
+
+# ---------- 규칙으로 찾은 이름의 앞부분 오타 ----------
+@lru_cache(maxsize=65536)
+def typo_behind_rule(name: str) -> Optional[Match]:
+    """규칙으로 찾은 이름이 사전 항목의 오타라서 규칙이 앞부분을 놓친 경우 그 항목으로 맞춘다 (모듈 설명 7). '땅공버터' -> 땅콩버터"""
+    hit = lookup(name)
+    if hit.via != "rule" or hit.not_ingredient or not unexplained_parts(name):
+        return None
+    key = _key(name)
+    found = _best(key)
+    if found is None:
+        return None
+    i, best = found
+    idx = _index()
+    target = idx.hits[i]
+    if best != 1 or syllables(key) < MIN_SYLLABLES_RISKY or not set(target.us) - set(hit.us):
+        return None                          # 더 알려 주는 알레르기가 없으면 규칙 결과를 그대로 둔다
+    if looks_real(key, idx.keys[i]):
+        return None
+    return Match(name, idx.names[i], best, dataclasses.replace(target, name=name, via="fuzzy"))
+
+
+@lru_cache(maxsize=65536)
+def suspect_typo(name: str) -> Optional[Suspect]:
+    """규칙이 설명하지 못한 조각이 알레르기 낱말의 오타로 보이면 그 알레르기를 '가능'으로 더한다 (모듈 설명 8). '피너버터' -> 땅콩 가능"""
+    hit = lookup(name)
+    if hit.via != "rule" or hit.not_ingredient:
+        return None
+    key = _key(name)
+    found = _best(key)
+    if found is not None and found[1] == 1 and syllables(key) >= MIN_SYLLABLES_RISKY \
+            and not looks_real(key, _index().keys[found[0]]):
+        return None                          # 이름 전체가 사전 항목의 오타로 보이면 그쪽이 맞다 (대두산백 -> 대두단백, '산백'은 난백이 아니다)
+    have = set(hit.us)
+    for part in unexplained_parts(name):
+        jp = to_jamo(part)
+        for word, codes in allergen_words():
+            if len(word) != len(part) or (len(part) == 2 and word not in SHORT_HEADS):
+                continue
+            if distance(jp, to_jamo(word), 1) != 1 or looks_real(part, word):
+                continue
+            new = [c for c in codes if source_info(c)["us9"] not in have]
+            if not new:
+                continue
+            sources = tuple(sorted(set(hit.sources) | {(c, "P") for c in new}))
+            allergens = tuple(dict.fromkeys(source_info(c)["us9"] for c in new))
+            return Suspect(name, part, word, allergens, dataclasses.replace(hit, sources=sources, via="suspect"))
+    return None
 
 
 # ---------- 끝 기호 떼기 ----------
@@ -303,6 +384,7 @@ class Resolver:
         self.fallback = fallback
         self._cache: Dict[str, Lookup] = {}
         self._matched: Dict[str, str] = {}           # 라벨 이름 -> 맞춘 사전 항목 (처음 본 순서)
+        self._suspects: Dict[str, Suspect] = {}      # 라벨 이름 -> 앞부분 오타로 보이는 경우 (처음 본 순서)
         self._asked: set = set()
         self._notes: List[str] = []
 
@@ -316,6 +398,15 @@ class Resolver:
                 if m is not None:
                     hit = m.hit
                     self._matched[name] = m.target
+            if self.fuzzy and hit.via == "rule":     # 규칙이 앞부분 오타를 묻었는지 (모듈 설명 7, 8)
+                m = typo_behind_rule(name)
+                s = suspect_typo(name) if m is None else None
+                if m is not None:
+                    hit = m.hit
+                    self._matched[name] = m.target
+                elif s is not None:
+                    hit = s.hit
+                    self._suspects[name] = s
             self._cache[name] = hit
         return hit
 
@@ -358,12 +449,20 @@ class Resolver:
         """끝 기호 떼기나 비슷한 이름으로 맞춘 것: {라벨 이름: 사전 항목}."""
         return dict(self._matched)
 
+    @property
+    def suspects(self) -> Dict[str, Suspect]:
+        """앞부분 오타로 보여 알레르기를 '가능'으로 더한 것: {라벨 이름: Suspect}."""
+        return dict(self._suspects)
+
     def notes(self) -> List[str]:
-        """응답 notes에 더할 문장. 맞춘 이름마다 한 줄('오타로 보고 맞춤: 탈지븐유 → 탈지분유'), 그다음 보조 분류기 참고."""
+        """응답 notes에 더할 문장. 맞춘 이름마다 한 줄('오타로 보고 맞춤: 탈지븐유 → 탈지분유'),
+        앞부분 오타로 보이는 이름마다 한 줄, 그다음 보조 분류기 참고."""
         lines = [f"{NOTE_HEAD[self._cache[n].via]}: {n} → {t}" for n, t in self._matched.items()]
+        lines += [f"오타일 수 있음: {s.name} ('{s.part}' → '{s.word}'). 판정 불가 근거로 둔 알레르기: "
+                  f"{', '.join(US9_KO[a] for a in s.allergens)}" for s in self._suspects.values()]
         return lines + list(self._notes)
 
 
 __all__ = ["FALLBACK_ENV", "FAR_SYLLABLES", "LONG_SYLLABLES", "MIN_SYLLABLES", "MIN_SYLLABLES_RISKY", "Match",
-           "Resolver", "candidates", "changes_verdict", "fallback_from_env", "from_classification", "looks_real",
-           "nearest", "verdict_key", "without_code"]
+           "Resolver", "Suspect", "candidates", "changes_verdict", "fallback_from_env", "from_classification",
+           "looks_real", "nearest", "suspect_typo", "typo_behind_rule", "verdict_key", "without_code"]

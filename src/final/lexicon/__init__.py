@@ -271,6 +271,72 @@ def lookup(name: str) -> Lookup:
     return Lookup(name=name)
 
 
+# ---------- 규칙이 이름의 어디까지를 설명하는가 (오타 살피기, src/final/resolve.py가 쓴다) ----------
+_SPAN_WORDS = ("OPAQUE", "OPAQUE_SESAME", "OPAQUE_MEAT", "COMPOUND", "FLAVOR", "BENIGN")
+_SPAN_ENDS = ("FLAVOR_END", "BENIGN_END")
+
+
+def _hangul(text: str) -> int:
+    return sum(1 for ch in text if "가" <= ch <= "힣")
+
+
+def _find_all(text: str, words: Tuple[str, ...], spans: list) -> None:
+    for k in words:
+        i = text.find(k)
+        while i >= 0:
+            spans.append((i, i + len(k)))
+            i = text.find(k, i + 1)
+
+
+def explained_spans(key: str) -> Tuple[Tuple[int, int], ...]:
+    """정규화한 이름에서 규칙의 포함어와 낱말 줄(속 모를 원료·섞은 원료·향료·관계없는 무리)이 걸린 글자 범위."""
+    rs = _tables().ruleset
+    spans: list = []
+    for rule in rs.rules:
+        if any(w in key for w in rule.unless):
+            continue
+        _find_all(_blank(key, rule.exclude), rule.include, spans)
+    for table_id in _SPAN_WORDS:
+        inc, exc = rs.words[table_id]
+        _find_all(_blank(key, exc), inc, spans)
+    for table_id in _SPAN_ENDS:
+        for end in rs.words[table_id][0]:
+            if end and key.endswith(end):
+                spans.append((len(key) - len(end), len(key)))
+    return tuple(sorted(set(spans)))
+
+
+@lru_cache(maxsize=65536)
+def unexplained_parts(name: str) -> Tuple[str, ...]:
+    """규칙이 설명하지 못한 두 음절 이상 조각 가운데 사전도 모르는 것. '땅공버터' -> ('땅공',), '새우가루' -> ()
+
+    '가루', '연성'처럼 사전이 따로 모르는 꾸밈말도 여기 나온다. 이 조각만으로는 판정을 바꾸지 않고,
+    알레르기 낱말의 오타로 보일 때만 resolve가 쓴다.
+    """
+    rs = _tables().ruleset
+    key = norm(strip_origin_with(name, rs))
+    covered = [False] * len(key)
+    for a, b in explained_spans(key):
+        for i in range(a, b):
+            covered[i] = True
+    parts = "".join(" " if c else ch for ch, c in zip(key, covered)).split()
+    return tuple(x for x in parts if _hangul(x) >= 2 and lookup(x).via == "unknown")
+
+
+@lru_cache(maxsize=1)
+def allergen_words() -> Tuple[Tuple[str, Tuple[str, ...]], ...]:
+    """미국 9개로 이어지는 규칙(확정·추정)의 포함어 가운데 한글 두 음절 이상인 낱말과 그 출처 코드. '땅콩' -> ('peanut',)"""
+    tables = _tables()
+    out: Dict[str, set] = {}
+    for rule in tables.ruleset.rules:
+        if rule.grade not in ("C", "I") or not tables.sources.get(rule.source, {}).get("us9"):
+            continue
+        for k in rule.include:
+            if _hangul(k) >= 2 and _hangul(k) == len(k):
+                out.setdefault(k, set()).add(rule.source)
+    return tuple((k, tuple(sorted(v))) for k, v in sorted(out.items()))
+
+
 def kr_box() -> Dict[str, Dict[str, str]]:
     """한국 표시란 낱말 -> {'source': 출처 코드, 'mandatory': 'Y'/'N', 'note': ...}"""
     return dict(_tables().kr_box)
@@ -281,4 +347,5 @@ def source_info(code: str) -> Dict[str, str]:
     return dict(_tables().sources[code])
 
 
-__all__ = ["Lookup", "lookup", "norm", "strip_origin", "kr_box", "source_info", "ORDER", "GRADES", "SPECIAL"]
+__all__ = ["Lookup", "lookup", "norm", "strip_origin", "kr_box", "source_info", "ORDER", "GRADES", "SPECIAL",
+           "allergen_words", "explained_spans", "unexplained_parts"]
