@@ -26,8 +26,10 @@
 | EasyOCR | 1.7, `['ko','en']`, CPU |
 | 2x | 2배 확대 + 흑백 + 대비 보정 전처리 |
 | Google Cloud Vision | `DOCUMENT_TEXT_DETECTION`, languageHints `ko` |
-| CLOVA OCR | General 도메인, V2, lang `ko` |
+| CLOVA OCR | General 도메인, V2 (비교 2는 lang `ko`, 비교 1은 lang 미지정) |
 | PaddleOCR | 미측정 (작업 환경에서 모델 다운로드 서버 차단) |
+
+측정 자료(정답, 엔진별 결과, CLOVA 원본 응답)와 스크립트는 [`EXP-003/`](EXP-003/). `cd experiments/EXP-003 && python score.py`로 아래 수치를 다시 계산할 수 있다 (API 호출 없음).
 
 ## 지표
 - **CER (Character Error Rate, 글자 오류율)** = OCR 결과를 정답으로 고치는 데 필요한 최소 글자 수 ÷ 정답 글자 수
