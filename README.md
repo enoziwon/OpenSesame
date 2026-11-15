@@ -63,6 +63,7 @@
 - [ ] 통과 조건 ② LLM 베이스라인 (어려운 원재료 10줄)
 - [ ] 미국 9개 항목 법령·FDA 지침 원문 확인
 - [ ] 제품 첫 버전 (끝에서 끝까지 도는 얇은 버전)
+- [x] 제품 파이프라인 결정: 최종본(사전·규칙) = 제품, 팀 LLM = 1차 비교 대상 (2026-11-15, [결정 0004](docs/decisions/0004-final-pipeline.md))
 - [ ] 중간고사 영상 제출 (10/31)
 
 ## 문서 지도
@@ -76,6 +77,9 @@
 | [docs/05_allergen_lists.md](docs/05_allergen_lists.md) | 미국 9개 항목과 한국 19개 항목 비교 |
 | [docs/06_photo_guide.md](docs/06_photo_guide.md) | 라벨 촬영 규칙 |
 | [docs/07_product.md](docs/07_product.md) | 제품 명세·사용 흐름·개인정보 |
+| [docs/08_api.md](docs/08_api.md) | 서버 API와 코드 구조 |
+| [docs/09_gold_guide.md](docs/09_gold_guide.md) | 정답지 가이드 (판정 기준) |
+| [src/final/README.md](src/final/README.md) | 최종본 파이프라인 (제품) |
 | [docs/decisions/](docs/decisions/) | 결정 기록 |
 | [docs/meeting-notes/](docs/meeting-notes/) | 회의록 |
 | [experiments/](experiments/) | 실험 기록 |
@@ -88,8 +92,19 @@
 docs/           기획·설계·결정·회의록
 data/schema/    JSON 스키마 (데이터 자체는 공유 드라이브)
 experiments/    실험 기록
-src/            ocr / parser / model / eval / app
+src/final/      최종본 = 제품 (파서·원재료 사전·판정 규칙·서버·평가)
+src/            ocr (공용) / parser·model·pipeline·app = 1차 비교용 (팀 LLM 파이프라인)
+tools/          평가·데이터 도구
 ```
+
+## 서버 두 개 (결정 0004)
+
+| 서버 | 용도 | 실행 |
+|---|---|---|
+| **최종본** `src/final/app.py` | **제품.** 시연·프론트 연결·캡처. LLM 없이 돈다 | `uvicorn src.final.app:app --port 8001` |
+| 1차 `src/app/main.py` | **1차 비교용.** 평가할 때만. LLM 크레딧을 쓴다 | `uvicorn src.app.main:app --port 8000` |
+
+1차 코드(`src/pipeline.py`, `src/model/llm.py`, `src/app/`)는 지우거나 옮기지 않는다. `tools/run_team.py`(1차 평가)와 최종본의 LLM 보조(`OPENSESAME_FINAL_FALLBACK=llm`)가 그대로 불러 쓴다.
 
 ## 시작하기
 
@@ -107,4 +122,4 @@ cp .env.example .env   # 키는 각자 발급해서 입력
 
 ## 프론트엔드
 
-Figma 기반 모바일 웹앱은 [`frontend/`](frontend/README.md)에 있습니다. React · TypeScript · Vite를 사용하며 기존 FastAPI `/analyze`와 연결됩니다. 실행 방법, 임시 프로필 저장 정책과 검증 범위는 프론트엔드 README를 참고하세요.
+Figma 기반 모바일 웹앱은 [`frontend/`](frontend/README.md)에 있습니다. React · TypeScript · Vite를 사용합니다. 제품 서버는 최종본(`VITE_API_BASE_URL=http://localhost:8001`)이고, 사진은 `/analyze`, 글자는 `/analyze-text`로 보냅니다. 실행 방법, 임시 프로필 저장 정책과 검증 범위는 프론트엔드 README를 참고하세요.
