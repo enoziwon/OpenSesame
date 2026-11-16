@@ -12,30 +12,38 @@
 - 두 시스템 모두 글자 전체를 한 덩어리로 받는다. 원재료명과 '○○ 함유' 줄을 나누는 일은 각 시스템의 파서가 한다.
 - 팀 1차는 src/pipeline.py의 analyze를 고치지 않고 부른다. --classifier llm이면 저장소 .env의 LLM 설정을 읽는다. 키는 찍지 않는다.
 - 출력 한 줄: {"id": "photo_pNN", "response": 응답 JSON, "ms": 처리 시간}. 화면에는 건수와 시간만 찍는다.
+- 다른 사진 세트: --exp-dir experiments/EXP-005 --pattern 'B_test_*.txt'. 파일 이름에 '_'가 있으면 그대로 id로 쓴다(B_test_085).
+- --resume, --limit은 tools/run_team.py와 같다(이어서 돌리기, 이번에 새로 돌릴 개수). 끝날 때 값도 같다.
 """
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
-import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import run_team  # noqa: E402
 
 FILES = {"clean": "gold", "clova": "results/clova_full"}
-FAIL_PREFIX = "분류 실패"
+FAIL_PREFIX = run_team.FAIL_PREFIX
 
 
-def load_texts(exp_dir: Path, cond: str) -> list:
-    """(id, 글자) 목록. 사진 번호 순서."""
+def photo_id(stem: str) -> str:
+    """EXP-003의 p01은 photo_p01, 시험 세트 제품을 찍은 B_test_085는 그대로."""
+    return stem if "_" in stem else f"photo_{stem}"
+
+
+def load_texts(exp_dir: Path, cond: str, pattern: str = "p*.txt") -> list:
+    """(id, 글자) 목록. 파일 이름 순서."""
     folder = exp_dir / FILES[cond]
-    paths = sorted(folder.glob("p*.txt"))
+    paths = sorted(folder.glob(pattern))
     if not paths:
-        raise SystemExit(f"입력 글자가 없다: {folder}")
-    return [(f"photo_{p.stem}", p.read_text(encoding="utf-8")) for p in paths]
+        raise SystemExit(f"입력 글자가 없다: {folder}/{pattern}")
+    return [(photo_id(p.stem), p.read_text(encoding="utf-8")) for p in paths]
 
 
 def load_dotenv(path: Path) -> None:
@@ -78,10 +86,7 @@ def make_runner(system: str, classifier_name: str, engine: str):
     except (ImportError, RuntimeError, ValueError) as e:
         raise SystemExit(f"분류기 {classifier_name}을(를) 준비하지 못함: {type(e).__name__}: {e}") from e
     if classifier_name == "llm":   # 게이트웨이 거절에 대비한 다시 보내기 (run_team.py와 같음)
-        sys.path.insert(0, str(Path(__file__).resolve().parent))
-        from run_team import RetryingClassifier
-
-        classifier = RetryingClassifier(classifier)
+        classifier = run_team.RetryingClassifier(classifier)
     ocr = TextOcr(engine)
     return (lambda text: analyze(text.encode("utf-8"), "text/plain", ocr=ocr, classifier=classifier).model_dump(mode="json")), classifier
 
@@ -93,33 +98,26 @@ def main(argv=None) -> int:
     ap.add_argument("--cond", choices=tuple(FILES), required=True, help="clean = 정답 전사, clova = CLOVA OCR 결과")
     ap.add_argument("--out", required=True)
     ap.add_argument("--exp-dir", default=str(ROOT / "experiments" / "EXP-003"))
+    ap.add_argument("--pattern", default="p*.txt", help="글자 파일 이름 (EXP-005는 'B_test_*.txt')")
+    ap.add_argument("--resume", action="store_true", help="이미 쓴 사진은 건너뛰고 이어서 돈다 (분류 실패 줄은 다시)")
+    ap.add_argument("--limit", type=int, help="이번에 새로 돌릴 최대 사진 수 (LLM 호출 수를 정할 때)")
     args = ap.parse_args(argv)
-    texts = load_texts(Path(args.exp_dir), args.cond)
+    texts = load_texts(Path(args.exp_dir), args.cond, args.pattern)
     run, classifier = make_runner(args.system, args.classifier, "transcript" if args.cond == "clean" else "clova")
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    part = out.with_name(out.name + ".part")
-    times, failed = [], []
-    with open(part, "w", encoding="utf-8") as f:
-        for pid, text in texts:
-            start = time.perf_counter()
-            try:
-                res = run(text)
-            except Exception as e:     # 원재료 글자가 섞일 수 있어 오류 내용은 찍지 않는다
-                raise SystemExit(f"{pid}에서 실패: {type(e).__name__}. 쓰다 만 파일: {part}") from e
-            ms = (time.perf_counter() - start) * 1000
-            if any(str(w).startswith(FAIL_PREFIX) for w in res.get("warnings", [])):
-                failed.append(pid)
-            f.write(json.dumps({"id": pid, "response": res, "ms": round(ms, 3)}, ensure_ascii=False) + "\n")
-            times.append(ms)
-            if getattr(classifier, "out_of_credit", False):
-                raise SystemExit(f"게이트웨이 크레딧이 부족해 {pid}에서 멈춤(402). 쓰다 만 파일: {part}")
-    part.replace(out)
+    times, failed, remaining = run_team.run_items(texts, run, out, resume=args.resume, limit=args.limit,
+                                                  classifier=classifier)
     label = args.system if args.system == "final" else f"team/{args.classifier}"
-    print(f"{len(times)}장 -> {out} ({label}, {args.cond}, 장당 평균 {sum(times) / len(times):.1f} ms)")
+    speed = f"장당 평균 {sum(times) / len(times):.1f} ms" if times else "새로 돈 사진 없음"
+    where = out if remaining == 0 else out.with_name(out.name + ".part")
+    print(f"{len(times)}장 새로 돌림 -> {where} ({label}, {args.cond}, {speed})")
     if failed:
-        print(f"분류 실패 {len(failed)}장: {', '.join(failed)}. 다시 돌릴 것을 권한다.", file=sys.stderr)
+        print(f"분류 실패 {len(failed)}장: {', '.join(failed)}. --resume으로 다시 돌릴 것을 권한다.", file=sys.stderr)
         return 1
+    if remaining:
+        print(f"남은 사진 {remaining}장. 같은 명령에 --resume을 붙여 이어서 돌린다.", file=sys.stderr)
+        return 3
     return 0
 
 
