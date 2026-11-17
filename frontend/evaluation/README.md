@@ -35,7 +35,7 @@ gold는 `data/schema/label_record.schema.json`을 따르는 레코드의 JSON �
 
 ## 초기 계산 정책: presence_v1
 
-프론트 연동 서버는 루트에서 `python -m uvicorn src.app.main:app --host 127.0.0.1 --port 8000`으로 실행합니다. 공용 분류기가 BAZE를 지원하므로 임시 분류기 사본과 개발 실행기는 제거했습니다. 루트 `.env`에 `OPENSESAME_CLASSIFIER=llm`, `OPENSESAME_OCR=mock`, `LLM_PROVIDER=openai`와 키·모델·Base URL을 설정합니다. 프론트는 별도 터미널에서 `cd frontend` 후 `npm run dev`를 실행합니다. 서버는 기존 프로세스 환경 변수를 `.env`보다 우선합니다. 전사 평가 실행기는 기존대로 루트 `.env`를 우선합니다.
+이 폴더는 LLM 비교 평가용입니다. 제품 프론트는 `python -m uvicorn src.final.app:app --host 127.0.0.1 --port 8001`에 연결합니다. 제품 실행과 실제 OCR 설정은 [프론트 README](../README.md)를 참고하세요. 비교 서버 `src.app.main`과 Mock OCR은 제품 사진 검증에 사용하지 않습니다. 전사 평가 실행기는 기존대로 루트 `.env`를 우선합니다.
 
 - 제품 × 알레르겐 9개를 평가 단위로 사용하고 전체 지표는 micro 집계합니다. 항목별 지표도 출력합니다.
 - gold와 예측의 `confirmed`·`inferable`은 양성입니다. 두 판정 간 정확한 구분은 이 지표로 평가하지 않습니다.

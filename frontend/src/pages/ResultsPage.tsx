@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
 import { AllergenIcon } from "../components/AllergenCard";
 import { allergens, verdictLabels } from "../constants/allergens";
-import { hasIncompleteAnalysis, isMock } from "../utils/analysis";
+import { hasIncompleteAnalysis } from "../utils/analysis";
 import type { Analysis, Allergen } from "../types/analysis";
 export default function ResultsPage({
   result,
@@ -38,12 +38,6 @@ export default function ResultsPage({
     <Layout step={3}>
       <main className="results">
         <PageTitle title="Results">Allergen check for this product.</PageTitle>
-        {isMock(result) && (
-          <p className="mock-banner" role="status">
-            Demo analysis — backend mock mode. Results are fixed and do not
-            describe your photo.
-          </p>
-        )}
         <div
           className={`result-banner ${matches.length ? "match" : ""}`}
           role="status"
