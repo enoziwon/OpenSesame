@@ -1,3 +1,4 @@
+import json
 import types
 
 import pytest
@@ -118,3 +119,34 @@ def test_multiple_tool_calls_are_merged(monkeypatch):
     call = llm._openai_call("http://x", "k", "m", use_tools=True, temperature=0)
     got = [r["ingredient"] for r in call("s", "u")["results"]]
     assert got == ["정제수", "설탕"]
+
+
+def test_classify_splits_into_batches():
+    calls = []
+
+    def fake_call(system, user):
+        names = json.loads(user.split("\n", 1)[1])
+        calls.append(names)
+        return {"results": [{"ingredient": n, "matches": [], "source_unknown": False} for n in names]}
+
+    clf = LLMClassifier(call=fake_call, model="fake", batch_size=2)
+    out = clf.classify(["a", "b", "c", "d", "e"])
+    assert [len(c) for c in calls] == [2, 2, 1]
+    assert [r.ingredient for r in out] == ["a", "b", "c", "d", "e"]
+
+
+def test_openai_sets_max_tokens(monkeypatch):
+    import openai
+
+    msg = types.SimpleNamespace(content='{"results": []}', tool_calls=None)
+    created = {}
+    fake = _fake_openai(msg)
+
+    class Capture(fake):
+        def __init__(self, base_url, api_key):
+            super().__init__(base_url, api_key)
+            created["c"] = self
+
+    monkeypatch.setattr(openai, "OpenAI", Capture)
+    llm._openai_call("http://x", "k", "m", use_tools=True, temperature=0, max_tokens=1234)("s", "u")
+    assert created["c"].sent["max_tokens"] == 1234

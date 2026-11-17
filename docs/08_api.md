@@ -1,5 +1,9 @@
 # 08. 서버 API와 코드 구조
 
+> **제품 서버는 최종본(`src/final/app.py`)이다** (결정 0004). 제품 API는 [`src/final/README.md`](../src/final/README.md)를 본다:
+> `POST /analyze`(사진), `POST /analyze-text`(글자), 응답은 아래 팀 형식에 `basis`·`reason_en`·`declared`·`notes` 등을 더한 것.
+> 이 문서의 서버(`src/app/main.py`)는 **1차 비교용**이다.
+
 형식을 바꿀 때는 제안 이슈 → 회의 합의 → [결정 0003](decisions/0003-api-contract.md) 갱신 순서를 지킨다.
 형식의 원본은 `src/common/schema.py`다.
 
