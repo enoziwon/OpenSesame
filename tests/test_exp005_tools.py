@@ -105,8 +105,9 @@ def make_exp5(tmp_path, shot=("B_test_902", "B_test_904")):
     return exp
 
 
-def args5(tmp_path, exp, *more):
+def args5(tmp_path, exp, *more, photo_blank=None):
     return ["--exp-dir", str(exp), "--test", str(write_gold(tmp_path / "test_blank.jsonl")),
+            "--photo-blank", str(photo_blank or tmp_path / "no_photo_blank.jsonl"),
             "--out-dir", str(tmp_path / "out"), "--classifier", "mock", *more]
 
 
@@ -128,7 +129,7 @@ def test_exp005_spends_budget_in_priority_order(tmp_path):
     assert not (out / "team_llm_T.jsonl").exists()
     assert ex.main(args5(tmp_path, exp, "--budget", "100", "--label", "둘째 키")) == 0
     assert ids_in(out / "team_llm_P_run2.jsonl") == ["B_test_904", "B_test_902"]
-    assert ids_in(out / "team_llm_T.jsonl") == ["B_test_902", "B_test_904"]      # 사진 찍은 제품의 정답 글자
+    assert ids_in(out / "team_llm_T.jsonl") == ["B_test_904", "B_test_902"]      # 사진 찍은 제품의 정답 글자 (included 순서)
     assert ids_in(out / "team_llm_REST.jsonl") == ["B_test_901", "B_test_903"]   # 나머지
     meta = json.loads((out / "run_meta.json").read_text(encoding="utf-8"))
     assert [r["budget"] for r in meta["runs"]] == [3, 100] and meta["runs"][1]["label"] == "둘째 키"
@@ -218,3 +219,61 @@ def test_run_raw_calls_each_photo_once(tmp_path, monkeypatch):
     (photos / "B_test_902" / "2.heic").write_bytes(b"x")
     with pytest.raises(SystemExit):
         run()
+
+
+# ---------- run_exp005 --key-file, EXP-005 lookup ----------
+def test_key_file_overrides_env_and_stays_outside_repo(tmp_path, monkeypatch):
+    ex = tool("run_exp005")
+    for k in ex.KEY_VARS:
+        monkeypatch.delenv(k, raising=False)
+    (tmp_path / "a.env").write_text("# 진영\nLLM_API_KEY=fake_a\nLLM_MODEL=claude-sonnet-5-5\nOTHER=x\n", encoding="utf-8")
+    assert ex.apply_key_file(tmp_path / "a.env") == ["LLM_API_KEY", "LLM_MODEL"]
+    import os
+    assert os.environ["LLM_API_KEY"] == "fake_a" and "OTHER" not in os.environ
+    (tmp_path / "b.key").write_text("fake_b\n", encoding="utf-8")            # 키 한 줄만 있는 파일
+    ex.apply_key_file(tmp_path / "b.key")
+    assert os.environ["LLM_API_KEY"] == "fake_b"
+    (tmp_path / "c.env").write_text("LLM_MODEL=x\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        ex.apply_key_file(tmp_path / "c.env")
+    with pytest.raises(ValueError):
+        ex.apply_key_file(ROOT / ".env.example")                            # 저장소 안의 파일은 쓰지 않는다
+
+
+def test_lookup_marks_test_dev_and_new(tmp_path, capsys):
+    lk = load(ROOT / "experiments" / "EXP-005" / "lookup.py", "exp5_lookup")
+    items = tmp_path / "items.jsonl"
+    rows = [{"prdlstReportNo": "19860309018704", "prdlstNm": "진짬뽕", "manufacture": "오뚜기", "rawmtrl": "소맥분(밀)", "allergy": "밀"},
+            {"prdlstReportNo": "19860309018710", "prdlstNm": "오뚜기 진짬뽕", "manufacture": "오뚜기", "rawmtrl": "x", "allergy": ""},
+            {"prdlstReportNo": "11112222", "prdlstNm": "개발과자", "manufacture": "m", "rawmtrl": "y", "allergy": ""}]
+    items.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
+    gold = tmp_path / "gold"
+    gold.mkdir()
+    (gold / "test.jsonl").write_text(json.dumps({"id": "B_test_085", "report_number": "19860309018704"}) + "\n", encoding="utf-8")
+    (gold / "dev.jsonl").write_text(json.dumps({"id": "B_dev_001", "report_number": "11112222"}) + "\n", encoding="utf-8")
+    assert lk.main(["진짬뽕"], items_path=items, gold_dir=gold) == 0
+    out = capsys.readouterr().out
+    assert "시험 세트 B_test_085" in out and "새 제품" in out
+    assert lk.main(["1986-0309-018704"], items_path=items, gold_dir=gold) == 0  # 하이픈이 있어도 번호로 찾는다
+    assert "시험 세트 B_test_085" in capsys.readouterr().out
+    assert lk.main(["11112222"], items_path=items, gold_dir=gold) == 0
+    assert "개발 세트 B_dev_001" in capsys.readouterr().out
+
+
+def test_exp005_new_products_from_photo_blank(tmp_path):
+    ex = tool("run_exp005")
+    exp = make_exp5(tmp_path, shot=("B_test_902",))
+    (exp / "results" / "clova_full" / "N_11112222.txt").write_text("우유, 설탕 우유 함유", encoding="utf-8")
+    (exp / "included.txt").write_text("B_test_902\nN_11112222\n", encoding="utf-8")
+    blank = tmp_path / "exp005_photo_blank.jsonl"
+    blank.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in
+                             (gold_row("B_test_902", TEXTS["B_test_902"]), gold_row("N_11112222", "우유, 설탕", ["우유"]))),
+                     encoding="utf-8")
+    assert ex.main(args5(tmp_path, exp, "--budget", "100", photo_blank=blank)) == 0
+    out = tmp_path / "out"
+    assert ids_in(out / "team_llm_T.jsonl") == ["B_test_902", "N_11112222"]          # included.txt 순서
+    assert ids_in(out / "team_llm_REST.jsonl") == ["B_test_901", "B_test_903", "B_test_904"]
+    assert ex.main(args5(tmp_path, exp, "--final", photo_blank=blank)) == 0
+    assert ids_in(out / "final_T.jsonl") == ["B_test_902", "N_11112222"]
+    (exp / "included.txt").write_text("B_test_902\nN_99999999\n", encoding="utf-8")
+    assert ex.main(args5(tmp_path, exp, "--status", photo_blank=blank)) == 2           # 입력 파일에 없는 id
