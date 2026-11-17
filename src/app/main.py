@@ -1,4 +1,7 @@
-"""OpenSesame 서버.
+"""OpenSesame 1차 서버 (팀 LLM 파이프라인) — 1차 비교용.
+
+제품 서버는 최종본 src/final/app.py 다 (결정 0004). 이 서버는 1차(LLM)와 최종본을 비교할 때만 쓴다.
+지우거나 옮기지 않는다: tools/run_team.py와 최종본의 LLM 보조가 이 파이프라인을 불러 쓴다.
 
 실행 (저장소 루트에서):
     uvicorn src.app.main:app --reload
