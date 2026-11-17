@@ -12,7 +12,7 @@
 - 두 시스템 모두 글자 전체를 한 덩어리로 받는다. 원재료명과 '○○ 함유' 줄을 나누는 일은 각 시스템의 파서가 한다.
 - 팀 1차는 src/pipeline.py의 analyze를 고치지 않고 부른다. --classifier llm이면 저장소 .env의 LLM 설정을 읽는다. 키는 찍지 않는다.
 - 출력 한 줄: {"id": "photo_pNN", "response": 응답 JSON, "ms": 처리 시간}. 화면에는 건수와 시간만 찍는다.
-- 다른 사진 세트: --exp-dir experiments/EXP-005 --pattern 'B_test_*.txt'. 파일 이름에 '_'가 있으면 그대로 id로 쓴다(B_test_085).
+- 다른 사진 세트: --exp-dir experiments/EXP-006 --pattern 'B_test_*.txt'. 파일 이름에 '_'가 있으면 그대로 id로 쓴다(B_test_085).
 - --resume, --limit은 tools/run_team.py와 같다(이어서 돌리기, 이번에 새로 돌릴 개수). 끝날 때 값도 같다.
 """
 from __future__ import annotations
@@ -98,7 +98,7 @@ def main(argv=None) -> int:
     ap.add_argument("--cond", choices=tuple(FILES), required=True, help="clean = 정답 전사, clova = CLOVA OCR 결과")
     ap.add_argument("--out", required=True)
     ap.add_argument("--exp-dir", default=str(ROOT / "experiments" / "EXP-003"))
-    ap.add_argument("--pattern", default="p*.txt", help="글자 파일 이름 (EXP-005는 'B_test_*.txt')")
+    ap.add_argument("--pattern", default="p*.txt", help="글자 파일 이름 (EXP-006는 'B_test_*.txt')")
     ap.add_argument("--resume", action="store_true", help="이미 쓴 사진은 건너뛰고 이어서 돈다 (분류 실패 줄은 다시)")
     ap.add_argument("--limit", type=int, help="이번에 새로 돌릴 최대 사진 수 (LLM 호출 수를 정할 때)")
     args = ap.parse_args(argv)

@@ -1,8 +1,8 @@
-"""EXP-005: 촬영한 라벨 사진을 CLOVA로 한 번씩 읽어 raw/에 저장하고, 원재료명 칸 자동 추출 결과를 results/에 저장한다.
+"""EXP-006: 촬영한 라벨 사진을 CLOVA로 한 번씩 읽어 raw/에 저장하고, 원재료명 칸 자동 추출 결과를 results/에 저장한다.
 
-  python experiments/EXP-005/run_raw.py --photos data/raw/photos/exp005 --dry-run    부를 횟수만 센다
-  python experiments/EXP-005/run_raw.py --photos data/raw/photos/exp005 --limit 40   CLOVA를 최대 40번 부른다
-  python experiments/EXP-005/run_raw.py --from-raw                                   API 호출 없이 저장된 raw/에서 다시 추출
+  python experiments/EXP-006/run_raw.py --photos data/raw/photos/exp006 --dry-run    부를 횟수만 센다
+  python experiments/EXP-006/run_raw.py --photos data/raw/photos/exp006 --limit 40   CLOVA를 최대 40번 부른다
+  python experiments/EXP-006/run_raw.py --from-raw                                   API 호출 없이 저장된 raw/에서 다시 추출
 
 - 사진 폴더: <photos>/<시험 세트 id>/<순서>.jpg (예: B_test_085/1.jpg). jpg·png만 받는다. HEIC는 먼저 jpg로 바꾼다.
 - raw/<id>__<순서>.json이 이미 있으면 다시 부르지 않는다(CLOVA 월 100건 한도). 키는 저장소 루트 .env의 CLOVA_URL, CLOVA_SECRET.
@@ -73,7 +73,7 @@ def write_results(exp: Path, pid: str, raw_paths) -> int:
 
 
 def main(argv=None, call=call_clova, exp: Path = HERE, env_file: Path = ROOT / ".env") -> int:
-    ap = argparse.ArgumentParser(description="EXP-005 사진을 CLOVA로 한 번씩 읽고 원재료명 칸을 뽑는다.")
+    ap = argparse.ArgumentParser(description="EXP-006 사진을 CLOVA로 한 번씩 읽고 원재료명 칸을 뽑는다.")
     ap.add_argument("--photos", help="사진 폴더 (<photos>/<id>/<순서>.jpg)")
     ap.add_argument("--limit", type=int, help="이번에 CLOVA를 부를 최대 횟수")
     ap.add_argument("--dry-run", action="store_true", help="부를 횟수만 센다")

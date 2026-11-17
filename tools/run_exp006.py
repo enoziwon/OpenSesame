@@ -1,19 +1,19 @@
-"""EXP-005: LLM 크레딧이 허락하는 만큼 팀 1차를 정해 둔 순서대로 돌린다. 최종본은 무료라 --final로 언제든 전부 돌린다.
+"""EXP-006: LLM 크레딧이 허락하는 만큼 팀 1차를 정해 둔 순서대로 돌린다. 최종본은 무료라 --final로 언제든 전부 돌린다.
 
-    python tools/run_exp005.py --status          # 단계마다 몇 개 했고 몇 개 남았는지 (LLM을 부르지 않는다)
-    python tools/run_exp005.py --budget 25       # 이 키로 LLM을 최대 25번(제품 25개) 쓴다. 지난번에 멈춘 곳부터 이어서
-    python tools/run_exp005.py --final           # 최종본만 전부 돌린다 (LLM을 부르지 않는다)
+    python tools/run_exp006.py --status          # 단계마다 몇 개 했고 몇 개 남았는지 (LLM을 부르지 않는다)
+    python tools/run_exp006.py --budget 25       # 이 키로 LLM을 최대 25번(제품 25개) 쓴다. 지난번에 멈춘 곳부터 이어서
+    python tools/run_exp006.py --final           # 최종본만 전부 돌린다 (LLM을 부르지 않는다)
 
-순서 (experiments/EXP-005-photo-1st-vs-final.md의 우선순위). 앞 단계를 다 끝내야 다음 단계로 넘어간다.
-  P     사진 OCR 글자          experiments/EXP-005/results/clova_full/<id>.txt      -> team_llm_P.jsonl
+순서 (experiments/EXP-006-photo-1st-vs-final.md의 우선순위). 앞 단계를 다 끝내야 다음 단계로 넘어간다.
+  P     사진 OCR 글자          experiments/EXP-006/results/clova_full/<id>.txt      -> team_llm_P.jsonl
   R     P를 한 번 더           같은 입력에 답이 흔들리는지                          -> team_llm_P_run2.jsonl
-  T     같은 제품의 정답 글자  data/raw/gold/exp005_photo_blank.jsonl (시험 세트 제품은 그 원재료명,
+  T     같은 제품의 정답 글자  data/raw/gold/exp006_photo_blank.jsonl (시험 세트 제품은 그 원재료명,
                                목록 밖 제품은 HACCP 공식 원재료명)                   -> team_llm_T.jsonl
   REST  시험 세트 나머지       data/raw/gold/test_blank.jsonl의 나머지 제품         -> team_llm_REST.jsonl
-결과 폴더는 data/raw/eval/exp005/.
+결과 폴더는 data/raw/eval/exp006/.
 
-- 대상 제품은 experiments/EXP-005/included.txt(정답 대조를 끝낸 제품, 한 줄에 id 하나)에 적힌 것만이다.
-  시험 세트 제품은 B_test_085처럼, 목록 밖 제품은 N_<품목보고번호>처럼 적는다. 목록 밖 제품은 exp005_photo_blank.jsonl에 있어야 한다.
+- 대상 제품은 experiments/EXP-006/included.txt(정답 대조를 끝낸 제품, 한 줄에 id 하나)에 적힌 것만이다.
+  시험 세트 제품은 B_test_085처럼, 목록 밖 제품은 N_<품목보고번호>처럼 적는다. 목록 밖 제품은 exp006_photo_blank.jsonl에 있어야 한다.
   이 파일이 없으면 LLM을 부르지 않는다. 정답을 잠그기 전에 크레딧을 쓰지 않기 위해서다.
 - 키 여러 개를 한 컴퓨터에서 쓸 때: --key-file로 이번 실행에 쓸 키 파일(LLM_API_KEY=… 줄, 또는 키 한 줄)을 준다.
   키 파일은 저장소 밖에 둔다(저장소 안이면 멈춘다). 실행 기록의 label은 키 파일 이름이 되고, 키 값은 어디에도 적지 않는다.
@@ -43,10 +43,10 @@ import run_photo  # noqa: E402
 import run_team  # noqa: E402
 from src.final.eval import EvalInputError, load_gold  # noqa: E402
 
-EXP = ROOT / "experiments" / "EXP-005"
+EXP = ROOT / "experiments" / "EXP-006"
 TEST = ROOT / "data" / "raw" / "gold" / "test_blank.jsonl"
-PHOTO_BLANK = ROOT / "data" / "raw" / "gold" / "exp005_photo_blank.jsonl"
-OUT = ROOT / "data" / "raw" / "eval" / "exp005"
+PHOTO_BLANK = ROOT / "data" / "raw" / "gold" / "exp006_photo_blank.jsonl"
+OUT = ROOT / "data" / "raw" / "eval" / "exp006"
 FINAL_REPEAT = 3                       # 최종본은 같은 입력을 세 번 돌려 답이 같은지 본다 (EXP-004 S7)
 
 
@@ -84,7 +84,7 @@ def photo_items(exp, ids):
 
 
 def stage_items(stage, exp, test, ids, photo=None):
-    """photo: 사진 세트 입력(exp005_photo_blank.jsonl). 없으면 T는 시험 세트에서 그 제품을 쓴다."""
+    """photo: 사진 세트 입력(exp006_photo_blank.jsonl). 없으면 T는 시험 세트에서 그 제품을 쓴다."""
     if stage.source == "photo":
         return photo_items(exp, ids)
     shot = set(ids)
@@ -159,7 +159,7 @@ def git_head():
 
 def append_meta(out_dir, entry):
     path = out_dir / "run_meta.json"
-    meta = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"experiment": "EXP-005", "runs": []}
+    meta = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"experiment": "EXP-006", "runs": []}
     meta["runs"].append(entry)
     path.write_text(json.dumps(meta, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
@@ -209,7 +209,7 @@ def run_final_all(exp, test_path, out_dir, ids, photo_path=None):
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="EXP-005: 크레딧 예산만큼 1차를 우선순위대로, 최종본은 전부.")
+    ap = argparse.ArgumentParser(description="EXP-006: 크레딧 예산만큼 1차를 우선순위대로, 최종본은 전부.")
     what = ap.add_mutually_exclusive_group(required=True)
     what.add_argument("--status", action="store_true", help="진행 상황만 본다 (LLM을 부르지 않는다)")
     what.add_argument("--budget", type=int, help="이번에 1차로 돌릴 최대 제품 수 (LLM 호출 수)")

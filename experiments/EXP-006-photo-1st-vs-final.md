@@ -1,8 +1,9 @@
-# EXP-005 실제 라벨 사진으로 1차(LLM)와 최종본 비교, 크레딧을 적게 쓰는 설계
+# EXP-006 실제 라벨 사진으로 1차(LLM)와 최종본 비교, 크레딧을 적게 쓰는 설계
 
-- 담당: 정형식 (촬영, 정답 대조, 채점), 이진영 (1차 실행)
+- 담당: 정형식 (촬영, 정답 대조, 실행, 채점). 1차 파이프라인 코드는 이진영, 크레딧 키는 팀원 각자 (11/17부터 키를 모아 정형식이 실행)
 - 날짜: 2026-11-16 (사진을 찍기 전, 어떤 결과도 보기 전에 적었다. 결과는 아래 '결과'에 날짜와 함께 덧붙인다)
-- 관련: EXP-003(사진 OCR), EXP-004(최종본 평가 기준), 결정 0004
+- 번호: 처음에는 EXP-005로 적었으나, 11/17 main에서 EXP-005가 게이트웨이 동작 확인 기록(이진영)으로 정해져 사진을 찍기 전에 EXP-006으로 옮겼다. 내용은 바꾸지 않았다.
+- 관련: EXP-003(사진 OCR), EXP-004(최종본 평가 기준), EXP-005(게이트웨이 동작 확인), 결정 0004
 
 ## 왜 하나
 
@@ -19,7 +20,7 @@
 
 ## 대상 제품 (촬영 전에 정함)
 
-- 시험 세트 140개 중 큰 회사 제품 69개를 찾기 쉬운 순서로 세 묶음으로 나눴다: A 14개(편의점·대형마트), B 19개(대형마트), C 36개(단종·한정판·전문 매장일 수 있음). 목록은 `EXP-005/shot_list.tsv`다.
+- 시험 세트 140개 중 큰 회사 제품 69개를 찾기 쉬운 순서로 세 묶음으로 나눴다: A 14개(편의점·대형마트), B 19개(대형마트), C 36개(단종·한정판·전문 매장일 수 있음). 목록은 `EXP-006/shot_list.tsv`다.
   묶음은 회사·제품 이름만 보고 정했다. 시스템 결과와 정답(알레르기)은 보지 않았다. 나머지 71개는 작은 지역 업체 제품이라 뺐다.
 - 고르는 규칙: 찾은 제품은 모두 찍는다. 30개 이상, 되면 40개가 목표다. 제품을 빼는 이유는 아래 두 가지뿐이고, 둘 다 어느 시스템도 돌리기 전에 정한다.
   1. 사진 품질: 원재료명 칸이 잘렸거나 흐려서 사람이 읽을 수 없으면 다시 찍고, 다시 찍을 수 없으면 뺀다.
@@ -27,7 +28,7 @@
 - 사진 한 장에 원재료명 칸과 알레르기 표시를 함께 담는다. 앱이 사진 한 장을 받기 때문이다. 한 장에 안 들어가면 두 장의 OCR 글자를 이어 붙이고, 그런 제품은 결과에 적는다.
 - 목록에서 30개를 못 채울 때 (11/17 추가, 사진을 찍기 전): 목록의 상당수가 매장에서 찾기 어려울 수 있어서, 같은 매장에서 목록 밖 제품을 더 찍어 30~40개를 채운다.
   - 무엇을 찍을지는 고르지 않는다. 눈에 띄는 대로 여러 식품유형(과자, 라면, 소스, 냉동, 음료 등)에서 찍고, 찍은 제품은 모두 넣는다.
-  - 품목보고번호가 보이게 찍는다. 이 번호로 HACCP 자료(2026-11-12에 받은 14,653개)에서 공식 원재료명·알레르기 칸 글자를 찾는다(`EXP-005/lookup.py`).
+  - 품목보고번호가 보이게 찍는다. 이 번호로 HACCP 자료(2026-11-12에 받은 14,653개)에서 공식 원재료명·알레르기 칸 글자를 찾는다(`EXP-006/lookup.py`).
   - 개발 세트 제품은 뺀다. 사전을 고칠 때 본 제품이기 때문이다.
   - id는 시험 세트 제품이면 `B_test_085`, 목록 밖 제품이면 `N_<품목보고번호>`로 적는다.
 
@@ -39,20 +40,23 @@
   - 영향이 있는 차이(원재료나 표시란의 알레르기가 다름)면 그 제품은 뺀다.
   - 빠지는 제품이 4분의 1을 넘으면 빼지 않고, 사진 글자를 옮겨 적어 같은 가이드로 정답을 다시 단다. 절차는 사진 8장 때와 같다(1차 라벨, 이중 라벨, 조정).
 - 목록 밖 제품(11/17 추가): HACCP 공식 글자에 시험 세트와 같은 가이드(`docs/09_gold_guide.md`)와 같은 절차(1차 라벨, 이중 라벨, 조정)로 정답을 새로 단다. 라벨러는 원재료명·알레르기 칸 글자만 받고 시스템 결과는 보지 않는다. 사진 글자와의 대조도 시험 세트 제품과 같이 한다. HACCP 자료에 없는 제품은 사진 글자를 옮겨 적어 그 글자로 정답을 단다.
-- 대조가 끝나면 대상 제품을 `EXP-005/included.txt`에 적는다. 그다음 두 파일을 만든다. 사진 세트 정답 `data/raw/gold/exp005_photo.jsonl`(시험 세트 제품은 기존 정답, 목록 밖 제품은 새 정답)과 같은 제품의 입력만 담은 `exp005_photo_blank.jsonl`이다. 정답 파일의 sha256은 아래 '잠금'에 적는다. 그 전에는 최종본도 1차도 돌리지 않는다. `tools/run_exp005.py`는 included.txt가 없으면 아무것도 돌리지 않는다.
+- 대조가 끝나면 대상 제품을 `EXP-006/included.txt`에 적는다. 그다음 두 파일을 만든다. 사진 세트 정답 `data/raw/gold/exp006_photo.jsonl`(시험 세트 제품은 기존 정답, 목록 밖 제품은 새 정답)과 같은 제품의 입력만 담은 `exp006_photo_blank.jsonl`이다. 정답 파일의 sha256은 아래 '잠금'에 적는다. 그 전에는 최종본도 1차도 돌리지 않는다. `tools/run_exp006.py`는 included.txt가 없으면 아무것도 돌리지 않는다.
 
 ## 조건
 
-- P (사진): 사진을 CLOVA OCR로 읽고 원재료명 칸을 자동으로 뽑은 글자(`EXP-005/run_raw.py`, 민재 님 `src/ocr/clova.py`의 extract_label)를 쓴다. 제품 서버가 파서에 넘기는 글자와 같다. OCR은 사진마다 한 번만 부르고 원본 응답을 `EXP-005/raw/`에 남긴다(CLOVA 월 100건 한도). 두 시스템에 같은 글자를 넣는다.
-- T (글자): 정답을 단 글자. 시험 세트 제품은 EXP-004와 같은 원재료명, 목록 밖 제품은 HACCP 공식 원재료명이다(`exp005_photo_blank.jsonl`).
+- P (사진): 사진을 CLOVA OCR로 읽고 원재료명 칸을 자동으로 뽑은 글자(`EXP-006/run_raw.py`, 민재 님 `src/ocr/clova.py`의 extract_label)를 쓴다. 제품 서버가 파서에 넘기는 글자와 같다. OCR은 사진마다 한 번만 부르고 원본 응답을 `EXP-006/raw/`에 남긴다(CLOVA 월 100건 한도). 두 시스템에 같은 글자를 넣는다.
+  - 사진 정리 (11/17 추가, 사진을 받기 전): 원본을 찍은 시각 순서로 번호를 붙이고, 방향을 픽셀에 반영하고 위치 같은 메타데이터를 지운 JPEG로 바꿔 CLOVA에 보낸다(`EXP-006/intake.py`, `photo_tool.swift`). 앱 서버 한도(10MB)를 넘는 사진만 긴 변 4032px로 줄인다.
+  - 어느 사진이 어느 제품의 라벨·앞면인지, 뺀 사진과 그 이유는 `EXP-006/sort.tsv`에 남긴다. 품목보고번호를 찾는 데 맥 내장 OCR(Vision)을 쓰지만 정리에만 쓰고, 실험 입력 글자는 CLOVA다.
+- T (글자): 정답을 단 글자. 시험 세트 제품은 EXP-004와 같은 원재료명, 목록 밖 제품은 HACCP 공식 원재료명이다(`exp006_photo_blank.jsonl`).
 - 최종본: P를 세 번, T, 그리고 시험 세트 140개 전부(`--final`, 무료).
 - 1차: 아래 순서대로, 크레딧이 허락하는 만큼.
 
 ## 1차 실행 순서와 크레딧
 
 - 버전 고정: 실행 전에 main의 커밋(#10 병합 뒤)을 정하고 실험이 끝날 때까지 프롬프트와 설정을 바꾸지 않는다. 실행 기록(`run_meta.json`)에 커밋이 자동으로 남는다.
-- 비용: 제품 하나에 LLM 한 번이다. 원재료가 40개를 넘으면 나눠 보내 몇 번 더 부른다. 11/15에 키 하나로 29번 부르고 402가 났으므로 키 하나에 30번 안팎으로 본다. 키는 각자 발급한 것을 자기 환경에서만 쓴다.
-- 순서 (`tools/run_exp005.py --budget N`이 이 순서로 N개까지 돌리고, 끊기면 다음 실행이 이어서 돈다):
+  - (11/17) main `f2b0ea2`(#10 분할 전송, #12 병합 뒤)로 정했다. 정형식 브랜치에 합친 `5e9f9bb`부터 `src/`가 main과 같다.
+- 비용: 제품 하나에 LLM 한 번이다. 원재료가 40개를 넘으면 나눠 보내 몇 번 더 부른다. 11/15에 키 하나로 29번 부르고 402가 났으므로 키 하나에 30번 안팎으로 본다. 키는 팀원이 각자 발급한 것을 모아(11/17부터) 저장소 밖 키 파일로만 쓴다. 실행 기록에는 파일 이름만 남는다.
+- 순서 (`tools/run_exp006.py --budget N`이 이 순서로 N개까지 돌리고, 끊기면 다음 실행이 이어서 돈다):
   1. P: 사진 세트 전부. 질문 1의 본 비교다.
   2. R: P와 같은 입력을 한 번 더. 질문 2다. 크레딧이 모자라면 앞에서부터 된 만큼만 쓴다.
   3. T: 같은 제품의 글자. 질문 3이다.
@@ -93,22 +97,24 @@ EXP-004와 같은 채점기(`src/final/eval`)와 제품 단위 짝 부트스트�
 ## 실행 방법
 
 ```
-# 1) 사진 정리: data/raw/photos/exp005/<id>/1.jpg, 2.jpg … (HEIC는 jpg로)
-python experiments/EXP-005/run_raw.py --photos data/raw/photos/exp005 --dry-run   # CLOVA 부를 횟수
-python experiments/EXP-005/run_raw.py --photos data/raw/photos/exp005             # .env에 CLOVA_URL, CLOVA_SECRET
+# 1) 사진 정리 (맥): 번호 붙이기·메타데이터 지우기·sort.tsv 초안 → 모아 보기(sheet_*.jpg)를 보며 sort.tsv를 고친다 → 나눠 넣는다
+python experiments/EXP-006/intake.py stage <원본 폴더>
+python experiments/EXP-006/intake.py apply                                         # data/raw/photos/exp006/<id>/1.jpg …
+python experiments/EXP-006/run_raw.py --photos data/raw/photos/exp006 --dry-run   # CLOVA 부를 횟수
+python experiments/EXP-006/run_raw.py --photos data/raw/photos/exp006             # .env에 CLOVA_URL, CLOVA_SECRET
 # 2) 목록 밖 제품은 품목보고번호로 HACCP 공식 글자를 찾는다
-python experiments/EXP-005/lookup.py 19870415003286 --show
-# 3) 정답 대조·새 정답 → included.txt, exp005_photo.jsonl, exp005_photo_blank.jsonl, 아래 '잠금'에 sha256
+python experiments/EXP-006/lookup.py 19870415003286 --show
+# 3) 정답 대조·새 정답 → included.txt, exp006_photo.jsonl, exp006_photo_blank.jsonl, 아래 '잠금'에 sha256
 # 4) 최종본 (무료)
-python tools/run_exp005.py --final
+python tools/run_exp006.py --final
 # 5) 1차 (키마다, 크레딧만큼). 키 파일은 저장소 밖에 둔다 (예: ~/.config/opensesame/keys/진영.env)
-python tools/run_exp005.py --status
-python tools/run_exp005.py --budget 30 --key-file ~/.config/opensesame/keys/진영.env
+python tools/run_exp006.py --status
+python tools/run_exp006.py --budget 30 --key-file ~/.config/opensesame/keys/진영.env
 ```
 
 ## 잠금
 
-(정답 대조가 끝나면 적는다: 대상 제품 수, included.txt, exp005_photo.jsonl sha256, 1차 실행 커밋)
+(정답 대조가 끝나면 적는다: 대상 제품 수, included.txt, exp006_photo.jsonl sha256, 1차 실행 커밋)
 
 ## 결과
 
@@ -116,4 +122,4 @@ python tools/run_exp005.py --budget 30 --key-file ~/.config/opensesame/keys/진�
 
 ## AI 사용 기록
 
-- 설계, 촬영 목록 작성, 실행 도구(`tools/run_exp005.py`, `EXP-005/run_raw.py`, `EXP-005/lookup.py`, run_team·run_photo의 이어서 돌리기)와 테스트는 Claude Code(Opus 5.5)로 작성했다.
+- 설계, 촬영 목록 작성, 실행 도구(`tools/run_exp006.py`, `EXP-006/run_raw.py`, `EXP-006/lookup.py`, `EXP-006/intake.py`·`photo_tool.swift`, run_team·run_photo의 이어서 돌리기)와 테스트는 Claude Code(Opus 5.5)로 작성했다.

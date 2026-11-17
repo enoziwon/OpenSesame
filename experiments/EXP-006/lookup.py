@@ -1,9 +1,9 @@
-"""EXP-005: 찍어 온 제품을 HACCP 자료(data/raw/haccp_20261112/items.jsonl, 14,653개)에서 찾는다.
+"""EXP-006: 찍어 온 제품을 HACCP 자료(data/raw/haccp_20261112/items.jsonl, 14,653개)에서 찾는다.
 목록 밖 제품의 공식 원재료명·알레르기 글자를 얻을 때 쓴다.
 
-    python experiments/EXP-005/lookup.py 19830358021427      품목보고번호 (숫자만 본다)
-    python experiments/EXP-005/lookup.py 진짬뽕               제품명 일부
-    python experiments/EXP-005/lookup.py 진짬뽕 --show        원재료명·알레르기 칸 글자까지
+    python experiments/EXP-006/lookup.py 19830358021427      품목보고번호 (숫자만 본다)
+    python experiments/EXP-006/lookup.py 진짬뽕               제품명 일부
+    python experiments/EXP-006/lookup.py 진짬뽕 --show        원재료명·알레르기 칸 글자까지
 
 - 시험 세트 제품이면 그 id를 알린다(기존 정답을 쓴다).
 - 개발 세트 제품이면 알린다. 사전을 고칠 때 본 제품이라 사진 세트에서 뺀다.
