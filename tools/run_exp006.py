@@ -8,7 +8,7 @@
   P     사진 OCR 글자          experiments/EXP-006/results/clova_full/<id>.txt      -> team_llm_P.jsonl
   R     P를 한 번 더           같은 입력에 답이 흔들리는지                          -> team_llm_P_run2.jsonl
   T     같은 제품의 정답 글자  data/raw/gold/exp006_photo_blank.jsonl (시험 세트 제품은 그 원재료명,
-                               목록 밖 제품은 HACCP 공식 원재료명)                   -> team_llm_T.jsonl
+                               목록 밖 제품은 사진을 옮겨 적은 글자, photo_*는 EXP-003 정답 전사) -> team_llm_T.jsonl
   REST  시험 세트 나머지       data/raw/gold/test_blank.jsonl의 나머지 제품         -> team_llm_REST.jsonl
 결과 폴더는 data/raw/eval/exp006/.
 
