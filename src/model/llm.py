@@ -116,7 +116,13 @@ def parse_tool_output(raw: Any) -> list[IngredientClassification]:
 
 
 def _openai_call(
-    base_url: str, api_key: str, model: str, use_tools: bool, temperature: float, tool_choice: str = "auto"
+    base_url: str,
+    api_key: str,
+    model: str,
+    use_tools: bool,
+    temperature: float,
+    tool_choice: str = "auto",
+    max_tokens: int = 8192,
 ) -> CallFn:
     from openai import OpenAI
 
@@ -126,6 +132,7 @@ def _openai_call(
         kwargs: dict[str, Any] = {
             "model": model,
             "temperature": temperature,
+            "max_tokens": max_tokens,  # 기본값이 작으면 원재료가 많을 때 JSON이 잘린다
             "messages": [
                 {"role": "system", "content": system if use_tools else system + JSON_ONLY_SUFFIX},
                 {"role": "user", "content": user},
@@ -155,7 +162,7 @@ def _openai_call(
     return call
 
 
-def _anthropic_call(api_key: str, model: str, temperature: float) -> CallFn:
+def _anthropic_call(api_key: str, model: str, temperature: float, max_tokens: int = 8192) -> CallFn:
     import anthropic
 
     client = anthropic.Anthropic(api_key=api_key)
@@ -164,7 +171,7 @@ def _anthropic_call(api_key: str, model: str, temperature: float) -> CallFn:
     def call(system: str, user: str) -> dict[str, Any]:
         resp = client.messages.create(
             model=model,
-            max_tokens=4096,
+            max_tokens=max_tokens,
             temperature=temperature,
             system=system,
             tools=[tool],
@@ -181,9 +188,10 @@ class LLMClassifier:
     name = "llm"
     prompt_version = PROMPT_VERSION
 
-    def __init__(self, call: CallFn, model: str):
+    def __init__(self, call: CallFn, model: str, batch_size: int = 40):
         self._call = call
         self.model = model
+        self.batch_size = max(1, batch_size)
         self.system = PROMPT_PATH.read_text(encoding="utf-8")
 
     @classmethod
@@ -192,6 +200,8 @@ class LLMClassifier:
         api_key = os.getenv("LLM_API_KEY")
         model = os.getenv("LLM_MODEL")
         temperature = float(os.getenv("LLM_TEMPERATURE", "0"))
+        max_tokens = int(os.getenv("LLM_MAX_TOKENS", "8192"))
+        batch_size = int(os.getenv("LLM_BATCH", "40"))
         if not api_key:
             raise RuntimeError("LLM_API_KEY가 없다. .env를 확인할 것.")
         if not model:
@@ -203,15 +213,18 @@ class LLMClassifier:
                 raise RuntimeError("LLM_BASE_URL이 없다. .env를 확인할 것.")
             use_tools = os.getenv("LLM_USE_TOOLS", "1") != "0"
             tool_choice = os.getenv("LLM_TOOL_CHOICE", "auto")
-            call = _openai_call(base_url, api_key, model, use_tools, temperature, tool_choice)
+            call = _openai_call(base_url, api_key, model, use_tools, temperature, tool_choice, max_tokens)
         elif provider == "anthropic":
-            call = _anthropic_call(api_key, model, temperature)
+            call = _anthropic_call(api_key, model, temperature, max_tokens)
         else:
             raise RuntimeError(f"알 수 없는 LLM_PROVIDER: {provider}")
-        return cls(call=call, model=model)
+        return cls(call=call, model=model, batch_size=batch_size)
 
     def classify(self, ingredients: list[str]) -> list[IngredientClassification]:
-        if not ingredients:
-            return []
-        user = "원재료 목록 (JSON):\n" + json.dumps(ingredients, ensure_ascii=False)
-        return parse_tool_output(self._call(self.system, user))
+        """원재료가 많으면 batch_size개씩 나눠 보낸다. 각 원재료는 이름만 보고 판단하므로 나눠도 결과가 같아야 한다."""
+        out: list[IngredientClassification] = []
+        for i in range(0, len(ingredients), self.batch_size):
+            chunk = ingredients[i : i + self.batch_size]
+            user = "원재료 목록 (JSON):\n" + json.dumps(chunk, ensure_ascii=False)
+            out.extend(parse_tool_output(self._call(self.system, user)))
+        return out
