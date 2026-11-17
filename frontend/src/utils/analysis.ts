@@ -34,6 +34,8 @@ export function normalizeAnalysis(value: unknown): Analysis {
     undecidable_ingredients: strings(v.undecidable_ingredients)
       ? v.undecidable_ingredients
       : [],
+    notes: strings(v.notes) ? v.notes : [],
+    declaration_text: typeof v.declaration_text === "string" ? v.declaration_text : undefined,
     meta: v.meta && typeof v.meta === "object" ? v.meta : undefined,
   } as Analysis;
   if (!result.ingredients_text.trim() || !result.ingredients.length)

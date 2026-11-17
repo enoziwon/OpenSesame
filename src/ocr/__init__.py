@@ -31,7 +31,7 @@ class MockOcr:
 
 
 def get_ocr(name: Optional[str] = None) -> OcrEngine:
-    name = name or os.getenv("OPENSESAME_OCR", "mock")
+    name = name or os.getenv("OPENSESAME_OCR", "clova")
     if name == "mock":
         return MockOcr()
     if name == "clova":  # 사진 10장 비교로 선정 (experiments/EXP-003-ocr-compare.md)

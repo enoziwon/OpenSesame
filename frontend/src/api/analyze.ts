@@ -1,12 +1,10 @@
 import { normalizeAnalysis } from "../utils/analysis";
-export async function analyzeImage(file: File, signal: AbortSignal) {
-  const body = new FormData();
-  body.append("file", file);
+async function analyze(path: string, body: BodyInit, signal: AbortSignal, headers?: HeadersInit) {
   let response: Response;
   try {
     response = await fetch(
-      `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "")}/analyze`,
-      { method: "POST", body, signal },
+      `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8001").replace(/\/$/, "")}${path}`,
+      { method: "POST", body, signal, headers },
     );
   } catch (error) {
     if (signal.aborted) throw error;
@@ -18,7 +16,26 @@ export async function analyzeImage(file: File, signal: AbortSignal) {
     throw new Error(
       response.status === 413
         ? "The server rejected this image: maximum size is 10MB."
+        : response.status === 503
+          ? "Photo analysis is not configured. Try entering the ingredient text instead."
         : `Analysis failed (${response.status}). Please try again.`,
     );
-  return normalizeAnalysis(await response.json());
+  const result = normalizeAnalysis(await response.json());
+  if (result.meta?.ocr_engine === "mock" || result.meta?.classifier === "mock")
+    throw new Error(
+      "The server is using demo data. Configure real OCR and classification before analyzing photos.",
+    );
+  return result;
+}
+
+export function analyzeImage(file: File, signal: AbortSignal) {
+  const body = new FormData();
+  body.append("file", file);
+  return analyze("/analyze", body, signal);
+}
+
+export function analyzeText(text: string, signal: AbortSignal) {
+  return analyze("/analyze-text", JSON.stringify({ text }), signal, {
+    "Content-Type": "application/json",
+  });
 }

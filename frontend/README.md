@@ -1,3 +1,18 @@
+## Real photo analysis (2026-11-17)
+
+The browser sends the selected photo to `POST /analyze`. The server runs CLOVA OCR, parses the extracted ingredient names, classifies them, and returns the verdicts and evidence rendered by Results. Mock responses now produce a configuration error instead of fixed photo results.
+
+Set `OPENSESAME_OCR=clova`, `CLOVA_URL`, and `CLOVA_SECRET` in the root `.env`. The LLM server also needs `OPENSESAME_CLASSIFIER=llm` and the existing LLM credentials. Remove any mock overrides in your terminal and restart the server. Never put credentials in frontend environment variables.
+
+```powershell
+# Repository root: OCR + LLM pipeline on the frontend default port
+.\.venv\Scripts\python.exe -m uvicorn src.app.main:app --host 127.0.0.1 --port 8000
+# Alternatively: final lexicon/rules pipeline
+# .\.venv\Scripts\python.exe -m uvicorn src.final.app:app --host 127.0.0.1 --port 8000
+```
+
+Check `GET /health` for `ocr: clova` and the actual classifier name. Missing OCR credentials cause a startup error rather than a fallback to sample ingredients. The older demo commands below are for fixed-data development only; the photo UI rejects those results.
+
 # OpenSesame 프론트엔드
 
 React + TypeScript + Vite + Tailwind CSS로 구현한 모바일 웹 앱입니다. Figma 파일 `UPnaTDKkcWdB8aktu4Oz8w`의 프레임 `3:22`~`3:25`를 기반으로 합니다.

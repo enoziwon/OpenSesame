@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderCircle, X } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
-import { analyzeImage } from "../api/analyze";
+import { analyzeImage, analyzeText } from "../api/analyze";
 import { validateImage } from "../utils/analysis";
 import type { Analysis } from "../types/analysis";
 import cameraIcon from "../assets/camera.svg";
@@ -13,6 +13,8 @@ export default function ScanPage({
   onResult: (a: Analysis) => void;
 }) {
   const [file, setFile] = useState<File>();
+  const [mode, setMode] = useState<"photo" | "text">("photo");
+  const [text, setText] = useState("");
   const [preview, setPreview] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -38,13 +40,15 @@ export default function ScanPage({
     if (!problem) setFile(next);
   }
   async function analyze() {
-    if (!file || request.current) return;
+    if (request.current || (mode === "photo" ? !file : !text.trim())) return;
     const controller = new AbortController();
     request.current = controller;
     setBusy(true);
     setError("");
     try {
-      const result = await analyzeImage(file, controller.signal);
+      const result = mode === "photo"
+        ? await analyzeImage(file!, controller.signal)
+        : await analyzeText(text.trim(), controller.signal);
       if (!controller.signal.aborted) {
         onResult(result);
         navigate("/results");
@@ -69,6 +73,18 @@ export default function ScanPage({
           <br />
           on the Korean food label.
         </PageTitle>
+        <div className="photo-actions" aria-label="Input method">
+          <button disabled={busy} aria-pressed={mode === "photo"} onClick={() => { setMode("photo"); setError(""); }}>Photo</button>
+          <button disabled={busy} aria-pressed={mode === "text"} onClick={() => { setMode("text"); setError(""); }}>Enter ingredient text</button>
+        </div>
+        {mode === "text" && (
+          <label className="text-input">
+            Ingredient label text
+            <textarea value={text} onChange={e => setText(e.target.value)} disabled={busy}
+              maxLength={20000} rows={7} placeholder="Paste the Korean ingredients and allergen statement from the label." />
+          </label>
+        )}
+        <div hidden={mode !== "photo"}>
         <div
           className={`dropzone ${dragging ? "dragging" : ""}`}
           onDragOver={(e) => {
@@ -152,6 +168,7 @@ export default function ScanPage({
             </button>
           </div>
         )}
+        </div>
         {error && (
           <p role="alert" className="error">
             {error}
@@ -164,7 +181,7 @@ export default function ScanPage({
           </p>
         )}
         <div className="bottom-actions">
-          <PrimaryButton disabled={!file || busy} onClick={analyze}>
+          <PrimaryButton disabled={busy || (mode === "photo" ? !file : !text.trim())} onClick={analyze}>
             {busy ? "Analyzing…" : "Analyze →"}
           </PrimaryButton>
         </div>

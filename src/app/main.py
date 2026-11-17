@@ -68,4 +68,7 @@ async def analyze_label(file: UploadFile = File(...)) -> AnalyzeResponse:
         raise HTTPException(status_code=413, detail="사진이 10MB를 넘습니다.")
     if not image:
         raise HTTPException(status_code=400, detail="빈 파일입니다.")
-    return analyze(image, content_type, ocr=_ocr, classifier=_classifier)
+    try:
+        return analyze(image, content_type, ocr=_ocr, classifier=_classifier)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail="Unable to read the ingredient label. Please try another photo.") from e

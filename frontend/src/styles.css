@@ -651,3 +651,5 @@ summary {
   background: #8995a6;
   border-radius: 1px;
 }
+ .text-input { display: grid; gap: 12px; margin: 24px 0; }
+ .text-input textarea { width: 100%; box-sizing: border-box; padding: 14px; font: inherit; border: 1px solid #ccc; border-radius: 12px; resize: vertical; }

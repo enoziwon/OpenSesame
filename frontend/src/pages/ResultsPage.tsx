@@ -104,6 +104,7 @@ export default function ResultsPage({
                       .join(", ")}
                   </p>
                 )}
+                {found?.reason_en && <p className="evidence">{found.reason_en}</p>}
               </div>
             );
           })}
@@ -130,11 +131,13 @@ export default function ResultsPage({
           the U.S. 9 major allergens are checked; other allergies are outside
           the scope of this analysis.
         </p>
+        {!!result.notes?.length && <aside className="analysis-warning">{result.notes.map((note, i) => <p key={i}>{note}</p>)}</aside>}
         <details>
           <summary>Original ingredient text</summary>
           <p className="original-text">
             {result.ingredients_text || "No ingredient text was returned."}
           </p>
+          {result.declaration_text && <p>Allergen statement: {result.declaration_text}</p>}
         </details>
         <div className="bottom-actions result-actions">
           <button className="secondary" onClick={() => navigate("/scan")}>
