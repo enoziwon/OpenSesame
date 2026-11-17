@@ -135,6 +135,7 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
     """판정 하나의 이유를 (영어, 한국어) 한 문장씩."""
     kind = v.basis[0]
     name, word = v.evidence, v.word
+    ingredient_en = f"{v.evidence_en} ({name})" if v.evidence_en else f"“{name}”"
     t_en, t_ko = _target(v)
     if kind == "INGREDIENT" and word:
         return (f"Contains {NAME_EN[v.allergen]}: “{name}” lists {word} ({t_en}) in parentheses.",
@@ -147,7 +148,7 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
         return (f"Listed in the Korean allergen statement: {word}" + (f" ({v.evidence_en})." if v.evidence_en else "."),
                 f"한국 알레르기 표시란에 {word}{_josa(word, '이', '가')} 적혀 있다.")
     if kind == "R1-1" and not word:          # 표시란 없이 '식물성유지(대두)'처럼 유지에 대두 표시가 붙은 경우
-        return (f"Likely contains soy: “{name}” is a fat or oil labelled as coming from soybeans. Refined soybean oil "
+        return (f"Likely contains soy: {ingredient_en} is a fat or oil labelled as coming from soybeans. Refined soybean oil "
                 f"is not counted, but it could contain soy protein.",
                 f"“{name}”{_josa(name, '은', '는')} 대두에서 온 유지로 적혀 있다. 정제 대두유는 세지 않지만 대두 단백질이 있을 수 있다.")
     if kind == "R1-1":
@@ -156,10 +157,10 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
                 f"soybean oil, but “{first}” could contain soy protein.",
                 f"표시란에 {word}{_josa(word, '이', '가')} 있지만 정제 대두유 때문일 수 있고, “{first}”에 대두 단백질이 있을 수 있다.")
     if kind == "LIKELY":
-        return (f"Likely contains {NAME_EN[v.allergen]}: “{name}” is usually made with {t_en}.",
+        return (f"{NAME_EN[v.allergen].capitalize()} may be present because {ingredient_en} is commonly made with {t_en}.",
                 f"“{name}”에는 대개 {t_ko}{_josa(t_ko, '이', '가')} 들어간다.")
     if kind == "POSSIBLE":
-        return (f"Cannot tell: “{name}” sometimes contains {t_en}.",
+        return (f"Cannot tell: {ingredient_en} sometimes contains {t_en}.",
                 f"“{name}”에는 {t_ko}{_josa(t_ko, '이', '가')} 들어 있을 수 있다.")
     return _blind_reason(v, kind)
 
@@ -167,13 +168,14 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
 def _blind_reason(v: AllergenVerdict, kind: str) -> Tuple[str, str]:
     """속 모를 원료(OPAQUE)나 섞은 원료(COMPOUND) 때문에 판정할 수 없을 때."""
     name = v.evidence
+    ingredient_en = f"{v.evidence_en} ({name})" if v.evidence_en else f"“{name}”"
     tail_en = BLIND_EN.get(v.allergen, NO_BOX_EN)
     tail_ko = BLIND_KO.get(v.allergen, NO_BOX_KO)
     if kind == "OPAQUE":
         what_en, what_ko = "a seasoning blend", "속을 알 수 없는 양념·국물 원료"
     else:
         what_en, what_ko = "a mixed ingredient", "속을 알 수 없는 섞은 원료"
-    return (f"Cannot tell: “{name}” is {what_en} whose contents are not listed, and {tail_en}.",
+    return (f"Cannot tell: {ingredient_en} is {what_en} whose contents are not listed, and {tail_en}.",
             f"“{name}”{_josa(name, '은', '는')} {what_ko}이고, {tail_ko}.")
 
 

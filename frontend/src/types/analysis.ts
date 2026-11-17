@@ -19,6 +19,9 @@ export interface AllergenResult {
   evidence_ingredient: string;
   other_evidence?: string[];
   reason_en?: string;
+  reason_ko?: string;
+  basis?: string[];
+  species?: string[];
   evidence_en?: string | null;
 }
 export interface Analysis {

@@ -120,6 +120,7 @@ for (const [width, height] of [
       4,
     );
     await expect(page.getByText(/Demo analysis/)).toHaveCount(0);
+    await page.getByText("Original ingredient text", { exact: true }).click();
     await expect(
       page.getByText("Evidence: 탈지분유", { exact: true }),
     ).toBeVisible();
@@ -337,10 +338,11 @@ test("selected warnings, evidence, enum labels and editing profile", async ({
   await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
     1,
   );
+  await page.getByText("Original ingredient text", { exact: true }).click();
   await expect(
     page.getByText("Evidence: 참기름", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/Not detected does not mean safe/)).toBeVisible();
+  await expect(page.getByText(/Not detected ≠ allergen-free/)).toBeVisible();
   await page.getByRole("button", { name: "Edit My Allergies" }).click();
   await page.getByRole("checkbox", { name: "Sesame", exact: true }).uncheck();
   await page.getByRole("checkbox", { name: "Egg", exact: true }).check();

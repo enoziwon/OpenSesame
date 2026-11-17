@@ -4,12 +4,14 @@ import type { ReactNode, ButtonHTMLAttributes } from "react";
 export function Layout({
   step,
   children,
+  className = "",
 }: {
   step?: number;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${className}`}>
       <header>
         <Link className="logo" to="/" aria-label="OpenSesame home">
           Open<span>Sesame</span>

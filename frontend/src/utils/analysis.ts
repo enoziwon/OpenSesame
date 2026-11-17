@@ -31,6 +31,11 @@ export function normalizeAnalysis(value: unknown): Analysis {
       ...a,
       other_evidence: strings(a.other_evidence) ? a.other_evidence : [],
       reason_en: typeof a.reason_en === "string" ? a.reason_en : undefined,
+      reason_ko: typeof a.reason_ko === "string" ? a.reason_ko : undefined,
+      basis: strings(a.basis) ? a.basis : undefined,
+      species: strings(a.species) ? a.species : undefined,
+      evidence_en: typeof a.evidence_en === "string" || a.evidence_en === null
+        ? a.evidence_en : undefined,
     })),
     undecidable_ingredients: strings(v.undecidable_ingredients)
       ? v.undecidable_ingredients
