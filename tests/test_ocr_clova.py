@@ -149,3 +149,15 @@ def test_same_photo_does_not_call_clova_twice(monkeypatch):
     ocr.read_text(b"photo-1", "image/jpeg")
     ocr.read_text(b"photo-2", "image/jpeg")
     assert len(calls) == 2
+
+
+def test_ocr_does_not_depend_on_parsers():
+    # OCR은 1차·최종본이 같이 쓴다. 표시란 낱말은 최종본 파서와 같게 두되, 어느 파서도 가져오지 않는다
+    from pathlib import Path
+
+    import src.ocr.clova as clova
+    from src.final.parser.zones import KR_ALLERGEN_WORDS
+
+    assert clova.KR_DECL_WORDS == KR_ALLERGEN_WORDS
+    source = Path(clova.__file__).read_text(encoding="utf-8")
+    assert "src.parser" not in source and "src.final" not in source

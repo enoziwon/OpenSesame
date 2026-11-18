@@ -269,19 +269,25 @@ def join_lines(body: list, spaced=None) -> str:
 
 # ---------- 5) 한국 알레르기 표시란 다듬기 ----------
 DECL_HEAD_RE = re.compile(r"(알레르기|알러지)\s*(유발)?\s*(물질|성분|식품)?\s*(표시|정보)?\s*[:：]")
+# 한국 알레르기 표시란에 나오는 낱말. 제품 서버(최종본)의 파서가 표시란으로 알아보는 낱말과 같게 둔다
+# (src/final/parser/zones.py 의 KR_ALLERGEN_WORDS). OCR은 1차·최종본이 같이 쓰므로 어느 파서에도 기대지 않게 따로 둔다.
+KR_DECL_WORDS = frozenset({
+    "알류", "난류", "가금류", "계란", "달걀", "우유", "메밀", "땅콩", "대두", "콩", "밀", "고등어", "게",
+    "새우", "돼지고기", "복숭아", "토마토", "아황산류", "아황산", "아황산염", "호두", "닭고기", "쇠고기",
+    "소고기", "오징어", "조개류", "조개", "굴", "전복", "홍합", "잣", "참깨", "들깨", "아몬드", "캐슈너트",
+    "메추리알", "오리알",
+})
 
 
 def _kr_words(token: str):
     """'쇠고기돼지고기' -> ['쇠고기', '돼지고기'] 처럼 한국 표시 항목 이름으로만 나뉘면 그 목록, 아니면 None."""
-    from src.parser.core import KR_ALLERGENS
-
     s = re.sub(r"[\s*※·]", "", token)
     best = {0: []}
     for i in range(len(s)):
         if i not in best:
             continue
         for j in range(len(s), i, -1):
-            if s[i:j] in KR_ALLERGENS and j not in best:
+            if s[i:j] in KR_DECL_WORDS and j not in best:
                 best[j] = best[i] + [s[i:j]]
     return best.get(len(s)) if s else None
 
