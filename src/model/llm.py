@@ -23,6 +23,8 @@ from src.common.schema import Allergen, AllergenMatch, IngredientClassification,
 
 PROMPT_VERSION = "classify_v1"
 PROMPT_PATH = Path(__file__).parent / "prompts" / f"{PROMPT_VERSION}.txt"
+OCR_FIX_PROMPT_VERSION = "ocr_fix_v1"   # 최종본의 오인식 보정 (src/final/resolve.py)
+OCR_FIX_PROMPT_PATH = Path(__file__).parent / "prompts" / f"{OCR_FIX_PROMPT_VERSION}.txt"
 
 TOOL_NAME = "report_allergens"
 TOOL_DESCRIPTION = "원재료마다 알레르겐 분류 결과를 보고한다."
@@ -47,6 +49,8 @@ TOOL_SCHEMA: dict[str, Any] = {
                         },
                     },
                     "source_unknown": {"type": "boolean"},
+                    # 오인식 보정(ocr_fix_v1)에서만 쓴다. OCR이 잘못 읽은 이름의 원래 이름, 없으면 "". 분류(classify_v1)는 무시한다
+                    "corrected": {"type": "string"},
                 },
                 "required": ["ingredient", "matches", "source_unknown"],
             },
@@ -227,4 +231,23 @@ class LLMClassifier:
             chunk = ingredients[i : i + self.batch_size]
             user = "원재료 목록 (JSON):\n" + json.dumps(chunk, ensure_ascii=False)
             out.extend(parse_tool_output(self._call(self.system, user)))
+        return out
+
+    def correct_and_classify(self, names: list[str]) -> list[tuple[IngredientClassification, str]]:
+        """최종본의 오인식 보정: 사전에 없는 이름마다 (알레르겐 분류, OCR 오인식을 바로잡은 이름 또는 "").
+
+        프롬프트는 ocr_fix_v1. 분류는 바로잡은 이름 기준이다. 묻지 않은 이름의 답은 호출한 쪽(resolve)이 버린다.
+        """
+        system = OCR_FIX_PROMPT_PATH.read_text(encoding="utf-8")
+        out: list[tuple[IngredientClassification, str]] = []
+        for i in range(0, len(names), self.batch_size):
+            chunk = names[i : i + self.batch_size]
+            raw = self._call(system, "원재료 이름 목록 (JSON):\n" + json.dumps(chunk, ensure_ascii=False))
+            parsed = parse_tool_output(raw)
+            fixes = {}
+            for item in raw.get("results", []) if isinstance(raw, dict) else []:
+                if isinstance(item, dict) and isinstance(item.get("ingredient"), str):
+                    c = item.get("corrected")
+                    fixes.setdefault(item["ingredient"], c.strip() if isinstance(c, str) else "")
+            out.extend((r, fixes.get(r.ingredient, "")) for r in parsed)
         return out
