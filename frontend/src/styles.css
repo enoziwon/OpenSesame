@@ -178,6 +178,16 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 35px;
+  margin-bottom: 0;
+}
+.allergen-grid + .bottom-actions {
+  margin-top: 0;
+  padding-top: 20px;
+}
+.allergy-safety-note {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.5;
 }
 .allergen-card {
   height: 116px;
