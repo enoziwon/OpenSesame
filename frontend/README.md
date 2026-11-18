@@ -7,9 +7,8 @@ React + TypeScript + Vite. Product analysis uses the official final server, as s
 From the repository root, configure `.env`:
 
 ```dotenv
-OPENSESAME_OCR=clova
-CLOVA_URL=your_clova_url
-CLOVA_SECRET=your_clova_secret
+OPENSESAME_OCR=mock
+OPENSESAME_CLASSIFIER=mock
 OPENSESAME_FINAL_FALLBACK=
 ```
 
@@ -33,13 +32,13 @@ On macOS/Linux use `.venv/bin/python`, `npm`, and `cp` instead. Open http://loca
 
 ## Official requests and data flow
 
-- Photo: `POST /analyze`, multipart field `file`. The server runs CLOVA OCR, extracts the ingredient section, parses nested ingredients and the allergen statement, then runs the final lexicon/rules classifier. Results displays the returned verdicts, evidence, reasons, notes, and original ingredient text.
+- Photo: `POST /analyze`, multipart field `file`. The server runs the configured OCR engine, extracts the ingredient section, parses nested ingredients and the allergen statement, then runs the final lexicon/rules classifier. Results displays the returned verdicts, evidence, reasons, notes, and original ingredient text.
 - Text: choose **Enter ingredient text** on Scan Ingredients. `POST /analyze-text` receives JSON `{ "text": "the ingredient label and allergen statement" }`. The same final parser/classifier runs without OCR. The server also supports `{ "ingredients": "...", "declaration": "..." }` for separate fields.
 - `GET /health` reports the configured OCR engine and `final-lexicon-v1`. OCR credentials are initialized on the first photo request, so text analysis can run without OCR keys. Health is a server/configuration check, not proof that an external OCR call succeeded.
 
 The product needs no temporary launcher or LLM credits. `src.app.main` on port 8000 and evaluation scripts remain for comparison experiments; they are not the product backend. Optional `OPENSESAME_FINAL_FALLBACK=llm` enables the existing fallback only for unresolved names.
 
-There is no frontend sample fallback. Responses marked with mock OCR/classification are rejected. Missing OCR configuration returns 503, OCR service failures return 502, and invalid uploads or text return 4xx responses. Previously configured shell environment variables take precedence over `.env`; remove stale mock overrides and restart the server.
+Mock OCR returns a fixed sample regardless of the uploaded image; mock responses display a demo warning and must not be used for allergy decisions. To use real photo OCR, explicitly set `OPENSESAME_OCR=clova` and configure `CLOVA_URL` and `CLOVA_SECRET` in the root `.env`. Missing OCR configuration returns 503, OCR service failures return 502, and invalid uploads or text return 4xx responses. Previously configured shell environment variables take precedence over `.env`; check overrides and restart the server.
 
 ## Results and privacy
 

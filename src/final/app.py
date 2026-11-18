@@ -74,7 +74,7 @@ class TextRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "ocr": _ocr.name if _ocr else os.getenv("OPENSESAME_OCR", "clova"), "classifier": CLASSIFIER_NAME}
+    return {"status": "ok", "ocr": _ocr.name if _ocr else os.getenv("OPENSESAME_OCR", "mock"), "classifier": CLASSIFIER_NAME}
 
 
 @app.post("/analyze", response_model=FinalAnalyzeResponse)

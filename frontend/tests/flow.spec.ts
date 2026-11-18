@@ -217,8 +217,8 @@ test("real FastAPI mock endpoint", async ({ page }) => {
   ).toHaveLength(1);
   expect(uploadedBody).toContain('name="file"');
   expect(uploadedBody).not.toContain("opensesame.allergies");
-  await expect(page.getByRole("alert")).toContainText("server is using demo data");
-  await expect(page).toHaveURL(/scan$/);
+  await expect(page.getByRole("alert")).toContainText("Demo analysis: sample data");
+  await expect(page).toHaveURL(/results$/);
 });
 
 test("persistent profile and invalid storage", async ({ page, browser }) => {

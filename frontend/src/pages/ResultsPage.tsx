@@ -62,6 +62,11 @@ export default function ResultsPage({
         <PageTitle title="Results">
           Review your personalized results below.
         </PageTitle>
+        {(result.meta?.ocr_engine === "mock" || result.meta?.classifier === "mock") && (
+          <div className="mock-banner" role="alert">
+            Demo analysis: sample data is being used. The uploaded photo was not analyzed; do not use these results for allergy decisions.
+          </div>
+        )}
         <div
           className={`result-banner ${confirmed ? "match" : ""}`}
           role="status"

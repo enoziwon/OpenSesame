@@ -30,7 +30,7 @@ test("different photo responses replace ingredient evidence and verdicts", async
   expect(calls).toBe(2);
 });
 
-test("mock OCR cannot produce fixed photo verdicts", async ({ page }) => {
+test("mock OCR results are clearly marked as demo data", async ({ page }) => {
   await page.route("**/analyze", route => route.fulfill({ json: {
     ingredients_text: "sample", ingredients: [{ name: "sample", children: [] }],
     allergens: [], warnings: [], meta: { ocr_engine: "mock", classifier: "llm" },
@@ -41,6 +41,6 @@ test("mock OCR cannot produce fixed photo verdicts", async ({ page }) => {
     buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>'),
   });
   await page.getByRole("button", { name: "Analyze" }).click();
-  await expect(page.getByRole("alert")).toContainText("server is using demo data");
-  await expect(page).toHaveURL(/scan$/);
+  await expect(page.getByRole("alert")).toContainText("Demo analysis: sample data");
+  await expect(page).toHaveURL(/results$/);
 });

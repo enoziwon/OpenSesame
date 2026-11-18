@@ -21,10 +21,6 @@ async function analyze(path: string, body: BodyInit, signal: AbortSignal, header
         : `Analysis failed (${response.status}). Please try again.`,
     );
   const result = normalizeAnalysis(await response.json());
-  if (result.meta?.ocr_engine === "mock" || result.meta?.classifier === "mock")
-    throw new Error(
-      "The server is using demo data. Configure real OCR and classification before analyzing photos.",
-    );
   return result;
 }
 

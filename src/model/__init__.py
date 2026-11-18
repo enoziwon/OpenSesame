@@ -50,7 +50,7 @@ class MockClassifier:
 
 
 def get_classifier(name: Optional[str] = None) -> Classifier:
-    name = name or os.getenv("OPENSESAME_CLASSIFIER", "llm")
+    name = name or os.getenv("OPENSESAME_CLASSIFIER", "mock")
     if name == "mock":
         return MockClassifier()
     if name == "llm":
