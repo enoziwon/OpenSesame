@@ -105,7 +105,7 @@ def analyze(image: bytes, content_type: str, ocr: OcrEngine, classifier: Classif
     ocr_result = ocr.read_text(image, content_type)
     tree = parse(ocr_result.text)
     names = names_for_classifier(ocr_result.text)  # 원재료 + 별칭('연육/어육'의 어육)
-    warnings: list[str] = []
+    warnings: list[str] = list(ocr_result.warnings)  # OCR의 다시 찍기 안내
     if not names:
         warnings.append("원재료를 읽지 못함. 원재료명이 잘 보이게 다시 찍어 주세요.")
 

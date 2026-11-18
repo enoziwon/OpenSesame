@@ -98,3 +98,54 @@ def test_inline_label_stops_at_next_item():
     f += _line(["소비기한", "2027.01.01"], 10, 58)
     info = extract_label(_raw(f))
     assert info["text"] == "설탕, 코코아버터(카카오:가나산), 유청분말(우유) 우유 함유"
+
+
+# ---------- OCR 보완: 표시란 보정, 따로 있는 표시란, 다시 찍기 안내, 재호출 줄이기 ----------
+def test_fix_missing_commas_in_declaration():
+    from src.ocr.clova import fix_declaration
+
+    # CLOVA가 표시란의 쉼표를 빠뜨림 (p08). 원재료(건미역)는 건드리지 않는다
+    t = "건미역 밀, 대두, 계란, 우유, 쇠고기돼지고기, 닭고기, 토마토 오징어, 조개류(굴, 홍합 포함) 함유"
+    assert fix_declaration(t) == ("건미역 밀, 대두, 계란, 우유, 쇠고기, 돼지고기, 닭고기, 토마토, 오징어, "
+                                  "조개류(굴, 홍합 포함) 함유")
+    assert fix_declaration("설탕, 대두유, 간장") == "설탕, 대두유, 간장"
+
+
+def test_separate_declaration_box_is_passed():
+    from src.ocr.clova import ClovaOcr, extract_label
+
+    # 원재료명 칸 끝이 아니라 오른쪽 아래 따로 있는 '우유함유' 칸 (p07)
+    f = _line(["원재료명:", "무지방우유,", "원유,", "유산균"], 10, 10) + _line(["소비기한", "2027.01.01"], 10, 40)
+    f += _line(["우유함유"], 400, 70)
+    raw = _raw(f)
+    assert extract_label(raw)["declaration"] == "우유 함유"
+    ocr = ClovaOcr("x", "x")
+    ocr._raw = lambda image, ct: raw
+    assert ocr.read_text(b"x", "image/jpeg").text == "무지방우유, 원유, 유산균 우유 함유"
+
+
+def test_retake_warnings():
+    from src.ocr.clova import RETAKE_CUT, RETAKE_NOT_FOUND, extract_label
+
+    ok = _line(["원재료명:", "설탕,", "밀가루"], 10, 10) + _line(["밀", "함유"], 10, 34)
+    info = {"width": 400, "height": 300}
+    assert extract_label({"images": [{"fields": ok, "convertedImageInfo": info}]})["warnings"] == []
+    # 라벨 오른쪽이 사진 밖으로 잘림 (썬칩): 원재료명 줄의 글자 상자가 사진 가장자리에 닿음
+    cut = _line(["원재료명:", "설탕,", "핫스파이시"], 10, 10)
+    cut[-1]["boundingPoly"]["vertices"][1]["x"] = cut[-1]["boundingPoly"]["vertices"][2]["x"] = 399
+    assert RETAKE_CUT in extract_label({"images": [{"fields": cut, "convertedImageInfo": info}]})["warnings"]
+    # 원재료명 항목명을 못 찾음
+    none = _line(["영양정보", "나트륨", "800mg"], 10, 10)
+    assert RETAKE_NOT_FOUND in extract_label({"images": [{"fields": none, "convertedImageInfo": info}]})["warnings"]
+
+
+def test_same_photo_does_not_call_clova_twice(monkeypatch):
+    import src.ocr.clova as clova
+
+    calls = []
+    monkeypatch.setattr(clova, "call_clova", lambda *a, **k: calls.append(1) or _raw(_line(["원재료명:", "설탕"], 10, 10)))
+    ocr = clova.ClovaOcr("x", "x")
+    ocr.read_text(b"photo-1", "image/jpeg")
+    ocr.read_text(b"photo-1", "image/jpeg")
+    ocr.read_text(b"photo-2", "image/jpeg")
+    assert len(calls) == 2

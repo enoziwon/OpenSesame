@@ -89,7 +89,7 @@ def segments(fields: list) -> list:
         x0, y0 = min(b[0] for b in bs), min(b[1] for b in bs)
         x1, y1 = max(b[2] for b in bs), max(b[3] for b in bs)
         segs.append({"x0": x0, "y0": y0, "x1": x1, "y1": y1, "h": max(1.0, y1 - y0),
-                     "text": " ".join(f["inferText"] for f in s)})
+                     "text": " ".join(f["inferText"] for f in s), "fields": s})
     return segs
 
 
@@ -151,7 +151,7 @@ def extract_section(segs: list) -> dict:
     if label is None:  # 원재료명 부분만 찍은 사진: 전체를 위->아래로
         body = [s for s in segs if not FACILITY_RE.search(s["text"])]
         body.sort(key=lambda s: ((s["y0"] + s["y1"]) / 2, s["x0"]))
-        return {"body": [s["text"] for s in body], "facility": facility}
+        return {"body": [s["text"] for s in body], "facility": facility, "found": False, "picked": body}
 
     others = [s for s in segs if s is not label]
     if rest:  # '원재료명 소맥분(...' 처럼 같은 줄에 내용이 이어짐 -> 그 줄이 기준
@@ -166,7 +166,7 @@ def extract_section(segs: list) -> dict:
             seed = min(below, key=lambda s: s["y0"])
             up = False
         else:
-            return {"body": [], "facility": facility}
+            return {"body": [], "facility": facility, "found": False, "picked": []}
         col, first_text = (seed["x0"], seed["x1"]), seed["text"]
     # 내용 칸 너비: 기준 줄과 겹치는 줄들의 폭으로 넓힌다
     cx0, cx1 = col
@@ -245,7 +245,7 @@ def extract_section(segs: list) -> dict:
             body.append(t)
             # 칸 왼쪽 끝에서 시작하지 않는 줄은 앞 줄에서 넘어온 단어가 아니다 (따로 떨어진 덩어리)
             spaced.append(s is not seed and s["x0"] > cx0 + 3 * s["h"])
-    return {"body": body, "spaced": spaced, "facility": facility}
+    return {"body": body, "spaced": spaced, "facility": facility, "found": True, "picked": ordered}
 
 
 # ---------- 4) 줄 잇기 ----------
@@ -267,14 +267,141 @@ def join_lines(body: list, spaced=None) -> str:
 
 
 
+# ---------- 5) 한국 알레르기 표시란 다듬기 ----------
+DECL_HEAD_RE = re.compile(r"(알레르기|알러지)\s*(유발)?\s*(물질|성분|식품)?\s*(표시|정보)?\s*[:：]")
+
+
+def _kr_words(token: str):
+    """'쇠고기돼지고기' -> ['쇠고기', '돼지고기'] 처럼 한국 표시 항목 이름으로만 나뉘면 그 목록, 아니면 None."""
+    from src.parser.core import KR_ALLERGENS
+
+    s = re.sub(r"[\s*※·]", "", token)
+    best = {0: []}
+    for i in range(len(s)):
+        if i not in best:
+            continue
+        for j in range(len(s), i, -1):
+            if s[i:j] in KR_ALLERGENS and j not in best:
+                best[j] = best[i] + [s[i:j]]
+    return best.get(len(s)) if s else None
+
+
+def _split_top_commas(text: str) -> list:
+    parts, buf, depth = [], [], 0
+    for ch in text:
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}" and depth:
+            depth -= 1
+        if ch in ",，、" and depth == 0:
+            parts.append("".join(buf))
+            buf = []
+        else:
+            buf.append(ch)
+    parts.append("".join(buf))
+    return [p.strip() for p in parts]
+
+
+def fix_declaration(text: str) -> str:
+    """끝의 '… 함유' 표시란에서 CLOVA가 빠뜨린 쉼표를 채운다 (OCR 보정).
+
+    '쇠고기돼지고기, 닭고기, 토마토 오징어, 조개류(굴) 함유' -> '쇠고기, 돼지고기, 닭고기, 토마토, 오징어, 조개류(굴) 함유'
+    오른쪽부터 한국 표시 항목 이름으로만 이루어진 덩어리만 고치고, 원재료가 나오면 멈춘다.
+    """
+    m = ALLERGEN_TAIL_RE.search(text)
+    if not m:
+        return text
+    head, tail = text[: m.start()], text[m.start():]
+    parts = _split_top_commas(head)
+    fixed = []
+    while parts:
+        last = parts[-1]
+        name, bracket = (last.split("(", 1) + [""])[:2]
+        words = _kr_words(name)
+        if words:
+            fixed.insert(0, ", ".join(words) + (f"({bracket}" if bracket else ""))
+            parts.pop()
+            continue
+        # '건미역 밀': 마지막 낱말만 표시 항목이면 그 낱말만 고치고 멈춘다
+        sp = name.rstrip().rfind(" ")
+        if sp > 0 and not bracket and _kr_words(name[sp + 1:]):
+            parts[-1] = name[:sp] + " " + ", ".join(_kr_words(name[sp + 1:]))
+        break
+    if not fixed:
+        return text
+    return ", ".join([p for p in parts if p] + fixed) + " " + tail.lstrip()
+
+
+def separate_declaration(segs: list, picked: list) -> str:
+    """원재료명 칸 밖에 따로 있는 표시란('우유함유' 칸, '알레르기 유발물질: 밀, 대두')을 '밀, 대두 함유' 꼴로."""
+    used = {id(s) for s in picked}
+    found = []
+    for s in sorted(segs, key=lambda s: (s["y0"], s["x0"])):
+        t = s["text"].strip()
+        if id(s) in used or FACILITY_RE.search(t):
+            continue
+        h = DECL_HEAD_RE.search(t)
+        body = t[h.end():] if h else (t[: ALLERGEN_TAIL_RE.search(t).start()] if ALLERGEN_TAIL_RE.search(t) else None)
+        if body is None:
+            continue
+        items = []
+        for p in re.split(r"[,，、·/\s]+", re.sub(r"\([^)]*\)", "", body)):
+            w = _kr_words(p) if p else []
+            if w is None:
+                items = []
+                break
+            items += w
+        if items:
+            found += [w for w in items if w not in found]
+    return ", ".join(found) + " 함유" if found else ""
+
+
+# ---------- 6) 다시 찍기 안내 ----------
+RETAKE_NOT_FOUND = "원재료명 칸을 찾지 못함. 원재료명이 잘 보이게 다시 찍어 주세요."
+RETAKE_CUT = "원재료명이 사진 가장자리에서 잘렸을 수 있음. 라벨 전체가 들어오게 다시 찍어 주세요."
+RETAKE_BLUR = "글자가 흐릿하게 읽힘. 밝은 곳에서 초점을 맞춰 다시 찍어 주세요."
+
+
+def retake_warnings(raw: dict, sec: dict) -> list:
+    """원재료명 칸을 못 찾음 / 칸의 글자가 사진 가장자리에 닿음(잘림) / 칸의 글자 신뢰도가 아주 낮음."""
+    if not sec["body"]:
+        return [RETAKE_NOT_FOUND]
+    out = [] if sec["found"] else [RETAKE_NOT_FOUND]
+    info = raw["images"][0].get("convertedImageInfo") or {}
+    W, H = info.get("width"), info.get("height")
+    fields = [f for s in sec["picked"] for f in s.get("fields", [])]
+    if W and H:
+        for f in fields:
+            xs = [v.get("x", 0) for v in f["boundingPoly"]["vertices"]]
+            ys = [v.get("y", 0) for v in f["boundingPoly"]["vertices"]]
+            # 한 글자 조각('l', '즈')은 옆 칸 글자가 걸친 것일 때가 많아 두 글자 이상만 본다
+            if len(f["inferText"]) >= 2 and (min(xs) <= 2 or max(xs) >= W - 3 or max(ys) >= H - 3):
+                out.append(RETAKE_CUT)
+                break
+    conf = [f["inferConfidence"] for f in fields if f.get("inferConfidence") is not None]
+    if conf and sum(conf) / len(conf) < 0.7:
+        out.append(RETAKE_BLUR)
+    return out
+
+
 def extract_label(raw: dict) -> dict:
-    """CLOVA 응답(dict) -> {'text': 원재료명, 'facility': 같은 시설 문장, 'lines': 전체 줄}"""
+    """CLOVA 응답(dict) -> 원재료명 칸과 그 주변 정보.
+
+    text        원재료명 (끝에 붙은 '○○ 함유'까지, 빠진 쉼표 보정)
+    declaration 원재료명 칸 밖에 따로 있는 표시란 ('우유 함유'). text에 이미 표시란이 있으면 빈 문자열
+    facility    같은 시설 문장
+    warnings    다시 찍기 안내
+    """
     fields = raw["images"][0].get("fields", [])
     segs = segments(fields)
     sec = extract_section(segs)
+    text = fix_declaration(join_lines(sec["body"], sec.get("spaced")))
+    declaration = "" if ALLERGEN_TAIL_RE.search(text) else separate_declaration(segs, sec["picked"])
     return {
-        "text": join_lines(sec["body"], sec.get("spaced")),
+        "text": text,
+        "declaration": declaration,
         "facility": " ".join(sec["facility"]),
+        "warnings": retake_warnings(raw, sec),
         "lines": [s["text"] for s in sorted(segs, key=lambda s: (s["y0"], s["x0"]))],
     }
 
@@ -283,10 +410,33 @@ _FMT = {"image/jpeg": "jpg", "image/jpg": "jpg", "image/png": "png", "applicatio
 
 
 class ClovaOcr:
+    """CLOVA로 사진을 읽어 원재료명(+ 따로 있는 표시란)과 다시 찍기 안내를 돌려준다.
+
+    같은 사진을 다시 올리면 서버가 켜져 있는 동안은 CLOVA를 다시 부르지 않는다 (무료 월 100건 아끼기).
+    """
     name = "clova"
+    CACHE_SIZE = 64
 
     def __init__(self, url: str, secret: str):
+        from collections import OrderedDict
+
         self.url, self.secret = url, secret
+        self._cache: "OrderedDict[str, dict]" = OrderedDict()
+        self.calls = 0  # 실제 CLOVA 호출 횟수 (확인용)
+
+    def _raw(self, image: bytes, content_type: str) -> dict:
+        import hashlib
+
+        key = hashlib.sha256(image).hexdigest()
+        if key in self._cache:
+            self._cache.move_to_end(key)
+            return self._cache[key]
+        raw = call_clova(image, _FMT.get(content_type, "jpg"), self.url, self.secret)
+        self.calls += 1
+        self._cache[key] = raw
+        if len(self._cache) > self.CACHE_SIZE:
+            self._cache.popitem(last=False)
+        return raw
 
     @classmethod
     def from_env(cls) -> "ClovaOcr":
@@ -300,8 +450,11 @@ class ClovaOcr:
     def read_text(self, image: bytes, content_type: str):
         from src.common.schema import OcrResult
 
-        raw = call_clova(image, _FMT.get(content_type, "jpg"), self.url, self.secret)
+        raw = self._raw(image, content_type)
         fields = raw["images"][0].get("fields", [])
         conf = [f.get("inferConfidence") for f in fields if f.get("inferConfidence") is not None]
         info = extract_label(raw)
-        return OcrResult(text=info["text"], engine=self.name, confidence=(sum(conf) / len(conf)) if conf else None)
+        # 표시란이 원재료명 칸 밖에 따로 있으면 끝에 붙여서 넘긴다 (1차 파서·최종본 파서 모두 '… 함유'를 표시란으로 읽음)
+        text = f"{info['text']} {info['declaration']}".strip() if info["declaration"] else info["text"]
+        return OcrResult(text=text, engine=self.name, confidence=(sum(conf) / len(conf)) if conf else None,
+                         warnings=info["warnings"])
