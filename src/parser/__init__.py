@@ -23,25 +23,6 @@ def parse(text: str) -> list[Ingredient]:
     return _to_schema(core.parse(text)["ingredients"])
 
 
-def names_for_classifier(text: str) -> list[str]:
-    """분류기 입력: 트리의 모든 원재료 이름 + '연육/어육'의 '어육' 같은 별칭 (등장 순, 중복 제거).
-
-    응답 형식(schema.Ingredient)에는 별칭 칸이 없어서 parse() 결과에는 빠진다.
-    뒤쪽 이름에만 알레르기가 드러나는 경우(연육/어육)를 놓치지 않도록 분류기에는 별칭도 보낸다.
-    """
-    seen: dict[str, None] = {}
-
-    def walk(nodes) -> None:
-        for n in nodes:
-            for name in [n["name"], *n["aliases"]]:
-                if name:
-                    seen.setdefault(name, None)
-            walk(n["children"])
-
-    walk(core.parse(text)["ingredients"])
-    return list(seen)
-
-
 def declared_allergens(text: str) -> list[str]:
     """한국 표시란 '○○ 함유'에 적힌 항목 (예: ['밀', '대두'])."""
     return core.parse(text)["kr_declared"]

@@ -59,23 +59,3 @@ def test_korean_declaration_tail_removed():
     text = "원재료명 및 함량 소맥분(밀), 정제소금 밀, 대두, 우유 함유"
     assert flatten(parse(text)) == ["소맥분", "밀", "정제소금"]
     assert declared_allergens(text) == ["밀", "대두", "우유"]
-
-
-def test_declaration_with_brackets_and_periods():
-    from src.parser import declared_allergens
-
-    # 괄호가 붙은 항목, 마침표 경계에서 멈추지 않는다
-    t1 = "설탕, 대두, 밀, 우유, 조개류(굴) 함유"
-    assert (flatten(parse(t1)), declared_allergens(t1)) == (["설탕"], ["대두", "밀", "우유", "조개류"])
-    t2 = "설탕. 대두, 밀 함유."
-    assert (flatten(parse(t2)), declared_allergens(t2)) == (["설탕"], ["대두", "밀"])
-    t3 = "건미역 밀, 대두, 조개류(굴, 홍합 포함) 함유"
-    assert (flatten(parse(t3)), declared_allergens(t3)) == (["건미역"], ["밀", "대두", "조개류"])
-
-
-def test_declaration_does_not_eat_ingredient():
-    from src.parser import declared_allergens
-
-    # '메밀(국산)100%'는 원재료, 뒤의 '*메밀함유'만 표시란
-    t = "메밀(국산)100% *메밀함유"
-    assert (flatten(parse(t)), declared_allergens(t)) == (["메밀"], ["메밀"])

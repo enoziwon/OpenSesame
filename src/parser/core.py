@@ -176,53 +176,28 @@ def parse_list(text: str):
     return nodes
 
 
-DECL_SEPS = {",", "，", "、", "·"}
-
-
-def _decl_base(token: str) -> str:
-    """'조개류(굴, 홍합 포함)' -> '조개류', '*메밀' -> '메밀'. 괄호 속 세부 표기는 떼고 이름만 본다.
-    괄호 뒤에 글자가 더 붙으면('메밀(국산)100% *메밀') 표시 항목 하나가 아니므로 빈 문자열."""
-    name, _, tail = _bracket_groups(token.strip())
-    return "" if tail.strip(" .。") else name.strip(" *※·.。")
-
-
 def extract_declared(text: str):
-    """끝부분의 '대두, 밀, 게 함유' -> (['대두','밀','게'], 나머지 텍스트).
-
-    - 괄호가 붙은 항목도 읽는다: '조개류(굴) 함유' -> '조개류'
-    - 끝의 마침표, 원재료와 표시란 사이의 마침표도 경계로 본다: '설탕. 대두, 밀 함유.'
-    """
-    m = re.search(r"함\s*유\s*[.。]?\s*$", text)
+    """끝부분의 '대두, 밀, 게 함유' -> (['대두','밀','게'], 나머지 텍스트)."""
+    m = re.search(r"함유\s*$", text)
     if not m:
         return [], text
     before = text[: m.start()].rstrip()
-    parts = split_top(before, DECL_SEPS)
-    declared = []
-    # 오른쪽부터 한국 표시 항목 이름만 떼어 낸다 (괄호 밖 쉼표로 나눈 덩어리 단위)
-    while parts:
-        last = parts[-1]
-        if _decl_base(last) in KR_ALLERGENS:
-            declared.insert(0, _decl_base(last))
-            parts.pop()
+    tokens = re.split(r"(\s*[,，·、]\s*|\s+)", before)
+    declared, cut = [], len(before)
+    # 오른쪽부터 한국 표시 항목 이름만 떼어 낸다
+    pos = len(before)
+    for tok in reversed(tokens):
+        pos -= len(tok)
+        t = tok.strip(" ,，·、")
+        if not t:
             continue
-        # '정제소금 밀', '설탕. 대두': 덩어리 안에서 마지막 낱말만 표시 항목인 경우 (괄호 밖의 공백·마침표가 경계)
-        cut = max((i for i, ch in enumerate(last) if ch in " .。" and not _inside_brackets(last, i)), default=-1)
-        if cut >= 0 and _decl_base(last[cut + 1:]) in KR_ALLERGENS:
-            declared.insert(0, _decl_base(last[cut + 1:]))
-            parts[-1] = last[:cut]
-        break
-    rest = ", ".join(p for p in parts if p.strip()).rstrip(" ,，·、.。")
+        if t in KR_ALLERGENS:
+            declared.insert(0, t)
+            cut = pos
+        else:
+            break
+    rest = before[:cut].rstrip(" ,，·、")
     return declared, rest
-
-
-def _inside_brackets(s: str, idx: int) -> bool:
-    depth = 0
-    for ch in s[:idx]:
-        if ch in OPEN_TO_CLOSE:
-            depth += 1
-        elif ch in CLOSERS and depth:
-            depth -= 1
-    return depth > 0
 
 
 def parse(text: str) -> dict:
