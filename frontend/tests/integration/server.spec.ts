@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("ingredient input uses the official final server and renders its verdicts", async ({ page }) => {
   await page.goto("/scan");
-  await page.getByRole("button", { name: "Enter ingredient text" }).click();
+  await page.getByRole("button", { name: "Text", exact: true }).click();
   await page.getByRole("textbox", { name: "Ingredient label text" }).fill(
     "원재료명: 소맥분(밀), 탈지분유, 설탕 / 밀, 우유 함유",
   );
@@ -64,7 +64,7 @@ test("final text API reasons are rendered unchanged for different products", asy
     expect(api.ok()).toBe(true);
     const expected = await api.json();
     await page.goto("/scan");
-    await page.getByRole("button", { name: "Enter ingredient text" }).click();
+    await page.getByRole("button", { name: "Text", exact: true }).click();
     await page.locator("textarea").fill(text);
     const response = page.waitForResponse(r => r.url().endsWith("/analyze-text"));
     await page.getByRole("button", { name: "Analyze" }).click();

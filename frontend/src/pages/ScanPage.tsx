@@ -5,8 +5,8 @@ import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
 import { analyzeImage, analyzeText } from "../api/analyze";
 import { validateImage } from "../utils/analysis";
 import type { Analysis } from "../types/analysis";
-import cameraIcon from "../assets/camera.svg";
-import libraryIcon from "../assets/library.svg";
+import cameraIcon from "../assets/scan-camera.svg";
+import libraryIcon from "../assets/scan-library.svg";
 export default function ScanPage({
   onResult,
 }: {
@@ -66,23 +66,21 @@ export default function ScanPage({
     }
   }
   return (
-    <Layout step={2}>
-      <main aria-busy={busy}>
+    <Layout step={2} className="scan-shell">
+      <main className="scan-page" aria-busy={busy}>
         <PageTitle title="Scan Ingredients">
-          Upload a photo of the ingredient list
-          <br />
-          on the Korean food label.
+          {mode === "photo" ? <>Upload a photo of the ingredient list<br />on the Korean food label.</> : <>Paste the ingredients from the Korean label<br />to check for allergens.</>}
         </PageTitle>
-        <div className="photo-actions" aria-label="Input method">
+        <div className="scan-mode" aria-label="Input method">
           <button disabled={busy} aria-pressed={mode === "photo"} onClick={() => { setMode("photo"); setError(""); }}>Photo</button>
-          <button disabled={busy} aria-pressed={mode === "text"} onClick={() => { setMode("text"); setError(""); }}>Enter ingredient text</button>
+          <button disabled={busy} aria-pressed={mode === "text"} onClick={() => { setMode("text"); setError(""); }}>Text</button>
         </div>
         {mode === "text" && (
-          <label className="text-input">
+          <div className="text-section"><label className="text-input">
             Ingredient label text
             <textarea value={text} onChange={e => setText(e.target.value)} disabled={busy}
               maxLength={20000} rows={7} placeholder="Paste the Korean ingredients and allergen statement from the label." />
-          </label>
+          </label><p className="scan-hint">Include the allergen statement if it is listed.</p></div>
         )}
         <div hidden={mode !== "photo"}>
         <div
@@ -106,7 +104,7 @@ export default function ScanPage({
             <i />
             <b />
           </div>
-          <p>Drag &amp; drop an image here</p>
+          <p>Drag &amp; drop a photo here</p>
           <small>or use the buttons below</small>
         </div>
         <div className="photo-actions">
@@ -123,6 +121,7 @@ export default function ScanPage({
             Upload Photo
           </button>
         </div>
+        <p className="scan-hint photo-hint">JPG or PNG · Maximum 10 MB</p>
         <input
           hidden
           ref={camera}

@@ -16,7 +16,7 @@ test("server reasons survive normalization, missing reasons use neutral fallback
         { allergen: "soy", verdict: "confirmed", evidence_ingredient: "soy", reason_en: "Confirmed reason must not appear." },
       ],
     } }));
-    await page.getByRole("button", { name: "Enter ingredient text" }).click();
+    await page.getByRole("button", { name: "Text", exact: true }).click();
     await page.locator("textarea").fill("source");
     await page.getByRole("button", { name: "Analyze" }).click();
     const wheat = page.locator("details.result-row").filter({ hasText: "Wheat" });
