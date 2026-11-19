@@ -26,6 +26,10 @@ GENERIC_COVERED = {"crustacean": ("crustacean:shrimp", "crustacean:crab")}
 OPAQUE_NO_BOX = frozenset({"milk", "egg", "wheat", "soy", "crustacean"})    # 표시란을 못 읽었을 때 속 모를 원료가 더하는 것
 COMPOUND_NO_BOX = frozenset({"milk", "egg", "wheat", "soy"})
 PERCENT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*%")
+# LLM이 정한 사전 조회(resolve.py의 via) -> 근거 표시. 'ocrfix'는 OCR 오인식을 LLM이 고쳐 사전에서 찾은 것(#15),
+# 'fallback'은 사전에 없는 이름을 LLM이 판단한 것. 둘 다 추정(I)까지만 쓰고, 대표 근거는 사전 근거를 먼저 고른다
+LLM_VIA = {"ocrfix": "fix", "fallback": "guess"}
+LLM_BASIS = {"fix": "LLM-FIX", "guess": "LLM"}
 
 
 @dataclass(frozen=True)
@@ -38,6 +42,7 @@ class Evidence:
     en: str = ""              # 원재료의 영어 이름 (사전 en)
     word: str = ""            # '원재료(알레르기)' 꼴의 괄호 속 낱말. 혼합조미분말(대두)의 대두
     labelled: bool = False    # 대두 표시가 붙은 종류 모를 유지. 식물성유지(대두)
+    llm: str = ""             # LLM이 정한 근거: 'fix'(오인식을 고쳐 사전에서 찾음), 'guess'(사전에 없어 LLM이 판단)
 
 
 @dataclass(frozen=True)
@@ -60,7 +65,7 @@ class AllergenVerdict:
     verdict: str                          # confirmed / inferable / undecidable
     evidence: str                         # 근거 원재료 이름 또는 "표시란: 새우"
     other_evidence: Tuple[str, ...]       # 나머지 근거 이름 (강한 것 먼저)
-    basis: Tuple[str, ...]                # INGREDIENT, KR-DECL, R1-1, LIKELY, POSSIBLE, OPAQUE, COMPOUND
+    basis: Tuple[str, ...]                # INGREDIENT, KR-DECL, R1-1, LIKELY, POSSIBLE, OPAQUE, COMPOUND, LLM-FIX, LLM
     species: Tuple[str, ...]              # 종까지 아는 출처 코드 (fish:anchovy)
     evidence_en: Optional[str]            # 근거 원료의 영어 이름. 없으면 None
     word: str = ""                        # 괄호 속 낱말 또는 표시란 낱말 (문장을 만들 때 쓴다)
@@ -104,6 +109,12 @@ def _us9(code: str) -> str:
 def _is_soy_oil(hit) -> bool:
     """대두 R(정제유)·F(종류 모를 유지) 근거를 가진 기름·유지인가. 사전에서 R·F는 대두 기름에만 쓴다."""
     return any(_us9(code) == "soy" and grade in ("R", "F") for code, grade in hit.sources)
+
+
+def _llm_grade(hit, grade: str) -> Tuple[str, str]:
+    """(등급, LLM 표시). LLM이 정한 근거는 확정(C)을 추정(I)으로 낮춘다. 글자를 고친 것도 추측이기 때문이다."""
+    llm = LLM_VIA.get(getattr(hit, "via", ""), "")
+    return ("I" if llm and grade == "C" else grade), llm
 
 
 def _make_leaf(name: str, order: int, hit) -> Leaf:
@@ -172,9 +183,10 @@ class _Collector:
         order = self.next_order()
         oil = _is_soy_oil(hit)
         soy_word = any(_us9(box_codes()[w]) == "soy" for w in words)
-        for code, grade in hit.sources:
+        for code, raw in hit.sources:
+            grade, llm = _llm_grade(hit, raw)
             labelled = oil and soy_word and grade == "F"
-            self.evidence.append(Evidence(name, code, grade, order, hit.en, labelled=labelled))
+            self.evidence.append(Evidence(name, code, grade, order, hit.en, labelled=labelled, llm=llm))
         for word in words:
             code = box_codes()[word]
             if oil and _us9(code) == "soy":
@@ -198,7 +210,8 @@ class _Collector:
         if self.is_partial(hit, kids):
             self.leaves.append(_make_leaf(name, order, hit))       # 속 모를 원료로도 남긴다
         oil = _is_soy_oil(hit) and any(self.is_soy_leaf(k) for k in kids)
-        for code, grade in hit.sources:
+        for code, raw in hit.sources:
+            grade, _ = _llm_grade(hit, raw)    # LLM 근거는 확정이 아니므로 부모 이름에서는 남지 않는다
             keep_oil = oil and _us9(code) == "soy" and grade in ("R", "F")
             if grade == "C" or keep_oil:
                 self.evidence.append(Evidence(name, code, grade, order, hit.en, labelled=grade == "F"))
@@ -275,9 +288,11 @@ def _from_box(allergen: str, others: List[str], box: Box, verdict: str = "confir
 
 
 def _from_weak(allergen: str, verdict: str, basis: str, evs: List[Evidence], more: List[str]) -> AllergenVerdict:
+    """추정 근거로 판정한다. 대표 근거는 사전 근거를 LLM 근거보다 먼저 고른다 (같은 쪽끼리는 라벨 순서)."""
+    evs = sorted(evs, key=lambda e: bool(e.llm))
     first = evs[0]
     return AllergenVerdict(allergen, verdict, first.name, _names([e.name for e in evs[1:]] + more, first.name),
-                           (basis,), _species(evs), first.en or None, first.word)
+                           (LLM_BASIS.get(first.llm, basis),), _species(evs), first.en or None, first.word)
 
 
 def _blind_leaves(allergen: str, leaves: List[Leaf], box_read: bool) -> List[Leaf]:
@@ -294,14 +309,15 @@ def _blind_leaves(allergen: str, leaves: List[Leaf], box_read: bool) -> List[Lea
 
 
 def _undecidable(allergen: str, ps: List[Evidence], blind: List[Leaf]) -> AllergenVerdict:
-    """가능 근거와 속 모를 원료는 같은 세기다. 라벨에서 먼저 나온 것을 대표 근거로 삼는다 (가이드 7장)."""
-    items = [(e.order, 0, "POSSIBLE", e.name, e.en) for e in ps]          # 같은 원재료면 가능 근거를 앞에 둔다
-    items += [(leaf.order, 1, "OPAQUE" if leaf.opaque else "COMPOUND", leaf.name, leaf.en) for leaf in blind]
-    items.sort(key=lambda item: item[:2])
-    _, _, _, name, en = items[0]
-    kinds = tuple(dict.fromkeys(item[2] for item in items))
+    """가능 근거와 속 모를 원료는 같은 세기다. 라벨에서 먼저 나온 것을 대표 근거로 삼는다 (가이드 7장).
+    LLM이 정한 근거는 사전 근거와 속 모를 원료 뒤에 둔다."""
+    items = [(bool(e.llm), e.order, 0, LLM_BASIS.get(e.llm, "POSSIBLE"), e.name, e.en) for e in ps]  # 같은 원재료면 가능 근거를 앞에
+    items += [(False, leaf.order, 1, "OPAQUE" if leaf.opaque else "COMPOUND", leaf.name, leaf.en) for leaf in blind]
+    items.sort(key=lambda item: item[:3])
+    name, en = items[0][4], items[0][5]
+    kinds = tuple(dict.fromkeys(item[3] for item in items))
     word = next((e.word for e in ps if e.name == name), "")
-    return AllergenVerdict(allergen, "undecidable", name, _names([item[3] for item in items], name),
+    return AllergenVerdict(allergen, "undecidable", name, _names([item[4] for item in items], name),
                            kinds, _species(ps), en or None, word)
 
 
