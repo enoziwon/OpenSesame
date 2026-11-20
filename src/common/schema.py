@@ -40,6 +40,7 @@ class OcrResult(BaseModel):
     text: str
     engine: str
     confidence: Optional[float] = None
+    warnings: list[str] = Field(default_factory=list)  # 다시 찍기 안내 (원재료명 칸 못 찾음, 잘림, 흐림)
 
 
 # ---------- 3·4단계: 파서 ----------
