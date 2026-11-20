@@ -355,6 +355,20 @@ def from_classification(name: str, result) -> Optional[Lookup]:
     return Lookup(name=name, sources=tuple(sorted(best.items())), via="fallback")
 
 
+def plausible_fix(name: str, fixed: str) -> bool:
+    """LLM이 바로잡은 이름이 OCR 오인식으로 설명되는 범위인지. 다른 원재료로 바꾸거나 글자를 덧붙인 답은 버린다.
+
+    음절 수 차이 1 이하, 자모 거리가 원래 이름 자모 길이의 절반(최소 2) 이하.
+    '침맛양지육수분말 → 참맛양지육수분말'(거리 1), 'l1로인산나트륨 → 피로인산나트륨'(2)은 받고,
+    '설탕 → 땅콩버터'처럼 모양과 상관없는 답은 버린다.
+    """
+    a, b = to_jamo(norm(name)), to_jamo(norm(fixed))
+    if not b or abs(syllables(name) - syllables(fixed)) > 1:
+        return False
+    limit = max(2, len(a) // 2)
+    return distance(a, b, limit) <= limit
+
+
 def fallback_from_env():
     """OPENSESAME_FINAL_FALLBACK=llm이고 LLM 키가 있으면 팀 LLM 분류기, 아니면 None(꺼짐). 기본은 꺼짐."""
     want = os.environ.get(FALLBACK_ENV, "").strip().lower()
@@ -387,6 +401,7 @@ class Resolver:
         self._suspects: Dict[str, Suspect] = {}      # 라벨 이름 -> 앞부분 오타로 보이는 경우 (처음 본 순서)
         self._asked: set = set()
         self._notes: List[str] = []
+        self._fixed: Dict[str, str] = {}             # 라벨 이름 -> LLM이 바로잡아 사전에서 찾은 이름
 
     def resolve(self, name: str) -> Lookup:
         """이름 하나 -> Lookup. verdict.judge의 resolve 인자로 넘긴다."""
@@ -424,6 +439,8 @@ class Resolver:
 
     def _ask(self, todo: List[str]) -> None:
         self._asked.update(todo)
+        if hasattr(self.fallback, "correct_and_classify"):
+            return self._ask_with_fix(todo)
         try:
             results = list(self.fallback.classify(todo))
         except Exception as e:      # LLM 장애 등: 모르는 이름으로 두고 참고에 남긴다 (오류 내용은 옮기지 않는다)
@@ -444,6 +461,49 @@ class Resolver:
         if used:
             self._notes.append(f"사전에 없어 보조 분류기로 판단(확정은 추정으로 낮춤): {', '.join(used)}")
 
+    def _ask_with_fix(self, todo: List[str]) -> None:
+        """오인식 보정 (LLM 한 번): 끝까지 모르는 이름마다 OCR이 잘못 읽기 전의 이름과 알레르겐을 함께 받는다.
+
+        1. 바로잡은 이름이 사전(정확 일치·규칙·끝 기호·비슷한 이름)으로 찾아지면 사전 판정을 쓴다 (via 'ocrfix').
+        2. 바로잡아도 사전에 없거나 바로잡을 게 없으면 LLM의 알레르겐을 쓰되 확정은 추정으로 낮춘다 (via 'fallback').
+           화면에서는 추정·판정 불가가 may contain으로 묶인다.
+        3. LLM이 9개와 관계없다고 하면 모르는 이름으로 둔다 (판정 불가 원재료 목록에 남는다).
+        바로잡은 이름이 원래 글자와 모양이 너무 다르면(plausible_fix) 그 답은 통째로 버린다.
+        """
+        try:
+            results = list(self.fallback.correct_and_classify(todo))
+        except Exception as e:      # LLM 장애 등: 모르는 이름으로 두고 참고에 남긴다 (오류 내용은 옮기지 않는다)
+            log.warning("오인식 보정 호출 실패: %s", type(e).__name__)
+            self._notes.append(f"오인식 보정 호출 실패({type(e).__name__}): 모르는 이름 {len(todo)}개를 그대로 둠")
+            return
+        asked, answers = set(todo), {}
+        for r, fixed in results:
+            name = getattr(r, "ingredient", None)
+            if name in asked and name not in answers:        # 묻지 않은 이름의 답은 버린다 (지어낸 근거 차단)
+                answers[name] = (r, (fixed or "").strip())
+        by_llm, rejected = [], []
+        for name in todo:
+            if name not in answers:
+                continue
+            r, fixed = answers[name]
+            if fixed and fixed != name:
+                if not plausible_fix(name, fixed):
+                    rejected.append(f"{name} → {fixed}")
+                    continue
+                hit = self.resolve(fixed)                    # 사전 다시 확인 (LLM 없이)
+                if hit.via not in ("unknown", "suspect"):
+                    self._cache[name] = dataclasses.replace(hit, name=name, via="ocrfix")
+                    self._fixed[name] = fixed
+                    continue
+            hit = from_classification(name, r)
+            if hit is not None:
+                self._cache[name] = hit
+                by_llm.append(f"{name} → {fixed}" if fixed and fixed != name else name)
+        if by_llm:
+            self._notes.append(f"사전에 없어 LLM으로 판단(확정은 추정으로 낮춤): {', '.join(by_llm)}")
+        if rejected:
+            self._notes.append(f"오인식 보정을 버림(원래 글자와 너무 다름): {', '.join(rejected)}")
+
     @property
     def matched(self) -> Dict[str, str]:
         """끝 기호 떼기나 비슷한 이름으로 맞춘 것: {라벨 이름: 사전 항목}."""
@@ -458,6 +518,7 @@ class Resolver:
         """응답 notes에 더할 문장. 맞춘 이름마다 한 줄('오타로 보고 맞춤: 탈지븐유 → 탈지분유'),
         앞부분 오타로 보이는 이름마다 한 줄, 그다음 보조 분류기 참고."""
         lines = [f"{NOTE_HEAD[self._cache[n].via]}: {n} → {t}" for n, t in self._matched.items()]
+        lines += [f"오인식 보정(LLM): {n} → {t}" for n, t in self._fixed.items()]
         lines += [f"오타일 수 있음: {s.name} ('{s.part}' → '{s.word}'). 판정 불가 근거로 둔 알레르기: "
                   f"{', '.join(US9_KO[a] for a in s.allergens)}" for s in self._suspects.values()]
         return lines + list(self._notes)
