@@ -161,3 +161,32 @@ def test_ocr_does_not_depend_on_parsers():
     assert clova.KR_DECL_WORDS == KR_ALLERGEN_WORDS
     source = Path(clova.__file__).read_text(encoding="utf-8")
     assert "src.parser" not in source and "src.final" not in source
+
+
+def test_split_star_heads_glued_to_previous_ingredient():
+    from src.ocr.clova import split_star_heads
+
+    assert split_star_heads("비타민B2, 녹차풍미유*스프류:사골농축분말, 정제소금") == \
+        "비타민B2, 녹차풍미유, *스프류:사골농축분말, 정제소금"
+    assert split_star_heads("녹차풍미유*스프류 :참맛분") == "녹차풍미유, *스프류 :참맛분"
+    # 이미 떨어져 있거나 맨 앞인 머리말, 콜론 없는 각주 별표는 그대로
+    assert split_star_heads("*면:소맥분, *스프:정제소금") == "*면:소맥분, *스프:정제소금"
+    assert split_star_heads("쇠고기*(호주산), 우유*") == "쇠고기*(호주산), 우유*"
+
+
+def test_fix_stray_parens_inside_word():
+    from src.ocr.clova import fix_stray_parens
+
+    assert fix_stray_parens("팜유(말레이시(아산), 변성전분, 감자전분") == "팜유(말레이시아산), 변성전분, 감자전분"
+    # 짝이 맞는 중첩 괄호는 건드리지 않는다
+    ok = "사골농축분말[사골엑스분말{농축사골액(사골엑기스:뉴질랜드산)}], 간장(대두(외국산))"
+    assert fix_stray_parens(ok) == ok
+    # 닫는 괄호가 빠진 것은 고칠 근거가 없어 그대로 (파서가 복구)
+    assert fix_stray_parens("간장(대두, 밀(미국산), 정제소금") == "간장(대두, 밀(미국산), 정제소금"
+
+
+def test_extract_label_applies_star_and_paren_fix():
+    f = _line(["원재료명", "*면:소맥분,", "팜유(말레이시(아산),", "녹차풍미유*스프류:정제소금"], 10, 10)
+    text = extract_label(_raw(f))["text"]
+    assert "팜유(말레이시아산)" in text
+    assert "녹차풍미유, *스프류:정제소금" in text
