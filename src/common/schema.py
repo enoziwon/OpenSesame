@@ -41,6 +41,7 @@ class OcrResult(BaseModel):
     engine: str
     confidence: Optional[float] = None
     warnings: list[str] = Field(default_factory=list)  # 다시 찍기 안내 (원재료명 칸 못 찾음, 잘림, 흐림)
+    facility: str = ""  # 같은 시설 문장 ('… 같은 제조시설에서 제조', '… 혼입 가능'). 원재료로 읽히지 않게 text와 따로 둔다
 
 
 # ---------- 3·4단계: 파서 ----------
