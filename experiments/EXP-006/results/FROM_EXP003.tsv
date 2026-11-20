@@ -1,0 +1,11 @@
+# EXP-003 사진 8장의 P 글자 (CLOVA를 새로 부르지 않고 복사, 2026-11-17)
+# 원본: experiments/EXP-003/results/clova_full/<p>.txt (커밋 1e9e50e, 민재 님 #8 2c87bde와 같은 내용)
+# id	원본	sha256
+photo_p01	experiments/EXP-003/results/clova_full/p01.txt	a1e2e5fcf4bf0db5f3d280a1269334c3d7a0a79178dd1029592302472637a49c
+photo_p02	experiments/EXP-003/results/clova_full/p02.txt	e453a258b94b00213db90eee41570105ccb4bcce6b8c1e37852fe36998fe6e8f
+photo_p03	experiments/EXP-003/results/clova_full/p03.txt	c1930a1c24cdd3e656087d49f977a26c02b60470a78dbb32e9669da9f7c682c4
+photo_p04	experiments/EXP-003/results/clova_full/p04.txt	224f3de5990c15661b03fd1ed45af94c3ed27f325c66fb1d87bb8dce698686fd
+photo_p05	experiments/EXP-003/results/clova_full/p05.txt	b20b08d226b5e6fba418407bca0723c67a3615933fe8fb19b16ba049811aadf1
+photo_p08	experiments/EXP-003/results/clova_full/p08.txt	6301569bc0bd1d0f509d8b0aba03f436493d3b5ea76c860174e3eba907016ce8
+photo_p09	experiments/EXP-003/results/clova_full/p09.txt	b7aaee3f73d05e333ced7107051ec39d839357666c0a4f5dec05a9ace5972e44
+photo_p10	experiments/EXP-003/results/clova_full/p10.txt	0adb44d0fd97fe67d20020cff654236d71fef269f3c69c53d4e1fe8ff7191288

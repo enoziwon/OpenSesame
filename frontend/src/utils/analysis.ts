@@ -30,10 +30,18 @@ export function normalizeAnalysis(value: unknown): Analysis {
     allergens: v.allergens.map((a) => ({
       ...a,
       other_evidence: strings(a.other_evidence) ? a.other_evidence : [],
+      reason_en: typeof a.reason_en === "string" ? a.reason_en : undefined,
+      reason_ko: typeof a.reason_ko === "string" ? a.reason_ko : undefined,
+      basis: strings(a.basis) ? a.basis : undefined,
+      species: strings(a.species) ? a.species : undefined,
+      evidence_en: typeof a.evidence_en === "string" || a.evidence_en === null
+        ? a.evidence_en : undefined,
     })),
     undecidable_ingredients: strings(v.undecidable_ingredients)
       ? v.undecidable_ingredients
       : [],
+    notes: strings(v.notes) ? v.notes : [],
+    declaration_text: typeof v.declaration_text === "string" ? v.declaration_text : undefined,
     meta: v.meta && typeof v.meta === "object" ? v.meta : undefined,
   } as Analysis;
   if (!result.ingredients_text.trim() || !result.ingredients.length)
@@ -42,9 +50,6 @@ export function normalizeAnalysis(value: unknown): Analysis {
       "The ingredient label could not be fully read. Results may be incomplete.",
     ];
   return result;
-}
-export function isMock(a: Analysis) {
-  return a.meta?.ocr_engine === "mock" || a.meta?.classifier === "mock";
 }
 // A missing match is not a negative finding when reading/classification failed.
 export function hasIncompleteAnalysis(a: Analysis) {

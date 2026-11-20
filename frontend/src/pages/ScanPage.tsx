@@ -2,17 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderCircle, X } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
-import { analyzeImage } from "../api/analyze";
+import { analyzeImage, analyzeText } from "../api/analyze";
 import { validateImage } from "../utils/analysis";
 import type { Analysis } from "../types/analysis";
-import cameraIcon from "../assets/camera.svg";
-import libraryIcon from "../assets/library.svg";
+import cameraIcon from "../assets/scan-camera.svg";
+import libraryIcon from "../assets/scan-library.svg";
 export default function ScanPage({
   onResult,
 }: {
   onResult: (a: Analysis) => void;
 }) {
   const [file, setFile] = useState<File>();
+  const [mode, setMode] = useState<"photo" | "text">("photo");
+  const [text, setText] = useState("");
   const [preview, setPreview] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -38,13 +40,15 @@ export default function ScanPage({
     if (!problem) setFile(next);
   }
   async function analyze() {
-    if (!file || request.current) return;
+    if (request.current || (mode === "photo" ? !file : !text.trim())) return;
     const controller = new AbortController();
     request.current = controller;
     setBusy(true);
     setError("");
     try {
-      const result = await analyzeImage(file, controller.signal);
+      const result = mode === "photo"
+        ? await analyzeImage(file!, controller.signal)
+        : await analyzeText(text.trim(), controller.signal);
       if (!controller.signal.aborted) {
         onResult(result);
         navigate("/results");
@@ -62,13 +66,23 @@ export default function ScanPage({
     }
   }
   return (
-    <Layout step={2}>
-      <main aria-busy={busy}>
+    <Layout step={2} className="scan-shell">
+      <main className="scan-page" aria-busy={busy}>
         <PageTitle title="Scan Ingredients">
-          Upload a photo of the ingredient list
-          <br />
-          on the Korean food label.
+          {mode === "photo" ? <>Upload a photo of the ingredient list<br />on the Korean food label.</> : <>Paste the ingredients from the Korean label<br />to check for allergens.</>}
         </PageTitle>
+        <div className="scan-mode" aria-label="Input method">
+          <button disabled={busy} aria-pressed={mode === "photo"} onClick={() => { setMode("photo"); setError(""); }}>Photo</button>
+          <button disabled={busy} aria-pressed={mode === "text"} onClick={() => { setMode("text"); setError(""); }}>Text</button>
+        </div>
+        {mode === "text" && (
+          <div className="text-section"><label className="text-input">
+            Ingredient label text
+            <textarea value={text} onChange={e => setText(e.target.value)} disabled={busy}
+              maxLength={20000} rows={7} placeholder="Paste the Korean ingredients and allergen statement from the label." />
+          </label><p className="scan-hint">Include the allergen statement if it is listed.</p></div>
+        )}
+        <div hidden={mode !== "photo"}>
         <div
           className={`dropzone ${dragging ? "dragging" : ""}`}
           onDragOver={(e) => {
@@ -90,7 +104,7 @@ export default function ScanPage({
             <i />
             <b />
           </div>
-          <p>Drag &amp; drop an image here</p>
+          <p>Drag &amp; drop a photo here</p>
           <small>or use the buttons below</small>
         </div>
         <div className="photo-actions">
@@ -107,6 +121,7 @@ export default function ScanPage({
             Upload Photo
           </button>
         </div>
+        <p className="scan-hint photo-hint">JPG or PNG · Maximum 10 MB</p>
         <input
           hidden
           ref={camera}
@@ -152,6 +167,7 @@ export default function ScanPage({
             </button>
           </div>
         )}
+        </div>
         {error && (
           <p role="alert" className="error">
             {error}
@@ -164,7 +180,7 @@ export default function ScanPage({
           </p>
         )}
         <div className="bottom-actions">
-          <PrimaryButton disabled={!file || busy} onClick={analyze}>
+          <PrimaryButton disabled={busy || (mode === "photo" ? !file : !text.trim())} onClick={analyze}>
             {busy ? "Analyzing…" : "Analyze →"}
           </PrimaryButton>
         </div>

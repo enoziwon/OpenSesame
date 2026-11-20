@@ -3,6 +3,7 @@
     python tools/run_1st_eval.py                 # 사진 10장(전사·CLOVA) + 시험 세트 140개
     python tools/run_1st_eval.py --with-dev      # 개발 세트 60개도
     python tools/run_1st_eval.py --stages test   # 한 단계만 다시
+    python tools/run_1st_eval.py --stages test --out-dir data/raw/eval/1st_… --resume   # 402로 멈춘 곳부터 이어서
 
 - 필요한 것: 저장소 루트 .env의 LLM_PROVIDER, LLM_BASE_URL, LLM_API_KEY, LLM_MODEL (키는 찍지 않는다).
   시험·개발 세트 입력은 data/raw/gold/test_blank.jsonl, dev_blank.jsonl (정답이 없는 빈 양식, 공유 드라이브에서 받는다).
@@ -57,19 +58,24 @@ def meta(out_dir: Path, results: dict) -> None:
     (out_dir / "run_meta.json").write_text(json.dumps(info, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
-def run_stage(name: str, out_dir: Path) -> dict:
+STATUS = {0: "ok", 1: "some products failed", 3: "incomplete"}
+
+
+def run_stage(name: str, out_dir: Path, resume: bool = False) -> dict:
     start = time.perf_counter()
+    more = ["--resume"] if resume else []
     if name == "photo":
         codes = [run_photo.main(["--system", "team", "--classifier", "llm", "--cond", c,
-                                 "--out", str(out_dir / f"team_llm_photo_{c}.jsonl")]) for c in ("clean", "clova")]
-        code = max(codes)
+                                 "--out", str(out_dir / f"team_llm_photo_{c}.jsonl")] + more) for c in ("clean", "clova")]
+        code = 1 if 1 in codes else max(codes)
     else:
         gold = GOLD / f"{name}_blank.jsonl"
         if not gold.exists():
             print(f"{name}: 입력 파일이 없다 ({gold}). 이 단계는 건너뛴다.", file=sys.stderr)
             return {"status": "skipped (no input)"}
-        code = run_team.main(["--gold", str(gold), "--out", str(out_dir / f"team_llm_{name}.jsonl"), "--classifier", "llm"])
-    return {"status": "ok" if code == 0 else "some products failed", "seconds": round(time.perf_counter() - start, 1)}
+        code = run_team.main(["--gold", str(gold), "--out", str(out_dir / f"team_llm_{name}.jsonl"),
+                              "--classifier", "llm"] + more)
+    return {"status": STATUS.get(code, f"exit {code}"), "seconds": round(time.perf_counter() - start, 1)}
 
 
 def main(argv=None) -> int:
@@ -77,6 +83,7 @@ def main(argv=None) -> int:
     ap.add_argument("--with-dev", action="store_true", help="개발 세트 60개도 돌린다")
     ap.add_argument("--stages", help="쉼표로 고른 단계만 (photo,test,dev)")
     ap.add_argument("--out-dir", help="결과 폴더 (기본 data/raw/eval/1st_<날짜시각>)")
+    ap.add_argument("--resume", action="store_true", help="--out-dir의 결과를 이어서 돈다 (이미 한 제품은 건너뜀)")
     args = ap.parse_args(argv)
     run_team.load_dotenv(ROOT / ".env")
     missing = [k for k in ("LLM_API_KEY", "LLM_MODEL") if not os.getenv(k)]
@@ -93,12 +100,13 @@ def main(argv=None) -> int:
     results = {}
     for name in stages:
         print(f"== {name}", flush=True)
-        results[name] = run_stage(name, out_dir)
+        results[name] = run_stage(name, out_dir, args.resume)
         meta(out_dir, results)
     print(f"끝. 이 폴더를 보내 주세요: {out_dir}")
     failed = [s for s, r in results.items() if r["status"] != "ok"]
     if failed:
-        print(f"다시 돌릴 단계: {', '.join(failed)} (python tools/run_1st_eval.py --stages {','.join(failed)} --out-dir {out_dir})", file=sys.stderr)
+        print(f"다시 돌릴 단계: {', '.join(failed)} (python tools/run_1st_eval.py --stages {','.join(failed)} "
+              f"--out-dir {out_dir} --resume)", file=sys.stderr)
         return 1
     return 0
 

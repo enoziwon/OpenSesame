@@ -170,8 +170,8 @@ def test_response_extends_team_format():
 
 @pytest.mark.parametrize("text, allergen, start", [
     ("정제수, 설탕, 새우 함유", "crustacean", "Listed in the Korean allergen statement: 새우 (shrimp)."),
-    ("간장, 설탕", "wheat", "Likely contains wheat: “간장” is usually made with wheat."),
-    ("육수, 설탕, 밀 함유", "fish", "Cannot tell: “육수” sometimes contains fish."),
+    ("간장, 설탕", "wheat", "Wheat may be present because soy sauce (간장) is commonly made with wheat."),
+    ("육수, 설탕, 밀 함유", "fish", "Cannot tell: broth (stock) (육수) sometimes contains fish."),
     ("양념분말, 설탕, 밀 함유", "sesame", "Cannot tell: “양념분말” is a seasoning blend whose contents are not listed, "
                                           "and Korean labels do not have to declare sesame."),
 ])
@@ -254,3 +254,16 @@ def test_final_classifier_in_team_pipeline():
 def test_final_classifier_rejects_plain_string():
     with pytest.raises(TypeError):
         FinalClassifier().classify("간장")
+
+def test_reason_uses_only_available_english_evidence():
+    from dataclasses import replace
+    from src.final.parser import parse_label
+    from src.final.verdict import judge
+    from src.final.pipeline import reason
+
+    v = next(v for v in judge(parse_label("간장, 설탕")).allergens if v.allergen == "wheat")
+    without_english = replace(v, evidence_en=None)
+    assert reason(without_english)[0] == "Wheat may be present because “간장” is commonly made with wheat."
+    # Wording changes must not change the verdict, evidence, basis, or Korean explanation.
+    assert reason(v)[1] == reason(without_english)[1]
+    assert v.verdict == "inferable" and v.basis == ("LIKELY",)

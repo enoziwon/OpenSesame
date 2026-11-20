@@ -4,6 +4,7 @@ import { chromium } from "@playwright/test";
 const sample = JSON.parse(
   fs.readFileSync("../src/app/sample_response.json", "utf8"),
 );
+sample.meta = { ocr_engine: "clova", classifier: "llm", prompt_version: "classify_v1" };
 const image = {
   name: "label.svg",
   mimeType: "image/svg+xml",
@@ -118,7 +119,8 @@ for (const [width, height] of [
     await expect(page.getByText("Not detected", { exact: true })).toHaveCount(
       4,
     );
-    await expect(page.getByText(/Demo analysis/)).toBeVisible();
+    await expect(page.getByText(/Demo analysis/)).toHaveCount(0);
+    await page.getByText("Original ingredient text", { exact: true }).click();
     await expect(
       page.getByText("Evidence: 탈지분유", { exact: true }),
     ).toBeVisible();
@@ -215,10 +217,8 @@ test("real FastAPI mock endpoint", async ({ page }) => {
   ).toHaveLength(1);
   expect(uploadedBody).toContain('name="file"');
   expect(uploadedBody).not.toContain("opensesame.allergies");
-  await expect(page.getByText(/Demo analysis/)).toBeVisible();
-  await expect(
-    page.getByText("Evidence: 탈지분유", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("alert")).toContainText("Demo analysis: sample data");
+  await expect(page).toHaveURL(/results$/);
 });
 
 test("persistent profile and invalid storage", async ({ page, browser }) => {
@@ -338,10 +338,11 @@ test("selected warnings, evidence, enum labels and editing profile", async ({
   await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
     1,
   );
+  await page.getByText("Original ingredient text", { exact: true }).click();
   await expect(
     page.getByText("Evidence: 참기름", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/Not detected does not mean safe/)).toBeVisible();
+  await expect(page.getByText(/Not detected ≠ allergen-free/)).toBeVisible();
   await page.getByRole("button", { name: "Edit My Allergies" }).click();
   await page.getByRole("checkbox", { name: "Sesame", exact: true }).uncheck();
   await page.getByRole("checkbox", { name: "Egg", exact: true }).check();

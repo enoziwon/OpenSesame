@@ -8,18 +8,21 @@ LLM을 쓰지 않는다. 같은 글자를 넣으면 늘 같은 결과가 나온�
 사전이 모르는 이름은 끝에 붙은 기호를 떼거나 자모 하나가 틀린 오타로 보고 사전 항목과 맞춰 본다(src/final/resolve.py).
 맞춘 것은 참고(notes)에 '오타로 보고 맞춤: 탈지븐유 → 탈지분유'처럼 남는다. 환경 변수 OPENSESAME_FINAL_FUZZY=0이면 끈다.
 OPENSESAME_FINAL_FALLBACK=llm이고 LLM 키가 있을 때만 끝까지 모르는 이름을 팀 LLM 분류기에 묻는다(기본은 꺼짐).
+LLM이 정한 근거는 basis가 LLM-FIX·LLM이고 추정까지만 된다. 같은 시설 문구는 판정에 쓰지 않고, 판정이 없는 알레르기만
+shared_facility에 고정 문장으로 담는다(src/final/facility.py). 화면·LLM 설명과 잇는 방법은 docs/10_may_contain.md.
 """
 from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from src.common.schema import AnalyzeMeta
+from src.final.facility import shared_facility
 from src.final.parser import parse_label
 from src.final.resolve import Resolver, fallback_from_env
-from src.final.response import FinalAllergenResult, FinalAnalyzeResponse
-from src.final.verdict import AllergenVerdict, Judgement, code_info, judge
+from src.final.response import FacilityResult, FinalAllergenResult, FinalAnalyzeResponse
+from src.final.verdict import LLM_BASIS, AllergenVerdict, Judgement, code_info, judge
 
 CLASSIFIER_NAME = "final-lexicon-v1"
 NO_INGREDIENTS = "원재료를 읽지 못함. 원재료명이 잘 보이게 다시 찍어 주세요."      # 팀 파이프라인과 같은 문구
@@ -72,16 +75,20 @@ def _respond(parsed, ocr_engine: str, facility: Optional[str]) -> FinalAnalyzeRe
     if resolver.fallback is not None:
         resolver.resolve_many([m[0] for m in parsed.mentions()])
     j = judge(parsed, resolve=resolver.resolve)
+    fixed = _fixed_names(resolver)
+    decided = [v.allergen for v in j.allergens]
     return FinalAnalyzeResponse(
         ingredients_text=parsed.ingredients_text,
         ingredients=[n.to_dict() for n in parsed.tree],
-        allergens=[_result(v) for v in j.allergens],
+        allergens=[_result(v, fixed) for v in j.allergens],
         undecidable_ingredients=list(j.undecidable_ingredients),
         warnings=_warnings(j),
         meta=AnalyzeMeta(ocr_engine=ocr_engine, classifier=CLASSIFIER_NAME, prompt_version=None),
         declaration_text=parsed.declaration_text,
         declared=list(parsed.declared),
         notes=_notes(j, facility, parsed.repairs) + resolver.notes(),
+        shared_facility=[FacilityResult(allergen=n.allergen, words=list(n.words), reason_en=n.reason_en,
+                                        reason_ko=n.reason_ko) for n in shared_facility(facility, decided)],
     )
 
 
@@ -104,14 +111,58 @@ def _notes(j: Judgement, facility: Optional[str], repairs: int) -> List[str]:
     return notes
 
 
-def _result(v: AllergenVerdict) -> FinalAllergenResult:
-    en, ko = reason(v)
+def _result(v: AllergenVerdict, fixed: Optional[Dict[str, str]] = None) -> FinalAllergenResult:
+    read_as = (fixed or {}).get(v.evidence) if v.basis[0] == "LLM-FIX" else None
+    en, ko = _llm_reason(v, read_as) if v.basis[0] in LLM_BASIS.values() else reason(v)
     return FinalAllergenResult(
         allergen=v.allergen, verdict=v.verdict, evidence_ingredient=v.evidence,
         other_evidence=list(v.other_evidence), basis=list(v.basis),
         species=[code_info(c)[1] for c in v.species], evidence_en=v.evidence_en,
-        reason_en=en, reason_ko=ko,
+        reason_en=en, reason_ko=ko, read_as=read_as,
     )
+
+
+def _fixed_names(resolver) -> Dict[str, str]:
+    """LLM이 고친 이름 {라벨 이름: 고친 이름}. #15(오인식 보정)가 들어온 Resolver에만 있고, 없으면 빈 dict.
+    #15가 main에 들어오면 Resolver에 공개 속성으로 만들어 바꾼다."""
+    return dict(getattr(resolver, "_fixed", None) or {})
+
+
+def _llm_reason(v: AllergenVerdict, read_as: Optional[str]) -> Tuple[str, str]:
+    """LLM이 정한 근거(LLM-FIX, LLM)의 이유. 사전 지식처럼 쓰지 않고 LLM이 정했다는 것을 밝힌다."""
+    if v.basis[0] == "LLM-FIX":
+        return _fix_reason(v, read_as, v.verdict == "inferable")
+    name = v.evidence
+    t_en, t_ko = _target(v)
+    if v.verdict == "inferable":
+        return (f"Likely contains {NAME_EN[v.allergen]}: “{name}” is not in our ingredient dictionary, and an AI model "
+                f"judged that it likely contains {t_en}.",
+                f"“{name}”{_josa(name, '은', '는')} 원재료 사전에 없는 이름이고, AI 모델이 {t_ko}{_josa(t_ko, '이', '가')} "
+                f"들어 있을 것으로 판단했다.")
+    return (f"Cannot tell: “{name}” is not in our ingredient dictionary, and an AI model judged that it may "
+            f"contain {t_en}.",
+            f"“{name}”{_josa(name, '은', '는')} 원재료 사전에 없는 이름이고, AI 모델이 {t_ko}{_josa(t_ko, '이', '가')} "
+            f"들어 있을 수 있다고 판단했다.")
+
+
+def _fix_reason(v: AllergenVerdict, read_as: Optional[str], sure: bool) -> Tuple[str, str]:
+    """LLM-FIX: 라벨 글자를 잘못 읽은 것으로 보고 고친 이름으로 사전에서 찾았다. 고친 이름을 모르면 알레르기로 말한다."""
+    name = v.evidence
+    t_en, t_ko = _target(v)
+    said = f"the label text “{name}” looks like a misread of"
+    said_ko = f"라벨 글자 “{name}”{_josa(name, '은', '는')}"
+    if sure and read_as:
+        return (f"Likely contains {NAME_EN[v.allergen]}: {said} {read_as} ({v.evidence_en or t_en}).",
+                f"{said_ko} {read_as}{_josa(read_as, '을', '를')} 잘못 읽은 것으로 보인다.")
+    if sure:
+        return (f"Likely contains {NAME_EN[v.allergen]}: {said} an ingredient that contains {t_en}.",
+                f"{said_ko} {t_ko}{_josa(t_ko, '이', '가')} 든 원재료를 잘못 읽은 것으로 보인다.")
+    if read_as:
+        return (f"Cannot tell: {said} {read_as}, which sometimes contains {t_en}.",
+                f"{said_ko} {read_as}{_josa(read_as, '을', '를')} 잘못 읽은 것으로 보이고, 거기에는 "
+                f"{t_ko}{_josa(t_ko, '이', '가')} 들어 있을 수 있다.")
+    return (f"Cannot tell: {said} an ingredient that sometimes contains {t_en}.",
+            f"{said_ko} {t_ko}{_josa(t_ko, '이', '가')} 들어 있기도 한 원재료를 잘못 읽은 것으로 보인다.")
 
 
 # ---------- 이유 문장 ----------
@@ -135,6 +186,7 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
     """판정 하나의 이유를 (영어, 한국어) 한 문장씩."""
     kind = v.basis[0]
     name, word = v.evidence, v.word
+    ingredient_en = f"{v.evidence_en} ({name})" if v.evidence_en else f"“{name}”"
     t_en, t_ko = _target(v)
     if kind == "INGREDIENT" and word:
         return (f"Contains {NAME_EN[v.allergen]}: “{name}” lists {word} ({t_en}) in parentheses.",
@@ -147,7 +199,7 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
         return (f"Listed in the Korean allergen statement: {word}" + (f" ({v.evidence_en})." if v.evidence_en else "."),
                 f"한국 알레르기 표시란에 {word}{_josa(word, '이', '가')} 적혀 있다.")
     if kind == "R1-1" and not word:          # 표시란 없이 '식물성유지(대두)'처럼 유지에 대두 표시가 붙은 경우
-        return (f"Likely contains soy: “{name}” is a fat or oil labelled as coming from soybeans. Refined soybean oil "
+        return (f"Likely contains soy: {ingredient_en} is a fat or oil labelled as coming from soybeans. Refined soybean oil "
                 f"is not counted, but it could contain soy protein.",
                 f"“{name}”{_josa(name, '은', '는')} 대두에서 온 유지로 적혀 있다. 정제 대두유는 세지 않지만 대두 단백질이 있을 수 있다.")
     if kind == "R1-1":
@@ -156,10 +208,10 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
                 f"soybean oil, but “{first}” could contain soy protein.",
                 f"표시란에 {word}{_josa(word, '이', '가')} 있지만 정제 대두유 때문일 수 있고, “{first}”에 대두 단백질이 있을 수 있다.")
     if kind == "LIKELY":
-        return (f"Likely contains {NAME_EN[v.allergen]}: “{name}” is usually made with {t_en}.",
+        return (f"{NAME_EN[v.allergen].capitalize()} may be present because {ingredient_en} is commonly made with {t_en}.",
                 f"“{name}”에는 대개 {t_ko}{_josa(t_ko, '이', '가')} 들어간다.")
     if kind == "POSSIBLE":
-        return (f"Cannot tell: “{name}” sometimes contains {t_en}.",
+        return (f"Cannot tell: {ingredient_en} sometimes contains {t_en}.",
                 f"“{name}”에는 {t_ko}{_josa(t_ko, '이', '가')} 들어 있을 수 있다.")
     return _blind_reason(v, kind)
 
@@ -167,13 +219,14 @@ def reason(v: AllergenVerdict) -> Tuple[str, str]:
 def _blind_reason(v: AllergenVerdict, kind: str) -> Tuple[str, str]:
     """속 모를 원료(OPAQUE)나 섞은 원료(COMPOUND) 때문에 판정할 수 없을 때."""
     name = v.evidence
+    ingredient_en = f"{v.evidence_en} ({name})" if v.evidence_en else f"“{name}”"
     tail_en = BLIND_EN.get(v.allergen, NO_BOX_EN)
     tail_ko = BLIND_KO.get(v.allergen, NO_BOX_KO)
     if kind == "OPAQUE":
         what_en, what_ko = "a seasoning blend", "속을 알 수 없는 양념·국물 원료"
     else:
         what_en, what_ko = "a mixed ingredient", "속을 알 수 없는 섞은 원료"
-    return (f"Cannot tell: “{name}” is {what_en} whose contents are not listed, and {tail_en}.",
+    return (f"Cannot tell: {ingredient_en} is {what_en} whose contents are not listed, and {tail_en}.",
             f"“{name}”{_josa(name, '은', '는')} {what_ko}이고, {tail_ko}.")
 
 
