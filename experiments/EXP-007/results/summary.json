@@ -1,0 +1,295 @@
+{
+ "gold": {
+  "dev": {
+   "products": 60,
+   "products_with_may": 21,
+   "units": {
+    "absent": 353,
+    "confirmed": 160,
+    "undecidable": 18,
+    "inferable": 9
+   },
+   "may_units": 27,
+   "per_allergen_may": {
+    "milk": 0,
+    "egg": 0,
+    "fish": 12,
+    "crustacean": 0,
+    "tree_nut": 1,
+    "peanut": 0,
+    "wheat": 0,
+    "soy": 8,
+    "sesame": 6
+   }
+  },
+  "test": {
+   "products": 140,
+   "products_with_may": 50,
+   "units": {
+    "confirmed": 359,
+    "absent": 842,
+    "inferable": 18,
+    "undecidable": 41
+   },
+   "may_units": 59,
+   "per_allergen_may": {
+    "milk": 0,
+    "egg": 0,
+    "fish": 31,
+    "crustacean": 0,
+    "tree_nut": 1,
+    "peanut": 0,
+    "wheat": 0,
+    "soy": 18,
+    "sesame": 9
+   }
+  },
+  "exp006_photo": {
+   "products": 21,
+   "products_with_may": 14,
+   "units": {
+    "confirmed": 63,
+    "absent": 105,
+    "inferable": 6,
+    "undecidable": 15
+   },
+   "may_units": 21,
+   "per_allergen_may": {
+    "milk": 0,
+    "egg": 0,
+    "fish": 6,
+    "crustacean": 0,
+    "tree_nut": 0,
+    "peanut": 0,
+    "wheat": 0,
+    "soy": 6,
+    "sesame": 9
+   }
+  }
+ },
+ "haccp": {
+  "products": 14653,
+  "read_any": 14512,
+  "box_read": 6168,
+  "all": {
+   "products": 14653,
+   "products_with_may": 5022,
+   "products_with_may_without_box": 6530,
+   "units": {
+    "absent": 96232,
+    "confirmed": 25285,
+    "inferable": 1532,
+    "undecidable": 8828
+   },
+   "per_allergen_may": {
+    "milk": 1377,
+    "egg": 1634,
+    "fish": 2185,
+    "crustacean": 1153,
+    "tree_nut": 58,
+    "peanut": 10,
+    "wheat": 867,
+    "soy": 1879,
+    "sesame": 1197
+   },
+   "per_basis_may": {
+    "LIKELY": 670,
+    "OPAQUE": 6010,
+    "R1-1": 862,
+    "POSSIBLE": 1015,
+    "COMPOUND": 1803
+   },
+   "per_allergen_may_without_box": {
+    "milk": 3400,
+    "egg": 3782,
+    "fish": 2190,
+    "crustacean": 2675,
+    "tree_nut": 60,
+    "peanut": 54,
+    "wheat": 2161,
+    "soy": 2828,
+    "sesame": 1197
+   }
+  },
+  "box": {
+   "products": 6168,
+   "products_with_may": 2072,
+   "products_with_may_without_box": 3580,
+   "units": {
+    "absent": 38102,
+    "confirmed": 14817,
+    "inferable": 868,
+    "undecidable": 1725
+   },
+   "per_allergen_may": {
+    "milk": 0,
+    "egg": 0,
+    "fish": 1226,
+    "crustacean": 0,
+    "tree_nut": 24,
+    "peanut": 0,
+    "wheat": 0,
+    "soy": 737,
+    "sesame": 606
+   },
+   "per_basis_may": {
+    "LIKELY": 131,
+    "OPAQUE": 1613,
+    "R1-1": 737,
+    "POSSIBLE": 112
+   },
+   "per_allergen_may_without_box": {
+    "milk": 2023,
+    "egg": 2148,
+    "fish": 1231,
+    "crustacean": 1522,
+    "tree_nut": 26,
+    "peanut": 44,
+    "wheat": 1294,
+    "soy": 1686,
+    "sesame": 606
+   }
+  },
+  "no_box_label": {
+   "products": 8485,
+   "products_with_may": 2950,
+   "products_with_may_without_box": 2950,
+   "units": {
+    "absent": 58130,
+    "confirmed": 10468,
+    "undecidable": 7103,
+    "inferable": 664
+   },
+   "per_allergen_may": {
+    "milk": 1377,
+    "egg": 1634,
+    "fish": 959,
+    "crustacean": 1153,
+    "tree_nut": 34,
+    "peanut": 10,
+    "wheat": 867,
+    "soy": 1142,
+    "sesame": 591
+   },
+   "per_basis_may": {
+    "OPAQUE": 4397,
+    "POSSIBLE": 903,
+    "COMPOUND": 1803,
+    "LIKELY": 539,
+    "R1-1": 125
+   },
+   "per_allergen_may_without_box": {
+    "milk": 1377,
+    "egg": 1634,
+    "fish": 959,
+    "crustacean": 1153,
+    "tree_nut": 34,
+    "peanut": 10,
+    "wheat": 867,
+    "soy": 1142,
+    "sesame": 591
+   }
+  },
+  "box_only_confirmed": {
+   "milk": 1030,
+   "egg": 398,
+   "fish": 11,
+   "crustacean": 245,
+   "tree_nut": 21,
+   "peanut": 87,
+   "wheat": 1120,
+   "soy": 1003,
+   "sesame": 0
+  },
+  "confirmed_with_box": {
+   "milk": 3120,
+   "egg": 1460,
+   "fish": 746,
+   "crustacean": 582,
+   "tree_nut": 343,
+   "peanut": 275,
+   "wheat": 3878,
+   "soy": 3669,
+   "sesame": 744
+  },
+  "missing_in_box": 144,
+  "box_with_unknown": 2217,
+  "hidden": {
+   "sesame": 1696,
+   "fish": 1458,
+   "tree_nut": 2045,
+   "crustacean": 2028
+  },
+  "products_with_unknown_all": 5056,
+  "facility_in_text": 3,
+  "box_declared_vs_ingredients": {
+   "milk": {
+    "found": 2141,
+    "unsure": 663,
+    "missed": 274
+   },
+   "egg": {
+    "found": 1150,
+    "missed": 141,
+    "unsure": 145
+   },
+   "fish": {
+    "found": 39,
+    "missed": 6,
+    "unsure": 3
+   },
+   "crustacean": {
+    "found": 353,
+    "missed": 56,
+    "unsure": 162
+   },
+   "tree_nut": {
+    "found": 126,
+    "missed": 20,
+    "unsure": 1
+   },
+   "peanut": {
+    "missed": 79,
+    "found": 193,
+    "unsure": 2
+   },
+   "wheat": {
+    "missed": 278,
+    "found": 3166,
+    "unsure": 408
+   },
+   "soy": {
+    "missed": 577,
+    "found": 3086,
+    "unsure": 888
+   },
+   "sesame": {
+    "found": 2
+   }
+  },
+  "unknown_names": {
+   "distinct": 6361,
+   "occurrences": 8846,
+   "top100_share": 0.08,
+   "top300_share": 0.157,
+   "seen_once": 4725
+  }
+ },
+ "facility": {
+  "products": 14,
+  "with_facility": 12,
+  "allergen_words": {
+   "땅콩": 11,
+   "밀": 9,
+   "호두": 9,
+   "잣": 8,
+   "게": 8,
+   "고등어": 8,
+   "새우": 6,
+   "우유": 5,
+   "알류": 4,
+   "난류": 2,
+   "대두": 2
+  }
+ }
+}

@@ -8,18 +8,21 @@ LLM을 쓰지 않는다. 같은 글자를 넣으면 늘 같은 결과가 나온�
 사전이 모르는 이름은 끝에 붙은 기호를 떼거나 자모 하나가 틀린 오타로 보고 사전 항목과 맞춰 본다(src/final/resolve.py).
 맞춘 것은 참고(notes)에 '오타로 보고 맞춤: 탈지븐유 → 탈지분유'처럼 남는다. 환경 변수 OPENSESAME_FINAL_FUZZY=0이면 끈다.
 OPENSESAME_FINAL_FALLBACK=llm이고 LLM 키가 있을 때만 끝까지 모르는 이름을 팀 LLM 분류기에 묻는다(기본은 꺼짐).
+LLM이 정한 근거는 basis가 LLM-FIX·LLM이고 추정까지만 된다. 같은 시설 문구는 판정에 쓰지 않고, 판정이 없는 알레르기만
+shared_facility에 고정 문장으로 담는다(src/final/facility.py). 화면·LLM 설명과 잇는 방법은 docs/10_may_contain.md.
 """
 from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from src.common.schema import AnalyzeMeta
+from src.final.facility import shared_facility
 from src.final.parser import parse_label
 from src.final.resolve import Resolver, fallback_from_env
-from src.final.response import FinalAllergenResult, FinalAnalyzeResponse
-from src.final.verdict import AllergenVerdict, Judgement, code_info, judge
+from src.final.response import FacilityResult, FinalAllergenResult, FinalAnalyzeResponse
+from src.final.verdict import LLM_BASIS, AllergenVerdict, Judgement, code_info, judge
 
 CLASSIFIER_NAME = "final-lexicon-v1"
 NO_INGREDIENTS = "원재료를 읽지 못함. 원재료명이 잘 보이게 다시 찍어 주세요."      # 팀 파이프라인과 같은 문구
@@ -72,16 +75,20 @@ def _respond(parsed, ocr_engine: str, facility: Optional[str]) -> FinalAnalyzeRe
     if resolver.fallback is not None:
         resolver.resolve_many([m[0] for m in parsed.mentions()])
     j = judge(parsed, resolve=resolver.resolve)
+    fixed = _fixed_names(resolver)
+    decided = [v.allergen for v in j.allergens]
     return FinalAnalyzeResponse(
         ingredients_text=parsed.ingredients_text,
         ingredients=[n.to_dict() for n in parsed.tree],
-        allergens=[_result(v) for v in j.allergens],
+        allergens=[_result(v, fixed) for v in j.allergens],
         undecidable_ingredients=list(j.undecidable_ingredients),
         warnings=_warnings(j),
         meta=AnalyzeMeta(ocr_engine=ocr_engine, classifier=CLASSIFIER_NAME, prompt_version=None),
         declaration_text=parsed.declaration_text,
         declared=list(parsed.declared),
         notes=_notes(j, facility, parsed.repairs) + resolver.notes(),
+        shared_facility=[FacilityResult(allergen=n.allergen, words=list(n.words), reason_en=n.reason_en,
+                                        reason_ko=n.reason_ko) for n in shared_facility(facility, decided)],
     )
 
 
@@ -104,14 +111,58 @@ def _notes(j: Judgement, facility: Optional[str], repairs: int) -> List[str]:
     return notes
 
 
-def _result(v: AllergenVerdict) -> FinalAllergenResult:
-    en, ko = reason(v)
+def _result(v: AllergenVerdict, fixed: Optional[Dict[str, str]] = None) -> FinalAllergenResult:
+    read_as = (fixed or {}).get(v.evidence) if v.basis[0] == "LLM-FIX" else None
+    en, ko = _llm_reason(v, read_as) if v.basis[0] in LLM_BASIS.values() else reason(v)
     return FinalAllergenResult(
         allergen=v.allergen, verdict=v.verdict, evidence_ingredient=v.evidence,
         other_evidence=list(v.other_evidence), basis=list(v.basis),
         species=[code_info(c)[1] for c in v.species], evidence_en=v.evidence_en,
-        reason_en=en, reason_ko=ko,
+        reason_en=en, reason_ko=ko, read_as=read_as,
     )
+
+
+def _fixed_names(resolver) -> Dict[str, str]:
+    """LLM이 고친 이름 {라벨 이름: 고친 이름}. #15(오인식 보정)가 들어온 Resolver에만 있고, 없으면 빈 dict.
+    #15가 main에 들어오면 Resolver에 공개 속성으로 만들어 바꾼다."""
+    return dict(getattr(resolver, "_fixed", None) or {})
+
+
+def _llm_reason(v: AllergenVerdict, read_as: Optional[str]) -> Tuple[str, str]:
+    """LLM이 정한 근거(LLM-FIX, LLM)의 이유. 사전 지식처럼 쓰지 않고 LLM이 정했다는 것을 밝힌다."""
+    if v.basis[0] == "LLM-FIX":
+        return _fix_reason(v, read_as, v.verdict == "inferable")
+    name = v.evidence
+    t_en, t_ko = _target(v)
+    if v.verdict == "inferable":
+        return (f"Likely contains {NAME_EN[v.allergen]}: “{name}” is not in our ingredient dictionary, and an AI model "
+                f"judged that it likely contains {t_en}.",
+                f"“{name}”{_josa(name, '은', '는')} 원재료 사전에 없는 이름이고, AI 모델이 {t_ko}{_josa(t_ko, '이', '가')} "
+                f"들어 있을 것으로 판단했다.")
+    return (f"Cannot tell: “{name}” is not in our ingredient dictionary, and an AI model judged that it may "
+            f"contain {t_en}.",
+            f"“{name}”{_josa(name, '은', '는')} 원재료 사전에 없는 이름이고, AI 모델이 {t_ko}{_josa(t_ko, '이', '가')} "
+            f"들어 있을 수 있다고 판단했다.")
+
+
+def _fix_reason(v: AllergenVerdict, read_as: Optional[str], sure: bool) -> Tuple[str, str]:
+    """LLM-FIX: 라벨 글자를 잘못 읽은 것으로 보고 고친 이름으로 사전에서 찾았다. 고친 이름을 모르면 알레르기로 말한다."""
+    name = v.evidence
+    t_en, t_ko = _target(v)
+    said = f"the label text “{name}” looks like a misread of"
+    said_ko = f"라벨 글자 “{name}”{_josa(name, '은', '는')}"
+    if sure and read_as:
+        return (f"Likely contains {NAME_EN[v.allergen]}: {said} {read_as} ({v.evidence_en or t_en}).",
+                f"{said_ko} {read_as}{_josa(read_as, '을', '를')} 잘못 읽은 것으로 보인다.")
+    if sure:
+        return (f"Likely contains {NAME_EN[v.allergen]}: {said} an ingredient that contains {t_en}.",
+                f"{said_ko} {t_ko}{_josa(t_ko, '이', '가')} 든 원재료를 잘못 읽은 것으로 보인다.")
+    if read_as:
+        return (f"Cannot tell: {said} {read_as}, which sometimes contains {t_en}.",
+                f"{said_ko} {read_as}{_josa(read_as, '을', '를')} 잘못 읽은 것으로 보이고, 거기에는 "
+                f"{t_ko}{_josa(t_ko, '이', '가')} 들어 있을 수 있다.")
+    return (f"Cannot tell: {said} an ingredient that sometimes contains {t_en}.",
+            f"{said_ko} {t_ko}{_josa(t_ko, '이', '가')} 들어 있기도 한 원재료를 잘못 읽은 것으로 보인다.")
 
 
 # ---------- 이유 문장 ----------
