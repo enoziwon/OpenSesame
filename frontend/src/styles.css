@@ -601,12 +601,6 @@ summary {
 .results-shell {
   height: max(812px, 100dvh);
 }
-.results-shell .steps {
-  grid-template-columns: 1.1fr 1fr 1fr;
-}
-.results-shell .steps > span:last-child {
-  justify-self: end;
-}
 .results {
   min-height: 0;
 }
@@ -693,6 +687,16 @@ summary {
   gap: 6px;
   flex-shrink: 0;
 }
+.result-status-label {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.results .badge.shared_facility {
+  width: 102px;
+  background: #f0f3f7;
+  color: #34445e;
+}
 .results .badge {
   display: grid;
   place-items: center;
@@ -751,6 +755,12 @@ summary {
 }
 .result-reason.undecidable {
   background: #f6f8fa;
+}
+.result-reason.shared_facility {
+  background: #f6f8fa;
+}
+.result-reason .result-explanation {
+  margin-top: 8px;
 }
 .result-reason h2 {
   margin: 0 0 3px;

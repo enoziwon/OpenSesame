@@ -39,6 +39,9 @@ for (const width of [375, 320]) {
       route.fulfill({ json: analysis }),
     );
     await page.goto("/scan");
+    const scanPositions = await page.locator(".steps > span").evaluateAll(steps =>
+      steps.map(step => step.getBoundingClientRect().x),
+    );
     await page
       .locator("input[type=file]")
       .nth(1)
@@ -50,6 +53,10 @@ for (const width of [375, 320]) {
         ),
       });
     await page.getByRole("button", { name: "Analyze" }).click();
+    const resultPositions = await page.locator(".steps > span").evaluateAll(steps =>
+      steps.map(step => step.getBoundingClientRect().x),
+    );
+    expect(resultPositions).toEqual(scanPositions);
     await expect(page.getByRole("status")).toContainText(
       "2 confirmed · 2 results need review.",
     );

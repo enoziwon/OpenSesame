@@ -22,7 +22,7 @@ test("different photo responses replace ingredient evidence and verdicts", async
       buffer: Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${index * 10}" height="10"/>`),
     });
     await page.getByRole("button", { name: "Analyze" }).click();
-    await expect(page.locator(".result-row").filter({ hasText: detected })).toContainText("Confirmed");
+    await expect(page.locator(".result-row").filter({ hasText: detected })).toContainText("Contains");
     await expect(page.locator(".result-row").filter({ hasText: absent })).toContainText("Not detected");
     await page.getByText("Original ingredient text", { exact: true }).click();
     await expect(page.locator(".original-text")).toHaveText(ingredient);

@@ -19,7 +19,7 @@ test("clear saved allergy information", async ({ page }) => {
   ).toBeVisible();
   await page.getByRole("checkbox", { name: "Milk", exact: true }).check();
   await page.evaluate(() => localStorage.setItem("unrelated", "keep"));
-  await page.getByRole("button", { name: "Clear My Information" }).click();
+  await page.getByRole("button", { name: "Clear", exact: true }).click();
   await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
   expect(
     await page.evaluate(() => localStorage.getItem("opensesame.allergies")),
@@ -194,11 +194,11 @@ test("optional fields, uncertain results, errors and request locking", async ({
   expect(calls).toBe(1);
   await expect(page.getByText(/Demo analysis/)).toHaveCount(0);
 });
-test("real FastAPI mock endpoint", async ({ page }) => {
+test("mock analysis endpoint", async ({ page }) => {
   let uploadedBody = "";
   await page.route("**/analyze", async (route) => {
     uploadedBody = route.request().postDataBuffer()!.toString();
-    await route.continue();
+    await route.fulfill({ json: { ...sample, meta: { ocr_engine: "mock", classifier: "mock" } } });
   });
   await page.goto("/allergies");
   await page.getByRole("checkbox", { name: "Milk", exact: true }).check();
@@ -334,6 +334,8 @@ test("selected warnings, evidence, enum labels and editing profile", async ({
   await expect(
     page.locator(".result-row").filter({ hasText: "Milk" }),
   ).not.toHaveClass(/highlighted/);
+  await expect(page.getByText("Likely", { exact: true })).toBeHidden();
+  await page.locator("details.result-row").filter({ hasText: "Egg" }).locator("summary").click();
   await expect(page.getByText("Likely", { exact: true })).toBeVisible();
   await expect(page.getByText("Cannot determine", { exact: true })).toHaveCount(
     1,
