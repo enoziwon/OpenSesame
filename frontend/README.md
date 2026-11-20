@@ -44,7 +44,7 @@ Mock OCR returns a fixed sample regardless of the uploaded image; mock responses
 
 Confirmed / Likely / Cannot determine come from server verdicts. A missing finding is shown as Not detected only when analysis is complete; otherwise Cannot determine. Not detected does not mean safe. Unknown ingredients and warnings remain visible. Only the U.S. nine major allergens are checked.
 
-Selected allergies stay in browser localStorage (`opensesame.allergies`) and are compared locally. Clear My Information removes the profile. Neither image nor text requests include the profile. Uploaded photos and analysis responses stay in memory. Reloading Results requires another analysis. Object URLs used for previews are released.
+Selected allergies stay in browser localStorage (`opensesame.allergies`) and are compared locally. Clear removes the profile. Neither image nor text requests include the profile. Uploaded photos and analysis responses stay in memory. Reloading Results requires another analysis. Object URLs used for previews are released.
 
 ## Verification
 
@@ -52,7 +52,7 @@ Selected allergies stay in browser localStorage (`opensesame.allergies`) and are
 npm.cmd run build
 npx.cmd playwright install chromium
 # Isolated browser regression tests with controlled server responses
-npx.cmd playwright test --grep-invert "real FastAPI mock endpoint"
+npx.cmd playwright test
 # Starts the real final server and Vite on isolated ports; no API interception
 npm.cmd run test:integration
 ```
@@ -66,4 +66,3 @@ npm.cmd run test:integration
 
 The live photo test uploads the file to the real server, checks CLOVA metadata and extracted ingredients, and compares rendered evidence with the response. Without a photo path it is explicitly skipped. This verifies data flow, not OCR transcription accuracy or allergen accuracy; compare the original label manually. Do not commit product photos or secrets. Real mobile camera behavior still needs device verification.
 
-The legacy test named `real FastAPI mock endpoint` requires an explicitly started comparison mock server on port 8000 and tests rejection of demo responses. It is separate from product integration.
