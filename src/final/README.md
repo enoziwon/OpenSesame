@@ -35,7 +35,8 @@ curl -s localhost:8001/analyze-text -H 'content-type: application/json' \
 ```
 
 프런트엔드는 `VITE_API_BASE_URL=http://localhost:8001`로 띄우면 최종본 서버를 본다. `/analyze`의 요청 형식(사진 하나, 필드 이름 `file`)은 팀 서버와 같다.
-팀 OCR이 아직 가짜(mock)라 `/analyze`는 지금 고정된 글자를 판정한다. 글자를 직접 넣는 `/analyze-text`는 OCR 없이 돈다.
+`/analyze`는 기본으로 CLOVA OCR을 사용한다. 루트 `.env`에 `CLOVA_URL`, `CLOVA_SECRET`, `OPENSESAME_OCR=clova`를 설정한다.
+글자를 직접 넣는 `/analyze-text`는 OCR 키 없이도 동작한다. 사진 요청 시 OCR 설정이 없으면 503, OCR 호출이 실패하면 502를 반환하며 샘플 원재료로 대체하지 않는다.
 
 코드에서 쓸 때:
 

@@ -24,7 +24,7 @@ def _load_dotenv(path: Path) -> None:
     """의존성 없이 .env를 읽는다. 이미 설정된 환경 변수는 덮어쓰지 않는다 (팀 src/app/main.py와 같은 방식)."""
     if not path.exists():
         return
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -50,7 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-_ocr = get_ocr()
+_ocr = None  # Text analysis does not require OCR credentials.
 kr_box()          # 사전 표를 미리 읽어 첫 요청도 빠르게 한다
 
 
@@ -74,11 +74,12 @@ class TextRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "ocr": _ocr.name, "classifier": CLASSIFIER_NAME}
+    return {"status": "ok", "ocr": _ocr.name if _ocr else os.getenv("OPENSESAME_OCR", "mock"), "classifier": CLASSIFIER_NAME}
 
 
 @app.post("/analyze", response_model=FinalAnalyzeResponse)
 def analyze_label(file: UploadFile = File(...)) -> FinalAnalyzeResponse:
+    global _ocr
     content_type = file.content_type or ""
     if not content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="이미지 파일만 받습니다.")
@@ -87,6 +88,11 @@ def analyze_label(file: UploadFile = File(...)) -> FinalAnalyzeResponse:
         raise HTTPException(status_code=413, detail="사진이 10MB를 넘습니다.")
     if not image:
         raise HTTPException(status_code=400, detail="빈 파일입니다.")
+    if _ocr is None:
+        try:
+            _ocr = get_ocr()
+        except (RuntimeError, ValueError) as e:
+            raise HTTPException(status_code=503, detail="Photo analysis is not configured.") from e
     try:
         ocr_result = _ocr.read_text(image, content_type)
     except Exception as e:  # OCR 장애: 무엇을 읽었는지 단정하지 않는다

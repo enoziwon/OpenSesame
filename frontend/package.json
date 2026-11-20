@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:integration": "playwright test --config playwright.integration.config.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.0",

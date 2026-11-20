@@ -29,7 +29,7 @@
 
 ### 실제 LLM 및 모바일 검증
 
-- 공용 백엔드는 Anthropic 직접 연결을 유지합니다. 현재 브랜치에서는 PR #7 커밋의 개발 검증용 사본과 `evaluation.serve_llm` 실행기로 BAZE를 연결했습니다. 백엔드 PR 통합 후 사본과 실행기를 정리해야 합니다.
+- PR #7 통합 후 공용 백엔드가 BAZE를 지원합니다. 임시 분류기 사본과 개발 실행기를 제거했고, 일반 `python -m uvicorn src.app.main:app`과 공용 분류기를 사용하는 전사 평가 실행기로 통일했습니다.
 - 2026-11-14: 루트 `.env`와 실제 BAZE를 사용해 프론트 Results 표시 확인 완료. 해당 호출의 5개 판정은 모두 confirmed였습니다. `inferable`/`undecidable` 혼합 판정은 구성 응답 테스트로 확인했으며 실제 혼합 응답의 화면 검증은 추가 확인 대상으로 남깁니다.
 - 이번 연동 검증은 Mock OCR + 실제 LLM 범위입니다. 실제 사진 OCR은 미검증입니다.
 - iOS Safari·Android Chrome에서 카메라 호출, 파일 선택, 업로드를 확인할 담당자와 기기를 정해야 합니다.

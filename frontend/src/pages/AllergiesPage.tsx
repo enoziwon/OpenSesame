@@ -31,18 +31,18 @@ export default function AllergiesPage({
             />
           ))}
         </div>
-        <p className="safety-note">
-          Your allergy selections are saved only in this browser on this device
-          and remain after you close it. They are not sent to the server.
-        </p>
         <div className="bottom-actions">
           <button className="secondary" onClick={clear}>
-            Clear My Information
+            Clear
           </button>
           <PrimaryButton onClick={() => navigate("/scan")}>
             Next →
           </PrimaryButton>
         </div>
+        <p className="allergy-safety-note">
+          Your allergy selections are saved only in this browser on this device
+          and remain after you close it. They are not sent to the server.
+        </p>
       </main>
     </Layout>
   );

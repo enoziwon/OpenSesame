@@ -1,10 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
-import { AllergenIcon } from "../components/AllergenCard";
 import { allergens, verdictLabels } from "../constants/allergens";
-import { hasIncompleteAnalysis, isMock } from "../utils/analysis";
+import { hasIncompleteAnalysis } from "../utils/analysis";
 import type { Analysis, Allergen } from "../types/analysis";
+import chevron from "../assets/results/chevron.svg";
+
+const displayOrder: Allergen[] = [
+  "peanut",
+  "sesame",
+  "milk",
+  "wheat",
+  "egg",
+  "fish",
+  "crustacean",
+  "tree_nut",
+  "soy",
+];
+
 export default function ResultsPage({
   result,
   selected,
@@ -26,116 +39,181 @@ export default function ResultsPage({
         </main>
       </Layout>
     );
-  const matches = result.allergens.filter((a) => selected.includes(a.allergen));
+
   const incomplete = hasIncompleteAnalysis(result);
-  const confirmedMatches = matches.filter((a) => a.verdict === "confirmed");
-  const uncertainMatches = matches.some((a) => a.verdict !== "confirmed");
+  const matches = result.allergens.filter((a) => selected.includes(a.allergen));
+  const confirmed = matches.filter((a) => a.verdict === "confirmed").length;
+  const review = matches.filter((a) => a.verdict !== "confirmed").length;
   const uncertain =
+    incomplete ||
     !!result.undecidable_ingredients?.length ||
-    result.allergens.some((a) => a.verdict === "undecidable") ||
-    !!result.warnings.length;
+    result.allergens.some((a) => a.verdict === "undecidable");
+  const rank = (id: Allergen) => {
+    const found = result.allergens.find((a) => a.allergen === id);
+    return found
+      ? { confirmed: 0, inferable: 1, undecidable: 2 }[found.verdict]
+      : 3;
+  };
+  const ordered = [...displayOrder].sort((a, b) => rank(a) - rank(b));
+
   return (
-    <Layout step={3}>
+    <Layout step={3} className="results-shell">
       <main className="results">
-        <PageTitle title="Results">Allergen check for this product.</PageTitle>
-        {isMock(result) && (
-          <p className="mock-banner" role="status">
-            Demo analysis — backend mock mode. Results are fixed and do not
-            describe your photo.
-          </p>
+        <PageTitle title="Results">
+          Review your personalized results below.
+        </PageTitle>
+        {(result.meta?.ocr_engine === "mock" || result.meta?.classifier === "mock") && (
+          <div className="mock-banner" role="alert">
+            Demo analysis: sample data is being used. The uploaded photo was not analyzed; do not use these results for allergy decisions.
+          </div>
         )}
         <div
-          className={`result-banner ${matches.length ? "match" : ""}`}
+          className={`result-banner ${confirmed ? "match" : ""}`}
           role="status"
         >
-          <AlertTriangle size={26} />
+          <AlertTriangle size={27} aria-hidden="true" />
           <div>
             <strong>
-              {confirmedMatches.length
-                ? "Allergen Match Detected"
-                : uncertain || uncertainMatches
+              {confirmed
+                ? "Allergen Warning"
+                : uncertain || review
                   ? "Analysis needs review"
                   : "No selected allergens detected"}
             </strong>
             <p>
-              {matches.length
-                ? `${matches.length} of your selected allergens have a result. Review the verdicts below.`
-                : "Review all results and the original label before deciding."}
+              {confirmed || review
+                ? `${confirmed} confirmed · ${review} results need review.`
+                : "Review all results and the original label."}
             </p>
-            {uncertainMatches && (
-              <p>
-                Your selected allergens have uncertain findings. Use caution and
-                check the original label.
-              </p>
-            )}
           </div>
         </div>
-        <div className="result-table">
-          {allergens.map((a) => {
-            const found = result.allergens.find((r) => r.allergen === a.id);
-            const highlighted = !!found && selected.includes(a.id);
-            return (
-              <div
-                key={a.id}
-                className={`result-row ${highlighted ? "highlighted" : ""}`}
-              >
-                <AllergenIcon id={a.id} result />
-                <span className="result-name">
-                  {a.label || a.name}
-                  {highlighted && <small>Your allergen</small>}
+
+        <section
+          className="result-table"
+          aria-label="Allergen results"
+          tabIndex={0}
+          key={JSON.stringify(result)}
+        >
+          {ordered.map((id) => {
+            const allergen = allergens.find((a) => a.id === id)!;
+            const found = result.allergens.find((a) => a.allergen === id);
+            const verdict =
+              found?.verdict || (incomplete ? "undecidable" : "absent");
+            const expandable =
+              verdict === "inferable" || verdict === "undecidable";
+            const name =
+              id === "tree_nut" ? "Tree nuts" : allergen.label || allergen.name;
+            const evidence =
+              found &&
+              [found.evidence_ingredient, ...(found.other_evidence || [])]
+                .filter(Boolean)
+                .join(", ");
+            const heading =
+              verdict === "inferable"
+                ? "WHY IT MAY BE PRESENT"
+                : "WHY IT'S UNCLEAR";
+            const identity = (
+              <>
+                <span className="result-identity">
+                  <img
+                    className="result-icon"
+                    src={
+                      new URL(`../assets/results/${id}.svg`, import.meta.url)
+                        .href
+                    }
+                    alt=""
+                  />
+                  <span className="result-name">{name}</span>
                 </span>
-                <span
-                  className={`badge ${found?.verdict || (incomplete ? "undecidable" : "absent")}`}
-                >
-                  {found
-                    ? verdictLabels[found.verdict]
-                    : incomplete
-                      ? "Cannot determine"
-                      : "Not detected"}
+                <span className="result-status">
+                  <span className={`badge ${verdict}`}>
+                    {verdict === "absent"
+                      ? "Not detected"
+                      : verdictLabels[verdict]}
+                  </span>
+                  {expandable ? (
+                    <img className="result-chevron" src={chevron} alt="" />
+                  ) : (
+                    <span className="result-chevron-slot" />
+                  )}
                 </span>
-                {found && (
-                  <p className="evidence">
-                    Evidence:{" "}
-                    {[
-                      found.evidence_ingredient,
-                      ...(found.other_evidence || []),
-                    ]
-                      .filter(Boolean)
-                      .join(", ")}
+              </>
+            );
+            const className = `result-row ${found && selected.includes(id) ? "highlighted" : ""}`;
+            return expandable ? (
+              <details className={className} key={id}>
+                <summary className="result-row-heading">{identity}</summary>
+                <div className={`result-reason ${verdict}`}>
+                  <h2>{heading}</h2>
+                  <p>
+                    {found?.reason_en?.trim()
+                      ? found.reason_en
+                      : "The reason could not be provided. Please check the original label."}
                   </p>
-                )}
+                  {!found?.reason_en?.trim() && evidence && (
+                    <p className="evidence">Evidence: {evidence}</p>
+                  )}
+                </div>
+              </details>
+            ) : (
+              <div className={className} key={id}>
+                <div className="result-row-heading">{identity}</div>
               </div>
             );
           })}
-        </div>
-        {uncertain && (
-          <aside className="analysis-warning">
-            <strong>Results may be incomplete</strong>
-            {!!result.undecidable_ingredients?.length && (
-              <p>
-                Cannot determine the source of:{" "}
-                {result.undecidable_ingredients.join(", ")}
-              </p>
+
+          {(uncertain || review > 0) && (
+            <aside className="analysis-warning">
+              <strong>Results may be incomplete</strong>
+              {review > 0 && <p>Your selected allergens have uncertain findings. Use caution and check the original label.</p>}
+              {!!result.undecidable_ingredients?.length && (
+                <p>
+                  Cannot determine the source of:{" "}
+                  {result.undecidable_ingredients.join(", ")}
+                </p>
+              )}
+              {result.warnings.map((warning, i) => (
+                <p key={i}>{warning}</p>
+              ))}
+              {result.allergens.some((a) => a.verdict === "undecidable") && (
+                <p>Some allergen verdicts cannot be determined.</p>
+              )}
+            </aside>
+          )}
+          <details className="result-source">
+            <summary>Original ingredient text</summary>
+            <p className="original-text">
+              {result.ingredients_text || "No ingredient text was returned."}
+            </p>
+            {result.declaration_text && (
+              <p>Allergen statement: {result.declaration_text}</p>
             )}
-            {result.warnings.map((w, i) => (
-              <p key={i}>{w}</p>
+            {result.allergens.map((a) => (
+              <div key={a.allergen} className="result-source-evidence">
+                <strong>
+                  {allergens.find((item) => item.id === a.allergen)?.name}
+                </strong>
+                <p>
+                  Evidence:{" "}
+                  {[a.evidence_ingredient, ...(a.other_evidence || [])]
+                    .filter(Boolean)
+                    .join(", ")}
+                </p>
+              </div>
             ))}
-            {result.allergens.some((a) => a.verdict === "undecidable") && (
-              <p>Some allergen verdicts cannot be determined.</p>
-            )}
-          </aside>
-        )}
+            {result.notes?.map((note, i) => (
+              <p key={i}>{note}</p>
+            ))}
+            <p>
+              Only the U.S. 9 major allergens are checked; other allergies are
+              outside the scope of this analysis.
+            </p>
+          </details>
+        </section>
+
         <p className="safety-note">
-          Not detected does not mean safe. Always check the original label. Only
-          the U.S. 9 major allergens are checked; other allergies are outside
-          the scope of this analysis.
+          Not detected ≠ allergen-free. Check the original label.
         </p>
-        <details>
-          <summary>Original ingredient text</summary>
-          <p className="original-text">
-            {result.ingredients_text || "No ingredient text was returned."}
-          </p>
-        </details>
         <div className="bottom-actions result-actions">
           <button className="secondary" onClick={() => navigate("/scan")}>
             Scan Another

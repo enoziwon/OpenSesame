@@ -18,6 +18,11 @@ export interface AllergenResult {
   verdict: Verdict;
   evidence_ingredient: string;
   other_evidence?: string[];
+  reason_en?: string;
+  reason_ko?: string;
+  basis?: string[];
+  species?: string[];
+  evidence_en?: string | null;
 }
 export interface Analysis {
   ingredients_text: string;
@@ -25,6 +30,8 @@ export interface Analysis {
   allergens: AllergenResult[];
   warnings: string[];
   undecidable_ingredients?: string[];
+  declaration_text?: string | null;
+  notes?: string[];
   meta?: {
     ocr_engine?: string;
     classifier?: string;

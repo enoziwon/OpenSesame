@@ -4,6 +4,12 @@
 > `POST /analyze`(사진), `POST /analyze-text`(글자), 응답은 아래 팀 형식에 `basis`·`reason_en`·`declared`·`notes` 등을 더한 것.
 > 이 문서의 서버(`src/app/main.py`)는 **1차 비교용**이다.
 
+제품 프론트 기본 주소는 `http://localhost:8001`이며 `uvicorn src.final.app:app --port 8001`로 실행한다.
+사진 요청은 CLOVA OCR을 거쳐 최종 파서·사전·규칙으로 판정한다. 원재료 직접 입력은 `POST /analyze-text`에
+`{"text": "라벨 원문"}` 또는 `{"ingredients": "원재료명", "declaration": "알레르기 표시란"}`을 보낸다.
+OCR 키 없이도 텍스트 경로는 동작한다. 사진 요청은 OCR 미설정 시 503, 호출 실패 시 502를 반환한다.
+프론트는 Mock 판정을 표시하지 않는다.
+
 형식을 바꿀 때는 제안 이슈 → 회의 합의 → [결정 0003](decisions/0003-api-contract.md) 갱신 순서를 지킨다.
 형식의 원본은 `src/common/schema.py`다.
 
@@ -21,7 +27,8 @@ python -m pytest -q           # 테스트
 
 | 값 | 의미 |
 |---|---|
-| `mock` | 가짜. 사진과 무관하게 고정 결과. 프론트 개발용 |
+| `mock` | 테스트 대역. 사진과 무관한 고정 결과이므로 제품 프론트에서 거부 |
+| `clova` (OCR만) | 실제 사진 OCR. `CLOVA_URL`, `CLOVA_SECRET` 필요 |
 | `llm` (분류기만) | LLM 분류기. `LLM_API_KEY` 필요 |
 
 ## POST /analyze
@@ -59,7 +66,7 @@ python -m pytest -q           # 테스트
 | 경로 | 단계 | 담당 | 상태 |
 |---|---|---|---|
 | `src/common/schema.py` | 단계 사이 형식 | 이진영 | 초안 |
-| `src/ocr/` | 2. 사진 → 텍스트 | 김민재 | mock만 있음 |
+| `src/ocr/` | 2. 사진 → 텍스트 | 김민재 | CLOVA OCR + 테스트용 Mock |
 | `src/parser/` | 3·4. 텍스트 → 원재료 트리 | 김민재 | 최소 버전 (원산지 분리, 오타 처리 없음) |
 | `src/model/` | 5. 원재료 이름 → 알레르겐 | 이진영 → 2주차 자체 모델 | mock, LLM |
 | `src/pipeline.py` | 검증·제품 단위 합치기 | 이진영 | 완료 |

@@ -31,6 +31,40 @@ def test_analyze_rejects_bad_files():
     assert client.post("/analyze", files={"file": ("a.jpg", big, "image/jpeg")}).status_code == 413
 
 
+def test_text_analysis_without_ocr_credentials(monkeypatch):
+    from src.final import app as server
+
+    monkeypatch.setattr(server, "_ocr", None)
+    monkeypatch.setenv("OPENSESAME_OCR", "clova")
+    monkeypatch.delenv("CLOVA_URL", raising=False)
+    monkeypatch.delenv("CLOVA_SECRET", raising=False)
+    r = client.post("/analyze-text", json={"text": "소맥분, 밀 함유"})
+    assert r.status_code == 200
+    assert r.json()["meta"]["ocr_engine"] == "text"
+    photo = client.post("/analyze", files={"file": ("a.jpg", b"photo", "image/jpeg")})
+    assert photo.status_code == 503
+    assert "allergens" not in photo.json()
+
+
+def test_photo_ocr_flows_through_final_parser(monkeypatch):
+    from src.final import app as server
+    from src.common.schema import OcrResult
+
+    class PhotoOcr:
+        name = "clova"
+
+        def read_text(self, image, content_type):
+            assert content_type == "image/jpeg"
+            return OcrResult(text=image.decode("utf-8"), engine=self.name)
+
+    monkeypatch.setattr(server, "_ocr", PhotoOcr())
+    for text, expected in [("소맥분, 밀 함유", {"wheat"}), ("탈지분유, 우유 함유", {"milk"})]:
+        r = client.post("/analyze", files={"file": ("label.jpg", text.encode("utf-8"), "image/jpeg")})
+        assert r.status_code == 200
+        assert {a["allergen"] for a in r.json()["allergens"]} == expected
+        assert r.json()["meta"]["ocr_engine"] == "clova"
+
+
 def test_analyze_text_whole_label():
     r = client.post("/analyze-text", json={"text": "원재료명: 간장, 설탕, 대두 함유"})
     assert r.status_code == 200
