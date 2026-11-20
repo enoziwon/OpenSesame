@@ -13,11 +13,12 @@
 """
 from __future__ import annotations
 
+import copy
 import json
 import os
 import re
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from src.common.schema import Allergen, AllergenMatch, IngredientClassification, Verdict
 
@@ -49,8 +50,6 @@ TOOL_SCHEMA: dict[str, Any] = {
                         },
                     },
                     "source_unknown": {"type": "boolean"},
-                    # 오인식 보정(ocr_fix_v1)에서만 쓴다. OCR이 잘못 읽은 이름의 원래 이름, 없으면 "". 분류(classify_v1)는 무시한다
-                    "corrected": {"type": "string"},
                 },
                 "required": ["ingredient", "matches", "source_unknown"],
             },
@@ -59,11 +58,25 @@ TOOL_SCHEMA: dict[str, Any] = {
     "required": ["results"],
 }
 
+# 오인식 보정(ocr_fix_v1) 요청 전용: TOOL_SCHEMA에 'corrected' 칸만 더한 것.
+# 1차 분류(classify_v1) 요청은 TOOL_SCHEMA를 그대로 보내므로 1차 기준선의 도구 정의는 바뀌지 않는다.
+OCR_FIX_TOOL_SCHEMA: dict[str, Any] = copy.deepcopy(TOOL_SCHEMA)
+OCR_FIX_TOOL_SCHEMA["properties"]["results"]["items"]["properties"]["corrected"] = {
+    "type": "string",
+    "description": "OCR이 잘못 읽은 이름의 원래 이름. 고칠 게 없거나 확실하지 않으면 빈 문자열",
+}
+
 # tool 호출을 못 쓰는 모델용: 프롬프트 끝에 붙인다
 JSON_ONLY_SUFFIX = (
     "\n\n출력 형식: 설명 없이 아래 형태의 JSON 하나만 출력하세요.\n"
     '{"results": [{"ingredient": "원재료", "matches": [{"allergen": "키", "verdict": "판정"}], '
     '"source_unknown": false}]}'
+)
+
+OCR_FIX_JSON_ONLY_SUFFIX = (
+    "\n\n출력 형식: 설명 없이 아래 형태의 JSON 하나만 출력하세요.\n"
+    '{"results": [{"ingredient": "입력 이름", "corrected": "원래 이름 또는 빈 문자열", '
+    '"matches": [{"allergen": "키", "verdict": "판정"}], "source_unknown": false}]}'
 )
 
 # tool_choice=auto일 때: 도구로 답하라고 프롬프트로 지시한다
@@ -127,10 +140,14 @@ def _openai_call(
     temperature: float,
     tool_choice: str = "auto",
     max_tokens: int = 8192,
+    schema: Optional[dict[str, Any]] = None,
+    json_suffix: str = JSON_ONLY_SUFFIX,
 ) -> CallFn:
+    """schema를 주지 않으면 1차 분류용 TOOL_SCHEMA를 보낸다. 오인식 보정은 OCR_FIX_TOOL_SCHEMA를 준다."""
     from openai import OpenAI
 
     client = OpenAI(base_url=base_url, api_key=api_key)
+    tool_schema = TOOL_SCHEMA if schema is None else schema
 
     def call(system: str, user: str) -> dict[str, Any]:
         kwargs: dict[str, Any] = {
@@ -138,7 +155,7 @@ def _openai_call(
             "temperature": temperature,
             "max_tokens": max_tokens,  # 기본값이 작으면 원재료가 많을 때 JSON이 잘린다
             "messages": [
-                {"role": "system", "content": system if use_tools else system + JSON_ONLY_SUFFIX},
+                {"role": "system", "content": system if use_tools else system + json_suffix},
                 {"role": "user", "content": user},
             ],
         }
@@ -146,7 +163,7 @@ def _openai_call(
             kwargs["tools"] = [
                 {
                     "type": "function",
-                    "function": {"name": TOOL_NAME, "description": TOOL_DESCRIPTION, "parameters": TOOL_SCHEMA},
+                    "function": {"name": TOOL_NAME, "description": TOOL_DESCRIPTION, "parameters": tool_schema},
                 }
             ]
             # 학교 게이트웨이의 Claude Sonnet 5.5는 특정 tool 강제(tool_choice 지정)를 거부한다 (400).
@@ -166,11 +183,12 @@ def _openai_call(
     return call
 
 
-def _anthropic_call(api_key: str, model: str, temperature: float, max_tokens: int = 8192) -> CallFn:
+def _anthropic_call(api_key: str, model: str, temperature: float, max_tokens: int = 8192,
+                    schema: Optional[dict[str, Any]] = None) -> CallFn:
     import anthropic
 
     client = anthropic.Anthropic(api_key=api_key)
-    tool = {"name": TOOL_NAME, "description": TOOL_DESCRIPTION, "input_schema": TOOL_SCHEMA}
+    tool = {"name": TOOL_NAME, "description": TOOL_DESCRIPTION, "input_schema": TOOL_SCHEMA if schema is None else schema}
 
     def call(system: str, user: str) -> dict[str, Any]:
         resp = client.messages.create(
@@ -192,8 +210,10 @@ class LLMClassifier:
     name = "llm"
     prompt_version = PROMPT_VERSION
 
-    def __init__(self, call: CallFn, model: str, batch_size: int = 40):
+    def __init__(self, call: CallFn, model: str, batch_size: int = 40, fix_call: Optional[CallFn] = None):
         self._call = call
+        # 오인식 보정 전용 호출 (OCR_FIX_TOOL_SCHEMA). 없으면 call을 쓴다 (테스트의 가짜 함수 등)
+        self._fix_call = fix_call or call
         self.model = model
         self.batch_size = max(1, batch_size)
         self.system = PROMPT_PATH.read_text(encoding="utf-8")
@@ -218,11 +238,14 @@ class LLMClassifier:
             use_tools = os.getenv("LLM_USE_TOOLS", "1") != "0"
             tool_choice = os.getenv("LLM_TOOL_CHOICE", "auto")
             call = _openai_call(base_url, api_key, model, use_tools, temperature, tool_choice, max_tokens)
+            fix_call = _openai_call(base_url, api_key, model, use_tools, temperature, tool_choice, max_tokens,
+                                    schema=OCR_FIX_TOOL_SCHEMA, json_suffix=OCR_FIX_JSON_ONLY_SUFFIX)
         elif provider == "anthropic":
             call = _anthropic_call(api_key, model, temperature, max_tokens)
+            fix_call = _anthropic_call(api_key, model, temperature, max_tokens, schema=OCR_FIX_TOOL_SCHEMA)
         else:
             raise RuntimeError(f"알 수 없는 LLM_PROVIDER: {provider}")
-        return cls(call=call, model=model, batch_size=batch_size)
+        return cls(call=call, model=model, batch_size=batch_size, fix_call=fix_call)
 
     def classify(self, ingredients: list[str]) -> list[IngredientClassification]:
         """원재료가 많으면 batch_size개씩 나눠 보낸다. 각 원재료는 이름만 보고 판단하므로 나눠도 결과가 같아야 한다."""
@@ -242,7 +265,7 @@ class LLMClassifier:
         out: list[tuple[IngredientClassification, str]] = []
         for i in range(0, len(names), self.batch_size):
             chunk = names[i : i + self.batch_size]
-            raw = self._call(system, "원재료 이름 목록 (JSON):\n" + json.dumps(chunk, ensure_ascii=False))
+            raw = self._fix_call(system, "원재료 이름 목록 (JSON):\n" + json.dumps(chunk, ensure_ascii=False))
             parsed = parse_tool_output(raw)
             fixes = {}
             for item in raw.get("results", []) if isinstance(raw, dict) else []:
