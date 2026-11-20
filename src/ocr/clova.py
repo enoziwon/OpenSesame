@@ -266,6 +266,45 @@ def join_lines(body: list, spaced=None) -> str:
     return re.sub(r"\s+", " ", out).strip()
 
 
+# ---------- 4-1) 구성품 머리말·괄호 다듬기 ----------
+# '녹차풍미유*스프류:사골…' -> '녹차풍미유, *스프류:사골…'. 앞 원재료에 붙은 '*구성품:' 머리말을 떼어 둔다
+_STAR_HEAD_GLUED_RE = re.compile(r"(?<=[가-힣A-Za-z0-9.%])\s*(\*\s*[가-힣][^,:()\[\]{}*]{0,15}?\s*:)")
+_OPEN, _CLOSE = "([{", ")]}"
+
+
+def split_star_heads(text: str) -> str:
+    """앞 원재료에 붙어 버린 '*스프류:' 같은 구성품 머리말 앞에 쉼표를 넣는다 (OCR 보정)."""
+    return _STAR_HEAD_GLUED_RE.sub(r", \1", text)
+
+
+def fix_stray_parens(text: str) -> str:
+    """OCR이 단어 중간에 잘못 넣은 여는 괄호를 지운다.
+
+    '팜유(말레이시(아산), 변성전분' -> '팜유(말레이시아산), 변성전분'
+    여는 괄호가 닫는 괄호보다 많을 때만, 이미 열린 괄호 안에서 한글 사이에 끼어 있고
+    바로 뒤에 짧게 닫히는 괄호만 지운다. 짝이 맞는 글은 건드리지 않는다.
+    """
+    extra = sum(text.count(c) for c in _OPEN) - sum(text.count(c) for c in _CLOSE)
+    while extra > 0:
+        stack, drop = [], None
+        for i, ch in enumerate(text):
+            if ch in _OPEN:
+                if stack and 0 < i < len(text) - 1 and re.match(r"[가-힣]", text[i - 1]) and re.match(r"[가-힣]", text[i + 1]):
+                    inner = re.match(r"[^,()\[\]{}\s]{1,4}?[)\]}]", text[i + 1:])
+                    parent = text[stack[-1] + 1:i]
+                    if inner and "," not in parent:
+                        drop = i
+                        break
+                stack.append(i)
+            elif ch in _CLOSE and stack:
+                stack.pop()
+        if drop is None:
+            break
+        text = text[:drop] + text[drop + 1:]
+        extra -= 1
+    return text
+
+
 
 # ---------- 5) 한국 알레르기 표시란 다듬기 ----------
 DECL_HEAD_RE = re.compile(r"(알레르기|알러지)\s*(유발)?\s*(물질|성분|식품)?\s*(표시|정보)?\s*[:：]")
@@ -401,7 +440,7 @@ def extract_label(raw: dict) -> dict:
     fields = raw["images"][0].get("fields", [])
     segs = segments(fields)
     sec = extract_section(segs)
-    text = fix_declaration(join_lines(sec["body"], sec.get("spaced")))
+    text = fix_declaration(fix_stray_parens(split_star_heads(join_lines(sec["body"], sec.get("spaced")))))
     declaration = "" if ALLERGEN_TAIL_RE.search(text) else separate_declaration(segs, sec["picked"])
     return {
         "text": text,
