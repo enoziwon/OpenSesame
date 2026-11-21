@@ -34,6 +34,7 @@ def _load_dotenv(path: Path) -> None:
 
 _load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
+from src.final.explain import explain  # noqa: E402
 from src.final.lexicon import kr_box  # noqa: E402
 from src.final.parser import MAX_CHARS  # noqa: E402
 from src.final.pipeline import CLASSIFIER_NAME, analyze_fields, analyze_text  # noqa: E402
@@ -103,11 +104,13 @@ def analyze_label(file: UploadFile = File(...)) -> FinalAnalyzeResponse:
         raise HTTPException(status_code=422, detail=str(e)) from e
     # OCR의 다시 찍기 안내(원재료명 칸 못 찾음, 잘림, 흐림)를 앞에 붙인다. 같은 문구는 한 번만
     res.warnings = list(dict.fromkeys(list(getattr(ocr_result, "warnings", [])) + list(res.warnings)))
-    return res
+    return explain(res)   # may contain 항목에 LLM 설명 (OPENSESAME_FINAL_EXPLAIN=llm일 때만, docs/10 4절)
 
 
 @app.post("/analyze-text", response_model=FinalAnalyzeResponse)
 def analyze_label_text(req: TextRequest) -> FinalAnalyzeResponse:
     if req.text is not None and req.text.strip():
-        return analyze_text(req.text)
-    return analyze_fields(req.ingredients, req.declaration)
+        res = analyze_text(req.text)
+    else:
+        res = analyze_fields(req.ingredients, req.declaration)
+    return explain(res)   # may contain 항목에 LLM 설명 (OPENSESAME_FINAL_EXPLAIN=llm일 때만, docs/10 4절)
