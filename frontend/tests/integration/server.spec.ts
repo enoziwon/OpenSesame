@@ -15,7 +15,7 @@ test("ingredient input uses the official final server and renders its verdicts",
   expect(result.meta).toMatchObject({ ocr_engine: "text", classifier: "final-lexicon-v1" });
   await expect(page).toHaveURL(/results$/);
   for (const name of ["Milk", "Wheat"]) {
-    await expect(page.locator(".result-row").filter({ hasText: name })).toContainText("Confirmed");
+    await expect(page.locator(".result-row").filter({ hasText: name })).toContainText("Contains");
   }
   await expect(page.locator(".result-row").filter({ hasText: "Peanuts" })).toContainText("Not detected");
   await page.getByText("Original ingredient text", { exact: true }).click();
