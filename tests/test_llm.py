@@ -150,3 +150,45 @@ def test_openai_sets_max_tokens(monkeypatch):
     monkeypatch.setattr(openai, "OpenAI", Capture)
     llm._openai_call("http://x", "k", "m", use_tools=True, temperature=0, max_tokens=1234)("s", "u")
     assert created["c"].sent["max_tokens"] == 1234
+
+
+def _sent_schema(monkeypatch, **kw):
+    """_openai_call이 게이트웨이에 보내는 도구 정의(parameters)를 꺼낸다."""
+    import openai
+
+    msg = types.SimpleNamespace(content='{"results": []}', tool_calls=None)
+    fake = _fake_openai(msg)
+    created = {}
+
+    class Capture(fake):
+        def __init__(self, base_url, api_key):
+            super().__init__(base_url, api_key)
+            created["client"] = self
+
+    monkeypatch.setattr(openai, "OpenAI", Capture)
+    llm._openai_call("http://x", "k", "m", use_tools=True, temperature=0, **kw)("s", "u")
+    return created["client"].sent["tools"][0]["function"]["parameters"]
+
+
+def test_classify_request_has_no_corrected_field(monkeypatch):
+    # 1차 분류(classify_v1) 요청의 도구 정의는 오인식 보정 전과 같아야 한다 (1차 기준선)
+    items = _sent_schema(monkeypatch)["properties"]["results"]["items"]["properties"]
+    assert set(items) == {"ingredient", "matches", "source_unknown"}
+
+
+def test_ocr_fix_request_has_corrected_field(monkeypatch):
+    items = _sent_schema(monkeypatch, schema=llm.OCR_FIX_TOOL_SCHEMA)["properties"]["results"]["items"]["properties"]
+    assert "corrected" in items
+    assert "corrected" not in llm.TOOL_SCHEMA["properties"]["results"]["items"]["properties"]  # 원본은 그대로
+
+
+def test_from_env_uses_separate_call_for_ocr_fix(monkeypatch):
+    # 분류는 TOOL_SCHEMA, 오인식 보정은 OCR_FIX_TOOL_SCHEMA로 부른다
+    seen = []
+    monkeypatch.setattr(llm, "_openai_call", lambda *a, schema=None, **k: (lambda s, u: seen.append(schema) or {"results": []}))
+    for k, v in {"LLM_PROVIDER": "openai", "LLM_API_KEY": "k", "LLM_BASE_URL": "http://x", "LLM_MODEL": "m"}.items():
+        monkeypatch.setenv(k, v)
+    c = llm.LLMClassifier.from_env()
+    c.classify(["설탕"])
+    c.correct_and_classify(["설탕"])
+    assert seen == [None, llm.OCR_FIX_TOOL_SCHEMA]
