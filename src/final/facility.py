@@ -11,14 +11,20 @@
 
 - 판정이 이미 있는 알레르기는 넣지 않는다. 고추참치는 문구에 고등어가 있지만 가다랑어 때문에 생선이 이미 confirmed다.
 - 문장은 고정이다(LLM을 쓰지 않는다). 원재료에는 없다는 것과 미량이 섞일 수 있다는 것을 함께 말한다.
+- 사진은 OCR이 같은 시설 문장을 원재료 글자와 따로 넘긴다(OcrResult.facility). ocr_facility_pieces가 그중 같은 시설
+  문구로 보이는 조각만 남기고, merge_facility가 파서가 글자 속에서 찾은 문구와 합친다(같은 문장은 한 번만).
 """
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple
 
+from src.final.parser import MAX_CHARS
 from src.final.verdict import ALLERGENS, box_codes, code_info
+
+log = logging.getLogger(__name__)
 
 # 문구를 낱말로 자른다. '조개류(전복, 홍합 등 포함)를'의 괄호도 자른다
 SPLIT_RE = re.compile(r"[,，、/·ㆍ\s()\[\]{}<>]+")
@@ -71,6 +77,51 @@ def shared_facility(text: Optional[str], decided: Iterable[str] = ()) -> List[Fa
     return [_note(a, words) for a, words in facility_words(text).items() if a not in skip]
 
 
+# ---------- OCR이 따로 넘긴 같은 시설 칸 ----------
+# OCR(src/ocr/clova.py)은 같은 시설 문장들을 빈칸 하나로 이어 붙여 넘긴다. 문장 끝은 OCR이 문장을 끊는 끝말과 같게 본다.
+# 가운뎃점(·)에서는 자르지 않는다. '우유·땅콩 혼입 가능'처럼 목록을 나누는 데도 쓰여 낱말을 잃는다.
+SENTENCE_END_RE = re.compile(r"(?:니다|있음|가능)\.?(?=\s)")
+# 같은 시설 문구의 핵심 낱말. OCR 쪽 정규식(clova.py FACILITY_RE)에서 줄 끝 '혼'만 뺐다. 줄이 '호두혼|합견과페이스트'처럼
+# 나뉘면 OCR이 그 줄을 같은 시설 문장으로 잡아 제품명·원재료 덩어리가 통째로 들어오기 때문이다.
+CORE_RE = re.compile(r"(?:같은|동일한?)\s*(?:제조\s*)?(?:시설|공장|라인)|혼\s*입")
+# 문구가 줄 바꿈으로 나뉘어 핵심 낱말이 뒤 조각으로 간 경우의 앞머리: '이 제품은 메밀, 땅콩, …'
+OPENER_RE = re.compile(r"^\W*(?:이|본)\s*제품은")
+
+
+def ocr_facility_pieces(text: Optional[str]) -> List[str]:
+    """OCR이 넘긴 같은 시설 칸 -> 같은 시설 문구로 보이는 조각들(적힌 순서).
+
+    문장 끝에서 조각으로 나누고, 핵심 낱말('같은 … 시설', '혼입')도 '이 제품은' 머리도 없는 조각은 버린다.
+    판정에 쓰지 않는 안내 칸이라, 너무 길면 통째로 버리고 분석은 계속한다(사진 분석 전체를 실패시키지 않는다).
+    """
+    if text is None:
+        return []
+    if not isinstance(text, str):
+        raise TypeError("facility에는 글자(str)만 넣을 수 있습니다")
+    if len(text) > MAX_CHARS:
+        log.warning("OCR 같은 시설 칸이 너무 길어(%d자) 쓰지 않음", len(text))
+        return []
+    cuts = [0] + [m.end() for m in SENTENCE_END_RE.finditer(text)] + [len(text)]
+    pieces = [text[a:b].strip() for a, b in zip(cuts, cuts[1:])]
+    return [p for p in pieces if p and (CORE_RE.search(p) or OPENER_RE.match(p))]
+
+
+def merge_facility(own: Optional[str], pieces: Iterable[str]) -> Optional[str]:
+    """파서가 글자 속에서 찾은 문구(own)에 OCR 조각을 더한다. 빈칸만 다른 같은 문장은 한 번만 넣는다."""
+    parts = [own] if own else []
+    seen = [_squash(own)] if own else []
+    for piece in pieces:
+        key = _squash(piece)
+        if key and not any(key in done for done in seen):
+            parts.append(piece)
+            seen.append(key)
+    return " ".join(parts) or None
+
+
+def _squash(text: str) -> str:
+    return re.sub(r"\s+", "", text)
+
+
 def _things_en(allergen: str, words: Tuple[str, ...]) -> str:
     """문구에 적힌 것의 영어 이름. 종을 아는 낱말(새우, 고등어, 호두)은 그 종으로 쓴다."""
     names: List[str] = []
@@ -103,4 +154,4 @@ def _note(allergen: str, words: Tuple[str, ...]) -> FacilityNote:
     return FacilityNote(allergen, words, en, ko)
 
 
-__all__ = ["FacilityNote", "facility_words", "shared_facility"]
+__all__ = ["FacilityNote", "facility_words", "merge_facility", "ocr_facility_pieces", "shared_facility"]

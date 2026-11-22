@@ -514,6 +514,11 @@ class Resolver:
         """앞부분 오타로 보여 알레르기를 '가능'으로 더한 것: {라벨 이름: Suspect}."""
         return dict(self._suspects)
 
+    @property
+    def fixed(self) -> Dict[str, str]:
+        """LLM 오인식 보정으로 바로잡아 사전에서 찾은 것: {라벨 이름: 고친 이름}. 보정을 끄면 빈 dict."""
+        return dict(self._fixed)
+
     def notes(self) -> List[str]:
         """응답 notes에 더할 문장. 맞춘 이름마다 한 줄('오타로 보고 맞춤: 탈지븐유 → 탈지분유'),
         앞부분 오타로 보이는 이름마다 한 줄, 그다음 보조 분류기 참고."""
