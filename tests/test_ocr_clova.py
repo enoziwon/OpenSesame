@@ -190,3 +190,24 @@ def test_extract_label_applies_star_and_paren_fix():
     text = extract_label(_raw(f))["text"]
     assert "팜유(말레이시아산)" in text
     assert "녹차풍미유, *스프류:정제소금" in text
+
+
+def test_facility_sentence_glues_words_split_at_line_end():
+    # CLOVA가 '새|우', '혼|입'처럼 줄 끝에서 낱말을 끊어도 같은 시설 문장에서는 붙여 읽는다
+    f = _line(["원재료명:", "소맥분,", "설탕"], 10, 10)
+    f += _line(["·", "돼지고기,", "오징어,새"], 10, 40)
+    f += _line(["우,게,고등어,", "땅콩", "혼"], 10, 62)
+    f += _line(["입", "가능"], 10, 84)
+    fac = extract_label(_raw(f))["facility"]
+    assert "새우" in fac and "혼입 가능" in fac
+    assert "새 우" not in fac
+
+
+def test_facility_sentence_keeps_space_after_full_word_at_line_end():
+    # 줄 끝 낱말이 긴 것은 다 쓴 낱말: 알레르기 낱말('밀')이 앞 낱말에 붙지 않게 띄운다
+    from src.ocr.clova import _join_facility_lines
+
+    assert _join_facility_lines(["본 제품은 알류, 메밀, 주의사항", "밀, 땅콩을 사용한 제품과 같은 시설에서", "제조하고 있습니다."]) == \
+        "본 제품은 알류, 메밀, 주의사항 밀, 땅콩을 사용한 제품과 같은 시설에서 제조하고 있습니다."
+    assert _join_facility_lines(["오징어,새", "우,게 혼", "입 가능"]) == "오징어,새우,게 혼입 가능"
+    assert _join_facility_lines(["조개류,잣을", "사용한 제품과 같은 시설"]) == "조개류,잣을 사용한 제품과 같은 시설"

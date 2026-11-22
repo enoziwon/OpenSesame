@@ -111,6 +111,28 @@ def _is_stop(text):
     return bool(STOP_RE.match(re.sub(r"^[\s·•*\-ㆍ]+", "", text)))
 
 
+_SHORT_TAIL_RE = re.compile(r"(?:^|[\s,，、(\[{·])([가-힣]{1,2})$")
+
+
+def _join_facility_lines(lines: list) -> str:
+    """같은 시설 문장의 줄을 잇는다. 줄 끝 조각이 한두 글자이고 다음 줄이 한글로 시작하면 끊긴 낱말로 보고 붙인다.
+
+    '오징어,새 | 우,게' -> '오징어,새우,게', '혼 | 입 가능' -> '혼입 가능', '제품 | 과 같은' -> '제품과 같은'
+    '주의사항 | 밀,' '시설에서 | 제조하고'처럼 줄 끝 낱말이 긴 것은 다 쓴 낱말로 보고 띄운다 (알레르기 낱말이 앞에 붙지 않게).
+    """
+    out = ""
+    for ln in (x.strip() for x in lines):
+        if not ln:
+            continue
+        tail = _SHORT_TAIL_RE.search(out) if out else None
+        # '잣을 | 사용한'처럼 두 글자 조각이 조사로 끝나면 다 쓴 낱말이다
+        if tail and not (len(tail.group(1)) == 2 and tail.group(1)[-1] in "을를은는과와의에로") and re.match(r"[가-힣]", ln):
+            out += ln
+        else:
+            out = f"{out} {ln}" if out else ln
+    return out
+
+
 def _facility_sentences(segs):
     """'같은 제조시설' 문장: 여러 줄에 걸치면 같은 칸의 앞뒤 줄까지 이어 붙인다."""
     out, used = [], set()
@@ -128,7 +150,7 @@ def _facility_sentences(segs):
         while (b < len(col) - 1 and not re.search(r"(니다|습니다|있음|가능)\.?\s*$", col[b]["text"])
                and col[b + 1]["y0"] - col[b]["y1"] < 1.0 * s["h"] and b - i < 3):
             b += 1
-        text = " ".join(o["text"] for o in col[a:b + 1])
+        text = _join_facility_lines([o["text"] for o in col[a:b + 1]])
         # 앞 문장 꼬리 / 뒤 문장 머리 잘라내기
         m = re.search(r"[^·•※]*?((같은|동일한?)\s*(제조\s*)?(시설|공장|라인)|혼\s*입)[^·•※]*?(니다\.?|있음\.?|가능|$)", text)
         sent = text
