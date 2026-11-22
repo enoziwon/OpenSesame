@@ -24,6 +24,7 @@ test("facility findings respect verdict precedence, ordering, and review counts"
   await expect(rows.locator(".result-name")).toHaveText(["Milk", "Wheat", "Fish", "Peanuts", "Sesame", "Egg", "Shellfish", "Tree nuts", "Soy"]);
   await expect(page.locator(".result-banner")).toContainText("Analysis needs review");
   await expect(page.locator(".result-banner")).not.toContainText("results need review");
+  await expect(page.locator(".result-banner")).toContainText("Made in a facility that also handles: Peanuts");
   const peanut = rows.filter({ hasText: "Peanuts" });
   await expect(peanut).toContainText("May contain");
   await expect(peanut).toContainText("Shared facility");
@@ -46,7 +47,39 @@ test("facility findings respect verdict precedence, ordering, and review counts"
   await page.locator("textarea").fill("label");
   await page.getByRole("button", { name: "Analyze" }).click();
   await expect(rows.filter({ hasText: "Peanuts" })).toContainText("Cannot determine");
-  await expect(rows.filter({ hasText: "Peanuts" })).not.toContainText("Shared facility");
   await rows.filter({ hasText: "Peanuts" }).locator("summary").click();
   await expect(rows.filter({ hasText: "Peanuts" }).locator(".result-reason > p").first()).toContainText("label could not be fully analyzed");
+  await expect(rows.filter({ hasText: "Peanuts" }).locator(".facility-note")).toContainText("Facility reason");
+});
+
+test("facility-only selection has a clear banner and consistent badges", async ({ page }) => {
+  await page.goto("/allergies");
+  await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Text", exact: true }).click();
+  await page.locator("textarea").fill("label");
+  await page.route("**/analyze-text", route => route.fulfill({ json: {
+    ingredients_text: "label", ingredients: [{ name: "label", children: [] }], warnings: [],
+    allergens: [
+      { allergen: "soy", verdict: "inferable", evidence_ingredient: "soy", reason_en: "Possible soy" },
+      { allergen: "fish", verdict: "undecidable", evidence_ingredient: "fish", reason_en: "Unclear fish" },
+    ],
+    shared_facility: [{ allergen: "peanut", words: ["peanut"], reason_en: "Facility reason" }],
+  } }));
+  await page.getByRole("button", { name: "Analyze" }).click();
+  const banner = page.locator(".result-banner");
+  await expect(banner).toContainText("Made in a facility that also handles: Peanuts");
+  await expect(banner).not.toContainText("No selected allergens detected");
+  await expect(banner).not.toContainText("results need review");
+  const badges = page.locator(".badge.inferable, .badge.undecidable, .badge.shared_facility");
+  await expect(badges).toHaveCount(3);
+  const styles = await badges.evaluateAll((elements) => elements.map((element) => ({
+    width: element.getBoundingClientRect().width,
+    transform: getComputedStyle(element).textTransform,
+    height: element.getBoundingClientRect().height,
+  })));
+  expect(new Set(styles.map((style) => style.width)).size).toBe(1);
+  expect(new Set(styles.map((style) => style.height)).size).toBe(1);
+  expect(styles.every((style) => style.transform === "none")).toBe(true);
+  await expect(page.locator(".result-row.highlighted")).toContainText("Peanuts");
 });

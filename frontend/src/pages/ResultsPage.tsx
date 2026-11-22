@@ -44,6 +44,11 @@ export default function ResultsPage({
   const matches = result.allergens.filter((a) => selected.includes(a.allergen));
   const confirmed = matches.filter((a) => a.verdict === "confirmed").length;
   const review = matches.filter((a) => a.verdict !== "confirmed").length;
+  const selectedFacility = displayOrder.filter((id) =>
+    selected.includes(id) &&
+    !result.allergens.some((a) => a.allergen === id) &&
+    result.shared_facility?.some((f) => f.allergen === id),
+  );
   const uncertain =
     incomplete ||
     !!result.undecidable_ingredients?.length ||
@@ -78,13 +83,18 @@ export default function ResultsPage({
                 ? "Allergen Warning"
                 : uncertain || review
                   ? "Analysis needs review"
-                  : "No selected allergens detected"}
+                  : selectedFacility.length
+                    ? "Shared facility warning"
+                    : "No selected allergens detected"}
             </strong>
             <p>
               {confirmed || review
                 ? `${confirmed} confirmed · ${review} results need review.`
                 : "Review all results and the original label."}
             </p>
+            {selectedFacility.length > 0 && (
+              <p>Made in a facility that also handles: {selectedFacility.map((id) => allergens.find((a) => a.id === id)!.label || allergens.find((a) => a.id === id)!.name).join(", ")}.</p>
+            )}
           </div>
         </div>
 
@@ -155,6 +165,9 @@ export default function ResultsPage({
                         ? "The label could not be fully analyzed, so this allergen cannot be ruled out. Check the warnings below and the original label."
                         : "The reason could not be provided. Please check the original label."}
                   </p>
+                  {incomplete && !found && facility && (
+                    <p className="facility-note"><strong>Shared facility: </strong>{facility.reason_en}</p>
+                  )}
                   {verdict !== "shared_facility" && found?.explanation_en?.trim() && (
                     <p className="result-explanation"><strong>AI explanation: </strong>{found.explanation_en}</p>
                   )}
