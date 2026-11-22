@@ -16,12 +16,15 @@
 """
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from src.final.parser import MAX_CHARS
 from src.final.verdict import ALLERGENS, box_codes, code_info
+
+log = logging.getLogger(__name__)
 
 # 문구를 낱말로 자른다. '조개류(전복, 홍합 등 포함)를'의 괄호도 자른다
 SPLIT_RE = re.compile(r"[,，、/·ㆍ\s()\[\]{}<>]+")
@@ -89,13 +92,15 @@ def ocr_facility_pieces(text: Optional[str]) -> List[str]:
     """OCR이 넘긴 같은 시설 칸 -> 같은 시설 문구로 보이는 조각들(적힌 순서).
 
     문장 끝에서 조각으로 나누고, 핵심 낱말('같은 … 시설', '혼입')도 '이 제품은' 머리도 없는 조각은 버린다.
+    판정에 쓰지 않는 안내 칸이라, 너무 길면 통째로 버리고 분석은 계속한다(사진 분석 전체를 실패시키지 않는다).
     """
     if text is None:
         return []
     if not isinstance(text, str):
         raise TypeError("facility에는 글자(str)만 넣을 수 있습니다")
     if len(text) > MAX_CHARS:
-        raise ValueError(f"facility가 너무 깁니다 (최대 {MAX_CHARS}자)")
+        log.warning("OCR 같은 시설 칸이 너무 길어(%d자) 쓰지 않음", len(text))
+        return []
     cuts = [0] + [m.end() for m in SENTENCE_END_RE.finditer(text)] + [len(text)]
     pieces = [text[a:b].strip() for a, b in zip(cuts, cuts[1:])]
     return [p for p in pieces if p and (CORE_RE.search(p) or OPENER_RE.match(p))]

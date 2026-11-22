@@ -74,8 +74,14 @@ def test_facility_found_in_the_text_and_from_ocr_is_counted_once():
 def test_facility_must_be_text():
     with pytest.raises(TypeError):
         analyze_text(LABEL, facility=123)
-    with pytest.raises(ValueError):
-        analyze_text(LABEL, facility="가" * 20001)
+
+
+def test_too_long_facility_is_dropped_not_fatal():
+    # 판정에 쓰지 않는 안내 칸이라, 너무 길면 버리고 분석은 계속한다(#24 리뷰)
+    res = analyze_text(LABEL, facility="같은 시설 " * 5000)
+    plain = analyze_text(LABEL)
+    assert [(a.allergen, a.verdict) for a in res.allergens] == [(a.allergen, a.verdict) for a in plain.allergens]
+    assert res.shared_facility == plain.shared_facility
 
 
 def test_photo_path_passes_ocr_facility(monkeypatch):
