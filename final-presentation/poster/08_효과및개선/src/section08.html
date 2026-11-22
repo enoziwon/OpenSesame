@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>08 효과 및 개선</title>
+<!-- 6번 칸과 같은 틀: 재원 님 초안(Figma)과 같은 글꼴·색, 2배 포스터(2546px 폭)의 가로 전체 칸 = 2416px -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1F2D4D; --orange: #F5823C; --gray: #657083; --line: #E6E9ED; --page: #FFFCF8;
+    --o1: #FFF2E8; --g1: #F8F9FB; --g2: #EEF0F3; --bar0: #B4BBC6; --axis: #C9CED6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: "Noto Sans KR", sans-serif; color: var(--navy); word-break: keep-all; }
+  .t { white-space: nowrap; }
+  #card { position: absolute; left: 0; top: 0; width: 2416px; background: #fff; border: 2px solid var(--line);
+          border-radius: 20px; padding: 34px 40px 40px; }
+
+  .head { display: flex; align-items: center; }
+  .bar { width: 7px; height: 36px; border-radius: 4px; background: var(--orange); margin-right: 16px; }
+  .title { font-size: 34px; font-weight: 700; line-height: 1.2; }
+  .title .no { margin-right: 14px; }
+  .sub { margin-top: 12px; font-size: 21px; line-height: 1.5; color: var(--gray); }
+
+  .grid { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 32px; row-gap: 30px; }
+  .b1 { grid-column: 1; grid-row: 1; }
+  .b2 { grid-column: 2; grid-row: 1; }
+  .b4 { grid-column: 1 / span 2; grid-row: 2; }
+  .right { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; }
+  .b5 { flex: 1; margin-top: 30px; background: var(--g1); border-radius: 16px; padding: 24px 26px; }
+
+  h3 { display: flex; align-items: center; font-size: 26px; font-weight: 700; line-height: 1.3; margin-bottom: 14px; }
+  .num { display: inline-block; flex: none; width: 34px; height: 34px; border-radius: 17px; background: var(--orange);
+         color: #fff; font-size: 20px; font-weight: 700; line-height: 34px; text-align: center; margin-right: 12px; }
+  p { font-size: 21px; line-height: 1.55; }
+  .n { color: var(--orange); font-weight: 700; }
+  .lead { font-size: 20px; line-height: 1.5; color: var(--gray); }
+  .note { margin-top: 12px; font-size: 19px; line-height: 1.5; color: var(--gray); }
+  .gap { margin-top: 14px; }
+
+  /* 1 정확도: 큰 숫자 하나 + 작은 숫자 셋 */
+  .hero { background: var(--o1); border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; }
+  .hero .big { flex: none; font-size: 80px; font-weight: 700; line-height: 1; color: var(--orange); margin-right: 22px; }
+  .hero p { font-size: 20px; line-height: 1.5; }
+  .kpis { margin-top: 16px; display: flex; flex-direction: column; row-gap: 12px; }
+  .kpi { display: flex; align-items: center; }
+  .kpi .v { flex: none; width: 108px; font-size: 32px; font-weight: 700; line-height: 1.2; color: var(--orange); }
+  .kpi p { font-size: 20px; line-height: 1.45; }
+
+  /* 막대 그림 (막대 끝 4px 둥글게, 바닥은 각지게, 값은 막대 끝에) */
+  .chart { margin-top: 14px; background: var(--g1); border-radius: 14px; padding: 18px 22px 20px; }
+  .legend { display: flex; align-items: center; font-size: 17px; color: var(--gray); margin-bottom: 14px; }
+  .sw { display: inline-block; flex: none; width: 22px; height: 14px; border-radius: 3px; margin: 0 8px 0 22px; }
+  .sw:first-child { margin-left: 0; }
+  .grp + .grp { margin-top: 16px; }
+  .gt { font-size: 19px; font-weight: 700; line-height: 1.4; }
+  .gt .s { font-size: 16px; font-weight: 400; color: var(--gray); margin-left: 8px; }
+  .plot { position: relative; margin-top: 6px; padding-left: 2px; display: flex; flex-direction: column; row-gap: 4px; }
+  .axis { position: absolute; left: 0; top: -3px; bottom: -3px; width: 2px; background: var(--axis); }
+  .brow { display: flex; align-items: center; height: 22px; }
+  .bv { flex: none; height: 22px; border-radius: 0 4px 4px 0; }
+  .bv.on { background: var(--orange); }
+  .bv.off { background: var(--bar0); }
+  .val { margin-left: 10px; font-size: 18px; font-weight: 700; line-height: 1; }
+  .val.off { color: var(--gray); font-weight: 500; }
+  .hplot { position: relative; margin-top: 10px; display: flex; flex-direction: column; row-gap: 8px; }
+  .hplot .axis { left: 226px; }
+  .hrow { display: flex; align-items: center; height: 26px; }
+  .hl { flex: none; width: 228px; font-size: 18px; line-height: 1.3; }
+  .hrow .bv { height: 24px; }
+
+  /* 4 고친 오류 카드 */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 18px; }
+  .xc { background: var(--g1); border-radius: 14px; padding: 18px 20px; }
+  .xc h4 { font-size: 21px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .xc p { font-size: 19px; line-height: 1.5; }
+  .xc .src { margin-top: 8px; font-size: 17px; line-height: 1.45; color: var(--gray); }
+
+  /* 5 남은 과제 */
+  .todo { background: #fff; border-radius: 12px; padding: 16px 20px; }
+  .todo + .todo { margin-top: 14px; }
+  .todo h4 { font-size: 21px; font-weight: 700; line-height: 1.35; margin-bottom: 6px; }
+  .todo p { font-size: 19px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="head"><div class="bar"></div><div class="title"><span class="no">08</span>효과 및 개선</div></div>
+  <p class="sub">시험 세트와 직접 찍은 사진으로 판정을 재고, 그 과정에서 찾은 오류를 고쳤다. 판정은 정답과 거의 같았고, 남은 오류는 대부분 사진에서 글자를 읽는 단계에서 나왔다.</p>
+
+  <div class="grid">
+    <!-- 1 시험 세트 정확도 -->
+    <div class="b1">
+      <h3><span class="num">1</span>개발에 쓰지 않은 제품으로 잰 정확도</h3>
+      <div class="hero">
+        <span class="big">99.6%</span>
+        <p>판정 가이드에 따라 정답을 단 시험 세트 <span class="n">140개</span> 제품에서, 판정 <span class="n">1,260개</span> 중 <span class="n">1,255개</span>가 정답과 같았다.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span class="v">0.3%</span><p>들어 있는 알레르기 377개 중 1개를 놓쳤다.</p></div>
+        <div class="kpi"><span class="v">0.1%</span><p>없는 알레르기 842개 중 1개에 잘못 경고했다.</p></div>
+        <div class="kpi"><span class="v">100%</span><p>사전을 만든 2020년 자료에 없던 새 제품 30개는 모두 맞혔다.</p></div>
+      </div>
+      <p class="gap">같은 라벨을 세 번 넣으면 응답이 글자까지 같았다. 판정 시간은 제품 하나에 중앙값 <span class="n">0.48ms</span>였고, 외부 서버는 한 번도 부르지 않았다.</p>
+      <p class="note">틀린 5개는 모두 대두였다. 표시란의 대두가 정제유 때문인지 가려야 하는 경계 사례였다.</p>
+    </div>
+
+    <!-- 2 표시란 효과 -->
+    <div class="b2">
+      <h3><span class="num">2</span>한국 표시란을 읽은 효과</h3>
+      <p class="lead">같은 제품에서 표시란만 지우고 다시 판정해 견줬다. 막대가 짧을수록 좋다.</p>
+      <div class="chart">
+        <div class="legend"><span class="sw" style="background:#F5823C"></span>표시란을 읽을 때<span class="sw" style="background:#B4BBC6"></span>표시란을 지웠을 때</div>
+        <div class="grp">
+          <p class="gt">틀린 판정<span class="s">시험 세트 판정 1,260개</span></p>
+          <div class="plot"><div class="axis"></div>
+            <div class="brow"><div class="bv on" style="width:12px"></div><span class="val">0.4%</span></div>
+            <div class="brow"><div class="bv off" style="width:570px"></div><span class="val off">19.0%</span></div>
+          </div>
+        </div>
+        <div class="grp">
+          <p class="gt">놓친 알레르기<span class="s">들어 있는 알레르기 377개</span></p>
+          <div class="plot"><div class="axis"></div>
+            <div class="brow"><div class="bv on" style="width:9px"></div><span class="val">0.3%</span></div>
+            <div class="brow"><div class="bv off" style="width:255px"></div><span class="val off">8.5%</span></div>
+          </div>
+        </div>
+        <div class="grp">
+          <p class="gt"><span class="t">May contain</span>으로 남는 판정<span class="s">표시란이 있는 HACCP 제품 6,168개</span></p>
+          <div class="plot"><div class="axis"></div>
+            <div class="brow"><div class="bv on" style="width:141px"></div><span class="val">4.7%</span></div>
+            <div class="brow"><div class="bv off" style="width:573px"></div><span class="val off">19.1%</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="gap">표시란을 읽으면 우유·달걀·밀·땅콩·갑각류에서는 <span class="t">May contain</span>이 한 건도 나오지 않았다. 애매함은 대부분 생선·참깨와, 정제유 예외가 있는 대두에 남았다.</p>
+      <p class="note">원재료에 확실한 근거가 있는데 표시란에 빠진 알레르기도 <span class="n">144개</span> 제품(2.3%)에서 찾았다.</p>
+    </div>
+
+    <!-- 4 고친 오류 -->
+    <div class="b4">
+      <h3><span class="num">4</span>실험과 리뷰에서 찾아 고친 오류</h3>
+      <div class="cards">
+        <div class="xc"><h4>한 글자 틀린 이름</h4><p>땅콩이 '땅공'으로 잘못 적힌 땅공버터를 '버터'만 보고 우유로 판정하고 땅콩을 놓쳤다. 이제는 자음이나 모음 하나만 다른 이름을 사전의 땅콩버터로 맞춰 땅콩을 찾는다.</p><p class="src">팀 리뷰에서 발견</p></div>
+        <div class="xc"><h4>같은 원료의 다른 표기</h4><p>헤이즐넛을 '헤즐너트'로 적은 원료를 사전이 몰라 견과류를 '없음'으로 냈다. 사전 v1.2에 이런 표기 변형을 더해 이제 견과류를 찾는다.</p><p class="src">사전에 없는 이름 표본 100개에서 발견</p></div>
+        <div class="xc"><h4>짧게 쓴 같은 시설 문구</h4><p>'우유, 땅콩 혼입 가능'처럼 짧게 쓴 문구를 원재료로 읽어 <span class="t">Contains</span>로 잘못 판정했다. 이제는 짧은 문구도 알아보고 판정에서 뺀 뒤 같은 시설 안내로 따로 알린다.</p><p class="src">사진 라벨을 다시 점검하다 발견</p></div>
+        <div class="xc"><h4>속을 알 수 없는 양념 이름</h4><p>비빔장·쌈장 같은 장과 찌개 양념은 속 모를 원료 목록에 없어 참깨와 생선을 놓칠 수 있었다. 실제 라벨에서 비율을 재고 목록에 더했다.</p><p class="src">하위 원료가 적힌 라벨에서 장의 참깨 <span class="n">27.8%</span>, 찌개의 생선 <span class="n">23.5%</span></p></div>
+      </div>
+      <p class="note">고칠 때마다 정답지의 판정이 하나도 바뀌지 않는지 확인하고, 2026년 HACCP 제품 14,453개에서 판정이 바뀐 제품을 하나씩 살폈다. 바뀐 제품은 한 번에 5개 이하였고, 모두 '없음'이던 알레르기를 새로 알린 경우였다.</p>
+    </div>
+
+    <!-- 오른쪽 열: 3 사진 + 5 남은 과제 -->
+    <div class="right">
+    <div class="b3">
+      <h3><span class="num">3</span>직접 찍은 사진으로 다시 쟀다</h3>
+      <p class="lead">팀이 찍은 시중 제품 21개의 라벨 사진을 OCR로 읽어 같은 방법으로 판정했다.</p>
+      <div class="chart">
+        <p class="gt">정답과 같은 판정<span class="s">판정 189개</span></p>
+        <div class="hplot"><div class="axis"></div>
+          <div class="hrow"><span class="hl">사람이 옮겨 적은 글자</span><div class="bv on" style="width:380px"></div><span class="val">100%</span></div>
+          <div class="hrow"><span class="hl">사진을 OCR로 읽은 글자</span><div class="bv on" style="width:345.8px"></div><span class="val">91.0%</span></div>
+        </div>
+      </div>
+      <p class="gap">틀린 <span class="n">17곳</span>은 모두 OCR에서 생겼다. 5개 제품에서 OCR이 표시란 줄을 놓치거나 중간에서 끊었고, 1개 제품은 기름 이름이 깨졌다.</p>
+      <p class="gap">표시란을 못 읽으면 없다고 단정하지 않고 <span class="t">May contain</span>으로 물러선다. 그래서 사진에서도 놓친 알레르기는 69개 중 1개였고, 헛경고는 없었다.</p>
+    </div>
+
+    <!-- 5 남은 과제 -->
+    <div class="b5">
+      <h3><span class="num">5</span>남은 과제</h3>
+      <div class="todo"><h4>표시란 줄 읽기</h4><p><span class="t">Contains</span> 판정의 약 3분의 1은 표시란에만 근거한다. 사진에서 표시란 줄을 놓치지 않도록 OCR을 다듬는 것이 가장 큰 개선점이다.</p></div>
+      <div class="todo"><h4>사전에 없는 이름</h4><p>표시란을 읽은 제품의 <span class="n">36%</span>에 사전에 없는 이름이 있다. 표본 100개를 살펴보니 4개에 위험이 숨어 있었고, 전체로 치면 약 <span class="n">1.4%</span>다. 그중 헤즐너트는 사전 v1.2에서 고쳤고, 나머지도 사전을 넓혀 줄여 간다.</p></div>
+    </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

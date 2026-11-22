@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>06 판정 방식과 근거</title>
+<!-- 재원 님 초안(Figma, 1800px 폭)과 같은 글꼴·색·단위. 2배 포스터(A1, 2546px 폭)의 가로 전체 칸 = 2416px -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1F2D4D; --orange: #F5823C; --gray: #657083; --line: #E6E9ED; --page: #FFFCF8;
+    --o1: #FFF2E8; --g1: #F8F9FB; --g2: #EEF0F3; --pink: #F8DEDB; --green: #DDEDDC; --o2: #FFE3CC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: "Noto Sans KR", sans-serif; color: var(--navy); word-break: keep-all; }
+  .t { white-space: nowrap; }   /* Contains, May contain, Not detected는 한 줄로 */
+  #card { position: absolute; left: 0; top: 0; width: 2416px; background: #fff; border: 2px solid var(--line);
+          border-radius: 20px; padding: 34px 40px 40px; }
+
+  /* 칸 제목: 초안과 같은 주황 막대 + 번호 */
+  .head { display: flex; align-items: center; }
+  .bar { width: 7px; height: 36px; border-radius: 4px; background: var(--orange); margin-right: 16px; }
+  .title { font-size: 34px; font-weight: 700; line-height: 1.2; }
+  .title .no { margin-right: 14px; }
+  .sub { margin-top: 12px; font-size: 21px; line-height: 1.5; color: var(--gray); }
+
+  .grid { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 32px; row-gap: 30px; }
+  .b1 { grid-column: 1; grid-row: 1; }
+  .b2 { grid-column: 2; grid-row: 1; }
+  .b3 { grid-column: 1 / span 2; grid-row: 2; }
+  .ex { grid-column: 3; grid-row: 1 / span 2; background: var(--g1); border-radius: 16px; padding: 24px 26px; }
+
+  h3 { display: flex; align-items: center; font-size: 26px; font-weight: 700; line-height: 1.3; margin-bottom: 14px; }
+  .num { display: inline-block; flex: none; width: 34px; height: 34px; border-radius: 17px; background: var(--orange);
+         color: #fff; font-size: 20px; font-weight: 700; line-height: 34px; text-align: center; margin-right: 12px; }
+  .tag { display: inline-block; flex: none; border-radius: 8px; background: var(--navy); color: #fff; font-size: 18px;
+         font-weight: 700; line-height: 1.5; padding: 2px 12px; margin-right: 12px; }
+  p { font-size: 21px; line-height: 1.55; }
+  b { font-weight: 700; }
+  .n { color: var(--orange); font-weight: 700; }
+  .note { margin-top: 12px; font-size: 19px; line-height: 1.5; color: var(--gray); }
+
+  /* 1 근거의 세기 사다리 */
+  .ladder { margin-top: 14px; background: var(--g1); border-radius: 14px; padding: 18px 22px; display: flex;
+            flex-direction: column; row-gap: 14px; }
+  .rung { display: flex; align-items: flex-start; }
+  .chip { display: inline-block; flex: none; width: 76px; text-align: center; border-radius: 999px; font-size: 19px;
+          font-weight: 700; line-height: 1.4; padding: 4px 0; margin-right: 16px; }
+  .chip.c { background: var(--pink); } .chip.i { background: var(--o1); } .chip.p { background: var(--g2); }
+  .def { font-size: 20px; font-weight: 500; line-height: 1.45; }
+  .eg { font-size: 18px; line-height: 1.45; color: var(--gray); }
+
+  /* 2 표시란이 덮는 범위 */
+  .cover { margin-top: 16px; display: flex; flex-direction: column; row-gap: 12px; }
+  .crow { display: flex; align-items: center; flex-wrap: wrap; row-gap: 10px; }
+  .clab { display: inline-block; flex: none; width: 128px; font-size: 18px; font-weight: 500; color: var(--gray); }
+  .tile { display: inline-block; border-radius: 10px; font-size: 20px; font-weight: 700; line-height: 1.4;
+          padding: 6px 16px; margin-right: 10px; }
+  .tile.full { background: var(--navy); color: #fff; }
+  .tile.part { background: var(--o1); }
+  .tile.part .s { font-size: 16px; font-weight: 500; color: var(--orange); margin-left: 6px; }
+  .tile.none { background: #fff; border: 2px solid var(--line); color: var(--gray); padding: 4px 14px; }
+
+  /* 3 예외 카드 */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 18px; }
+  .xc { background: var(--g1); border-radius: 14px; padding: 18px 20px; }
+  .xc h4 { font-size: 21px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .xc p { font-size: 19px; line-height: 1.5; }
+  .xc .src { margin-top: 8px; font-size: 17px; line-height: 1.45; color: var(--gray); }
+
+  /* 실제 라벨 예시 */
+  .lead { font-size: 19px; line-height: 1.5; color: var(--gray); margin: -4px 0 14px; }
+  .label { background: #fff; border-radius: 12px; padding: 18px 20px; }
+  .label p { font-size: 20px; line-height: 1.75; }
+  .label .k { font-weight: 700; margin-right: 6px; }
+  .label .box { margin-top: 8px; }
+  .hp, .ho, .hn { border-radius: 5px; padding: 1px 4px; white-space: nowrap; }
+  .hp { background: var(--pink); font-weight: 700; }
+  .ho { background: var(--o2); font-weight: 700; }
+  .hn { background: var(--g2); color: var(--gray); }
+  .legend { margin-top: 12px; padding-top: 12px; border-top: 0; display: flex; align-items: center; font-size: 17px;
+            color: var(--gray); }
+  .sw { display: inline-block; flex: none; width: 22px; height: 16px; border-radius: 4px; margin: 0 8px 0 18px; }
+  .sw:first-child { margin-left: 0; }
+  .res { margin-top: 16px; background: #fff; border-radius: 12px; padding: 20px 20px; display: flex;
+         flex-direction: column; row-gap: 16px; }
+  .r { display: flex; align-items: center; }
+  .pill { display: inline-block; flex: none; width: 158px; text-align: center; border-radius: 999px; font-size: 19px;
+          font-weight: 700; line-height: 1.4; padding: 6px 0; margin-right: 16px; }
+  .pill.c { background: var(--pink); } .pill.m { background: var(--o1); } .pill.d { background: var(--green); }
+  .r p { font-size: 20px; line-height: 1.45; }
+  .r p b { margin-right: 8px; }
+  .ex .note { font-size: 19px; margin-top: 14px; }
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="head"><div class="bar"></div><div class="title"><span class="no">06</span>판정 방식과 근거</div></div>
+  <p class="sub">라벨에 적힌 글자만 근거로 미국 FDA 주요 알레르기 9가지를 판정한다. 같은 라벨이면 언제나 같은 결과가 나오고, 판정마다 근거 원재료와 이유가 붙는다.</p>
+
+  <div class="grid">
+    <!-- 1 원재료 사전 -->
+    <div class="b1">
+      <h3><span class="num">1</span>실제 라벨로 만든 원재료 사전</h3>
+      <p>HACCP 제품 <span class="n">15,451개</span>의 포장지에서 원재료 이름 <span class="n">23,550개</span>를 모았다. 그중 <span class="n">270개</span> 항목은 식품공전·식품첨가물공전, 미국 FDA 문서, 식약처 품목제조보고 원문과 대조했다.</p>
+      <p style="margin-top:8px">근거의 세기는 하위 원료까지 적힌 실제 라벨에서 센 비율로 정했다.</p>
+      <div class="ladder">
+        <div class="rung"><span class="chip c">확정</span><div><p class="def">이름이나 정의가 곧 알레르기 원료다</p><p class="eg">카제인나트륨은 우유, 참기름은 참깨</p></div></div>
+        <div class="rung"><span class="chip i">추정</span><div><p class="def">대개 들어 있다 (절반 이상)</p><p class="eg">빵가루의 밀 <span class="n">99%</span></p></div></div>
+        <div class="rung"><span class="chip p">가능</span><div><p class="def">드물지 않게 들어 있다 (열에 하나 이상)</p><p class="eg">전분의 밀 <span class="n">35%</span>, 육수의 생선 <span class="n">12%</span></p></div></div>
+      </div>
+    </div>
+
+    <!-- 2 표시란 -->
+    <div class="b2">
+      <h3><span class="num">2</span>한국 알레르기 표시란을 증거로 쓴다</h3>
+      <p>한국은 알레르기 원료 <span class="n">19가지</span>를 양과 관계없이 표시하게 한다. 그래서 표시란에 적힌 알레르기는 원재료명에 보이지 않아도 <span class="t">Contains</span>로 판정한다(대두만 예외). 표시란이 전부 덮는 알레르기가 표시란에 없으면 추정과 가능 근거를 지운다.</p>
+      <div class="cover">
+        <div class="crow"><span class="clab">전부 덮음</span><span class="tile full">우유</span><span class="tile full">달걀</span><span class="tile full">밀</span><span class="tile full">대두</span><span class="tile full">땅콩</span></div>
+        <div class="crow"><span class="clab">일부만 덮음</span><span class="tile part">생선<span class="s">고등어만</span></span><span class="tile part">갑각류<span class="s">게·새우만</span></span><span class="tile part">견과류<span class="s">호두·잣만</span></span></div>
+        <div class="crow"><span class="clab">덮지 않음</span><span class="tile none">참깨</span></div>
+      </div>
+      <p class="note">일부만 덮거나 덮지 않는 알레르기는 원재료명을 직접 읽어 판단한다. 이렇게 정리한 뒤 확정 근거가 있으면 <span class="t">Contains</span>, 추정이나 가능 근거만 남으면 <span class="t">May contain</span>이다.</p>
+    </div>
+
+    <!-- 3 예외 -->
+    <div class="b3">
+      <h3><span class="num">3</span>예외는 법과 자료로 정했다</h3>
+      <div class="cards">
+        <div class="xc"><h4>정제 대두유</h4><p>미국은 고도 정제유를 알레르기로 세지 않는다. 그래서 대두유만 있으면 세지 않고, 식물성유지처럼 어떤 기름인지 모르면 <span class="t">May contain</span>으로 둔다.</p><p class="src">한국에서는 대두유만 쓴 제품도 <span class="n">97%</span>가 표시란에 대두를 적었다</p></div>
+        <div class="xc"><h4>속을 알 수 없는 양념</h4><p>하위 원료 없이 적힌 양념·소스는 생선이나 참깨가 숨어 있던 비율이 <span class="n">2%</span> 이상인 계열만 <span class="t">May contain</span>으로 둔다.</p><p class="src">양념의 참깨 <span class="n">6.1%</span>, 시즈닝의 참깨 <span class="n">0.2%</span></p></div>
+        <div class="xc"><h4>이름에 속기 쉬운 원료</h4><p>땅콩호박은 땅콩이 아니고, 코코넛밀크는 우유도 견과류도 아니다. 보리와 메밀은 밀이 아니며, 크릴은 갑각류다.</p><p class="src">미국 FDA의 알레르기 범위를 따른다</p></div>
+        <div class="xc"><h4>같은 시설 문구와 모르는 이름</h4><p>같은 시설 문구는 원재료가 아니어서 판정에 쓰지 않고 따로 안내한다. 사전에 없는 이름은 없다고 단정하지 않고 따로 알린다.</p></div>
+      </div>
+    </div>
+
+    <!-- 실제 라벨 예시 -->
+    <div class="ex">
+      <h3><span class="tag">예시</span>실제 라벨 한 장: 즉석 카레</h3>
+      <p class="lead">위의 규칙을 실제 제품 라벨에 그대로 적용한 결과다.</p>
+      <div class="label">
+        <p><span class="k">원재료명</span>정제수, 양파, 카레1(<span class="ho">식물성유지</span>, <span class="hp">밀가루</span>, 정백당, 정제염, 강황가루), 단호박, <span class="ho">카레맛소스</span>, 마늘, 카레2(<span class="hp">밀가루</span>, 돈지, 설탕, 향신료가공품, 정제수), 새싹분말[<span class="hn">보리새싹</span> …], <span class="hn">코코넛밀크</span>, 강황분말</p>
+        <p class="box"><span class="k">알레르기 표시란</span><span class="hp">밀</span>, 토마토, <span class="ho">대두</span>, <span class="hp">우유</span>, 돼지고기 함유</p>
+        <div class="legend"><span class="sw" style="background:#F8DEDB"></span>Contains 근거<span class="sw" style="background:#FFE3CC"></span>May contain 근거<span class="sw" style="background:#EEF0F3"></span>이름만 비슷해 세지 않음</div>
+      </div>
+      <div class="res">
+        <div class="r"><span class="pill c">Contains</span><p><b>밀</b>원재료에 밀가루가 있다.</p></div>
+        <div class="r"><span class="pill c">Contains</span><p><b>우유</b>원재료명에는 없지만 표시란에 있다.</p></div>
+        <div class="r"><span class="pill m">May contain</span><p><b>대두</b>표시란의 대두가 식물성유지 때문일 수 있다.</p></div>
+        <div class="r"><span class="pill m">May contain</span><p><b>생선, 참깨</b>카레맛소스의 속을 알 수 없다.</p></div>
+        <div class="r"><span class="pill d">Not detected</span><p><b>달걀, 땅콩, 갑각류, 견과류</b>근거를 찾지 못했다.</p></div>
+      </div>
+      <p class="note">코코넛밀크와 보리새싹은 이름만 비슷해서 세지 않는다. 토마토와 돼지고기는 미국 9가지 밖이다.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2416" height="1145.16" viewBox="0 0 2416 1145.16">
+<g id="boxes">
+<rect x="1" y="1" width="2414" height="1143.16" rx="19" fill="#FFFFFF" stroke="#E6E9ED" stroke-width="2"/>
+<rect x="42" y="38.39" width="7" height="36" rx="3.5" fill="#F5823C"/>
+<rect x="42" y="146.3" width="34" height="34" rx="17" fill="#F5823C"/>
+<rect x="42" y="194.3" width="756" height="130" rx="14" fill="#FFF2E8"/>
+<rect x="830" y="146.3" width="34" height="34" rx="17" fill="#F5823C"/>
+<rect x="830" y="238.3" width="756" height="350.78" rx="14" fill="#F8F9FB"/>
+<rect x="852" y="261.8" width="22" height="14" rx="3" fill="#F5823C"/>
+<rect x="1023" y="261.8" width="22" height="14" rx="3" fill="#B4BBC6"/>
+<rect x="852" y="324.89" width="2" height="54" rx="0" fill="#C9CED6"/>
+<rect x="854" y="327.89" width="12" height="22" rx="0" fill="#F5823C"/>
+<rect x="854" y="353.89" width="570" height="22" rx="0" fill="#B4BBC6"/>
+<rect x="852" y="421.48" width="2" height="54" rx="0" fill="#C9CED6"/>
+<rect x="854" y="424.48" width="9" height="22" rx="0" fill="#F5823C"/>
+<rect x="854" y="450.48" width="255" height="22" rx="0" fill="#B4BBC6"/>
+<rect x="852" y="518.08" width="2" height="54" rx="0" fill="#C9CED6"/>
+<rect x="854" y="521.08" width="141" height="22" rx="0" fill="#F5823C"/>
+<rect x="854" y="547.08" width="573" height="22" rx="0" fill="#B4BBC6"/>
+<rect x="42" y="738.67" width="34" height="34" rx="17" fill="#F5823C"/>
+<rect x="42" y="786.67" width="372.5" height="247.48" rx="14" fill="#F8F9FB"/>
+<rect x="432.5" y="786.67" width="372.5" height="247.48" rx="14" fill="#F8F9FB"/>
+<rect x="823" y="786.67" width="372.5" height="247.48" rx="14" fill="#F8F9FB"/>
+<rect x="1213.5" y="786.67" width="372.5" height="247.48" rx="14" fill="#F8F9FB"/>
+<rect x="1618" y="146.3" width="34" height="34" rx="17" fill="#F5823C"/>
+<rect x="1618" y="238.3" width="756" height="134.59" rx="14" fill="#F8F9FB"/>
+<rect x="1866" y="289.89" width="2" height="66" rx="0" fill="#C9CED6"/>
+<rect x="1868" y="293.89" width="380" height="24" rx="0" fill="#F5823C"/>
+<rect x="1868" y="327.89" width="345.8" height="24" rx="0" fill="#F5823C"/>
+<rect x="1618" y="561.08" width="756" height="542.08" rx="16" fill="#F8F9FB"/>
+<rect x="1644" y="585.08" width="34" height="34" rx="17" fill="#F5823C"/>
+<rect x="1644" y="633.08" width="704" height="123.34" rx="12" fill="#FFFFFF"/>
+<rect x="1644" y="770.42" width="704" height="151.84" rx="12" fill="#FFFFFF"/>
+</g>
+<g id="text">
+<text xml:space="preserve" font-family="Noto Sans KR" y="70.2"><tspan x="65" font-size="34" font-weight="700" fill="#1F2D4D">08</tspan><tspan x="119.11" font-size="34" font-weight="700" fill="#1F2D4D">효과 및 개선</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="112.8"><tspan x="42" font-size="21" font-weight="400" fill="#657083">시험 세트와 직접 찍은 사진으로 판정을 재고, 그 과정에서 찾은 오류를 고쳤다. 판정은 정답과 거의 같았고, 남은 오류는 대부분 사진에서 글자를 읽는 단계에서 나왔다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="171.5"><tspan x="53.09" font-size="20" font-weight="700" fill="#FFFFFF">1</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="173.99"><tspan x="88" font-size="26" font-weight="700" fill="#1F2D4D">개발에 쓰지 않은 제품으로 잰 정확도</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="294.1"><tspan x="66" font-size="80" font-weight="700" fill="#F5823C">99.6%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="237.5"><tspan x="332.63" font-size="20" font-weight="400" fill="#1F2D4D">판정 가이드에 따라 정답을 단 시험 세트 </tspan><tspan font-size="20" font-weight="700" fill="#F5823C">140개</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="267.5"><tspan x="332.63" font-size="20" font-weight="400" fill="#1F2D4D">제품에서, 판정 </tspan><tspan font-size="20" font-weight="700" fill="#F5823C">1,260개</tspan><tspan font-size="20" font-weight="400" fill="#1F2D4D"> 중 </tspan><tspan font-size="20" font-weight="700" fill="#F5823C">1,255개</tspan><tspan font-size="20" font-weight="400" fill="#1F2D4D">가 정답과</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="297.5"><tspan x="332.63" font-size="20" font-weight="400" fill="#1F2D4D">같았다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="373.1"><tspan x="42" font-size="32" font-weight="700" fill="#F5823C">0.3%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="368.18"><tspan x="150" font-size="20" font-weight="400" fill="#1F2D4D">들어 있는 알레르기 377개 중 1개를 놓쳤다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="423.49"><tspan x="42" font-size="32" font-weight="700" fill="#F5823C">0.1%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="418.58"><tspan x="150" font-size="20" font-weight="400" fill="#1F2D4D">없는 알레르기 842개 중 1개에 잘못 경고했다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="473.88"><tspan x="42" font-size="32" font-weight="700" fill="#F5823C">100%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="468.97"><tspan x="150" font-size="20" font-weight="400" fill="#1F2D4D">사전을 만든 2020년 자료에 없던 새 제품 30개는 모두 맞혔다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="518.47"><tspan x="42" font-size="21" font-weight="400" fill="#1F2D4D">같은 라벨을 세 번 넣으면 응답이 글자까지 같았다. 판정 시간은 제품 하나에 중앙값</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="551.02"><tspan x="42" font-size="21" font-weight="700" fill="#F5823C">0.48ms</tspan><tspan font-size="21" font-weight="400" fill="#1F2D4D">였고, 외부 서버는 한 번도 부르지 않았다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="592.16"><tspan x="42" font-size="19" font-weight="400" fill="#657083">틀린 5개는 모두 대두였다. 표시란의 대두가 정제유 때문인지 가려야 하는 경계 사례였다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="171.5"><tspan x="841.09" font-size="20" font-weight="700" fill="#FFFFFF">2</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="173.99"><tspan x="876" font-size="26" font-weight="700" fill="#1F2D4D">한국 표시란을 읽은 효과</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="217.5"><tspan x="830" font-size="20" font-weight="400" fill="#657083">같은 제품에서 표시란만 지우고 다시 판정해 견줬다. 막대가 짧을수록 좋다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="276.3"><tspan x="882" font-size="17" font-weight="400" fill="#657083">표시란을 읽을 때</tspan><tspan x="1053" font-size="17" font-weight="400" fill="#657083">표시란을 지웠을 때</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="315.9"><tspan x="852" font-size="19" font-weight="700" fill="#1F2D4D">틀린 판정</tspan><tspan x="935.25" font-size="16" font-weight="400" fill="#657083">시험 세트 판정 1,260개</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="346.69"><tspan x="876" font-size="18" font-weight="700" fill="#1F2D4D">0.4%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="372.69"><tspan x="1434" font-size="18" font-weight="500" fill="#657083">19.0%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="412.49"><tspan x="852" font-size="19" font-weight="700" fill="#1F2D4D">놓친 알레르기</tspan><tspan x="970.2" font-size="16" font-weight="400" fill="#657083">들어 있는 알레르기 377개</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="443.28"><tspan x="873" font-size="18" font-weight="700" fill="#1F2D4D">0.3%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="469.28"><tspan x="1119" font-size="18" font-weight="500" fill="#657083">8.5%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="509.08"><tspan x="852" font-size="19" font-weight="700" fill="#1F2D4D">May contain으로 남는 판정</tspan><tspan x="1089.23" font-size="16" font-weight="400" fill="#657083">표시란이 있는 HACCP 제품 6,168개</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="539.88"><tspan x="1005" font-size="18" font-weight="700" fill="#1F2D4D">4.7%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="565.88"><tspan x="1437" font-size="18" font-weight="500" fill="#657083">19.1%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="628.08"><tspan x="830" font-size="21" font-weight="400" fill="#1F2D4D">표시란을 읽으면 우유·달걀·밀·땅콩·갑각류에서는 May contain이 한 건도 나오지</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="660.63"><tspan x="830" font-size="21" font-weight="400" fill="#1F2D4D">않았다. 애매함은 대부분 생선·참깨와, 정제유 예외가 있는 대두에 남았다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="701.77"><tspan x="830" font-size="19" font-weight="400" fill="#657083">원재료에 확실한 근거가 있는데 표시란에 빠진 알레르기도 </tspan><tspan font-size="19" font-weight="700" fill="#F5823C">144개</tspan><tspan font-size="19" font-weight="400" fill="#657083"> 제품(2.3%)에서 찾았다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="763.87"><tspan x="53.09" font-size="20" font-weight="700" fill="#FFFFFF">4</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="766.37"><tspan x="88" font-size="26" font-weight="700" fill="#1F2D4D">실험과 리뷰에서 찾아 고친 오류</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="827.67"><tspan x="62" font-size="21" font-weight="700" fill="#1F2D4D">한 글자 틀린 이름</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="862.62"><tspan x="62" font-size="19" font-weight="400" fill="#1F2D4D">땅콩이 '땅공'으로 잘못 적힌 땅공버터를</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="891.12"><tspan x="62" font-size="19" font-weight="400" fill="#1F2D4D">'버터'만 보고 우유로 판정하고 땅콩을</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="919.62"><tspan x="62" font-size="19" font-weight="400" fill="#1F2D4D">놓쳤다. 이제는 자음이나 모음 하나만 다른</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="948.12"><tspan x="62" font-size="19" font-weight="400" fill="#1F2D4D">이름을 사전의 땅콩버터로 맞춰 땅콩을</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="976.62"><tspan x="62" font-size="19" font-weight="400" fill="#1F2D4D">찾는다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="1010.52"><tspan x="62" font-size="17" font-weight="400" fill="#657083">팀 리뷰에서 발견</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="827.67"><tspan x="452.5" font-size="21" font-weight="700" fill="#1F2D4D">같은 원료의 다른 표기</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="862.62"><tspan x="452.5" font-size="19" font-weight="400" fill="#1F2D4D">헤이즐넛을 '헤즐너트'로 적은 원료를</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="891.12"><tspan x="452.5" font-size="19" font-weight="400" fill="#1F2D4D">사전이 몰라 견과류를 '없음'으로 냈다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="919.62"><tspan x="452.5" font-size="19" font-weight="400" fill="#1F2D4D">사전 v1.2에 이런 표기 변형을 더해 이제</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="948.12"><tspan x="452.5" font-size="19" font-weight="400" fill="#1F2D4D">견과류를 찾는다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="982.02"><tspan x="452.5" font-size="17" font-weight="400" fill="#657083">사전에 없는 이름 표본 100개에서 발견</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="827.67"><tspan x="843" font-size="21" font-weight="700" fill="#1F2D4D">짧게 쓴 같은 시설 문구</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="862.62"><tspan x="843" font-size="19" font-weight="400" fill="#1F2D4D">'우유, 땅콩 혼입 가능'처럼 짧게 쓴 문구를</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="891.12"><tspan x="843" font-size="19" font-weight="400" fill="#1F2D4D">원재료로 읽어 Contains로 잘못 판정했다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="919.62"><tspan x="843" font-size="19" font-weight="400" fill="#1F2D4D">이제는 짧은 문구도 알아보고 판정에서 뺀</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="948.12"><tspan x="843" font-size="19" font-weight="400" fill="#1F2D4D">뒤 같은 시설 안내로 따로 알린다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="982.02"><tspan x="843" font-size="17" font-weight="400" fill="#657083">사진 라벨을 다시 점검하다 발견</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="827.67"><tspan x="1233.5" font-size="21" font-weight="700" fill="#1F2D4D">속을 알 수 없는 양념 이름</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="862.62"><tspan x="1233.5" font-size="19" font-weight="400" fill="#1F2D4D">비빔장·쌈장 같은 장과 찌개 양념은 속</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="891.12"><tspan x="1233.5" font-size="19" font-weight="400" fill="#1F2D4D">모를 원료 목록에 없어 참깨와 생선을 놓칠</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="919.62"><tspan x="1233.5" font-size="19" font-weight="400" fill="#1F2D4D">수 있었다. 실제 라벨에서 비율을 재고</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="948.12"><tspan x="1233.5" font-size="19" font-weight="400" fill="#1F2D4D">목록에 더했다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="982.02"><tspan x="1233.5" font-size="17" font-weight="400" fill="#657083">하위 원료가 적힌 라벨에서 장의 참깨 </tspan><tspan font-size="17" font-weight="700" fill="#F5823C">27.8%</tspan><tspan font-size="17" font-weight="400" fill="#657083">,</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="1006.66"><tspan x="1233.5" font-size="17" font-weight="400" fill="#657083">찌개의 생선 </tspan><tspan font-size="17" font-weight="700" fill="#F5823C">23.5%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="1067.76"><tspan x="42" font-size="19" font-weight="400" fill="#657083">고칠 때마다 정답지의 판정이 하나도 바뀌지 않는지 확인하고, 2026년 HACCP 제품 14,453개에서 판정이 바뀐 제품을 하나씩 살폈다. 바뀐 제품은 한 번에 5개 이하였고, 모두 '없음'이던 알레르기를</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="1096.26"><tspan x="42" font-size="19" font-weight="400" fill="#657083">새로 알린 경우였다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="171.5"><tspan x="1629.09" font-size="20" font-weight="700" fill="#FFFFFF">3</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="173.99"><tspan x="1664" font-size="26" font-weight="700" fill="#1F2D4D">직접 찍은 사진으로 다시 쟀다</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="217.5"><tspan x="1618" font-size="20" font-weight="400" fill="#657083">팀이 찍은 시중 제품 21개의 라벨 사진을 OCR로 읽어 같은 방법으로 판정했다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="276.9"><tspan x="1640" font-size="19" font-weight="700" fill="#1F2D4D">정답과 같은 판정</tspan><tspan x="1781" font-size="16" font-weight="400" fill="#657083">판정 189개</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="312.99"><tspan x="1640" font-size="18" font-weight="400" fill="#1F2D4D">사람이 옮겨 적은 글자</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="313.69"><tspan x="2258" font-size="18" font-weight="700" fill="#1F2D4D">100%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="346.99"><tspan x="1640" font-size="18" font-weight="400" fill="#1F2D4D">사진을 OCR로 읽은 글자</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="347.69"><tspan x="2223.8" font-size="18" font-weight="700" fill="#1F2D4D">91.0%</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="411.89"><tspan x="1618" font-size="21" font-weight="400" fill="#1F2D4D">틀린 </tspan><tspan font-size="21" font-weight="700" fill="#F5823C">17곳</tspan><tspan font-size="21" font-weight="400" fill="#1F2D4D">은 모두 OCR에서 생겼다. 5개 제품에서 OCR이 표시란 줄을 놓치거나</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="444.44"><tspan x="1618" font-size="21" font-weight="400" fill="#1F2D4D">중간에서 끊었고, 1개 제품은 기름 이름이 깨졌다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="490.98"><tspan x="1618" font-size="21" font-weight="400" fill="#1F2D4D">표시란을 못 읽으면 없다고 단정하지 않고 May contain으로 물러선다. 그래서</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="523.53"><tspan x="1618" font-size="21" font-weight="400" fill="#1F2D4D">사진에서도 놓친 알레르기는 69개 중 1개였고, 헛경고는 없었다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="610.28"><tspan x="1655.09" font-size="20" font-weight="700" fill="#FFFFFF">5</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="612.77"><tspan x="1690" font-size="26" font-weight="700" fill="#1F2D4D">남은 과제</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="672.08"><tspan x="1664" font-size="21" font-weight="700" fill="#1F2D4D">표시란 줄 읽기</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="705.02"><tspan x="1664" font-size="19" font-weight="400" fill="#1F2D4D">Contains 판정의 약 3분의 1은 표시란에만 근거한다. 사진에서 표시란 줄을 놓치지</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="733.52"><tspan x="1664" font-size="19" font-weight="400" fill="#1F2D4D">않도록 OCR을 다듬는 것이 가장 큰 개선점이다.</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="809.42"><tspan x="1664" font-size="21" font-weight="700" fill="#1F2D4D">사전에 없는 이름</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="842.37"><tspan x="1664" font-size="19" font-weight="400" fill="#1F2D4D">표시란을 읽은 제품의 </tspan><tspan font-size="19" font-weight="700" fill="#F5823C">36%</tspan><tspan font-size="19" font-weight="400" fill="#1F2D4D">에 사전에 없는 이름이 있다. 표본 100개를 살펴보니</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="870.87"><tspan x="1664" font-size="19" font-weight="400" fill="#1F2D4D">4개에 위험이 숨어 있었고, 전체로 치면 약 </tspan><tspan font-size="19" font-weight="700" fill="#F5823C">1.4%</tspan><tspan font-size="19" font-weight="400" fill="#1F2D4D">다. 그중 헤즐너트는 사전 v1.2에서</tspan></text>
+<text xml:space="preserve" font-family="Noto Sans KR" y="899.37"><tspan x="1664" font-size="19" font-weight="400" fill="#1F2D4D">고쳤고, 나머지도 사전을 넓혀 줄여 간다.</tspan></text>
+</g>
+</svg>
