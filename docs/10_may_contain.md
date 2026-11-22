@@ -148,6 +148,8 @@ basis별로 설명할 것
 3. "safe", "allergen-free", "you can eat it"처럼 안심시키는 말은 쓰지 않는다.
 4. LLM 호출이 실패하거나 크레딧이 없으면 `explanation_en`을 null로 둔다. `reason_en`만으로도 화면은 완성된다.
 5. confirmed와 `shared_facility`는 설명하지 않는다. `shared_facility`를 고정 문장으로 둔 이유는 6절.
+6. 응답에 `warnings`가 있으면(원재료나 표시란을 못 읽음) 설명을 붙이지 않는다. 다시 찍기 안내가 먼저다(`src/final/explain.py`, #17).
+7. "does not contain fish", "no sesame", "made without" 같은 부정문도 3번의 안심시키는 말로 보고 버린다. "Without the full list, …"처럼 '알 수 없다'는 설명은 남긴다.
 
 어디에 붙이나
 
