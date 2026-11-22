@@ -1,5 +1,7 @@
 # 07. 제품 명세 — 초안
 
+> 2026-10-15 중간 기획 때 쓴 문서다. 그 뒤 제품은 최종본(원재료 사전 + 판정 규칙)으로 정해졌고([결정 0004](decisions/0004-final-pipeline.md)), 결과 표시도 Contains / May contain / Not detected로 바뀌었다. 지금 제품은 [README](../README.md)의 '결과 표시'·'서버 두 개', [docs/08_api.md](08_api.md), [src/final/README.md](../src/final/README.md)를 본다.
+
 > 최종 발표에는 작동하는 제품이 필요하다. 벤치마크나 프롬프트 가이드만으로는 부족하다.
 
 ## 한 줄
