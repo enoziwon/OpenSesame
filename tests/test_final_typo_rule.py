@@ -63,4 +63,5 @@ def test_two_syllable_parts_only_against_allergen_heads():
         assert suspect_typo(name) is None, name
     # 대표 이름의 오타는 잡는다
     assert suspect_typo("땅공크림").word == "땅콩"
-    assert suspect_typo("모타렐라씨즈닝").word == "모짜렐라"      # 세 음절 이상은 모든 알레르기 낱말과 견준다
+    mozza = suspect_typo("모타렐라씨즈닝")                       # 세 음절 이상은 모든 알레르기 낱말과 견준다
+    assert mozza.word in ("모짜렐라", "모자렐라") and mozza.allergens == ("milk",)   # 사전 v1.2에 모자렐라 표기를 더했다

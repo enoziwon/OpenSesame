@@ -44,6 +44,16 @@ FACILITY_RE = re.compile(
     r"|[^.。,]*?(?:제조|생산|가공|포장)(?=\s*(?:,|$))"
     r"|[^.。,]*[.。]?)"
 )
+# '이 제품은'이 없는 같은 시설 문구. 앞에 붙은 표시란 낱말만 거꾸로 모은다(표시란 '…, 밀, 대두 함유'와 같은 방법이라
+# 앞의 원재료는 먹지 않는다).
+#   MIX_RE: '우유, 땅콩, 새우 혼입 가능', '땅콩이 혼입될 수 있습니다', '땅콩 등 혼입가능' 처럼 짧게 쓴 것
+#   SAME_PLANT_RE: 줄이 나뉘어 '이 제품은'이 빠진 '…, 호두를 사용한 제품과 같은 시설에서 제조하고 있습니다'
+#   끝은 '혼입 가능(성 있음)', '혼입될 수 있습니다', '…제조하고 있습니다', '…에서 제조' 같은 끝말까지만 먹는다(뒤 글자를 삼키지 않게)
+MIX_RE = re.compile(r"(?:\s*등)?\s*(?:이|가)?\s*혼입\s*(?:될\s*수\s*있(?:습니다|음|으니|어요)?|(?:가능성|우려)(?:\s*이)?\s*(?:있(?:습니다|음))?"
+                    r"|가능(?:성)?(?:\s*있(?:습니다|음))?)?\s*[.。]?")
+SAME_PLANT_RE = re.compile(r"(?:을|를)?\s*사용한\s*제품(?:과|와)\s*(?:같은|동일한?)[^.。\x00]{0,60}?(?:시설|공장|라인)"
+                           r"(?:[^.。,\x00]{0,40}(?:니다|있음|었음|였음|됨|함)(?![가-힣])"
+                           r"|[^.。,\x00]{0,20}?(?:제조|생산|가공|포장)(?![가-힣]))?\s*[.。]?")
 DECL_HEAD_RE = re.compile(r"알레르기\s*(?:유발)?\s*(?:물질|성분)?\s*(?:표시|정보)?\s*:")
 DECL_PREFIX_RE = re.compile(r"[\[【(<]?\s*알레르기\s*(?:유발)?\s*(?:물질|성분)?\s*(?:표시|정보)?\s*[\]】)>:]?\s*$")
 # 표시란 칸 항목 끝의 군말: '대두 포함', '우유 제품', '땅콩 첨가제품', '밀함유식품', '대두-유래원재료 함유'
@@ -240,11 +250,42 @@ def _cut_facility(s, text_mode):
     칸 입력은 앞뒤 원재료를 잇는다. 사진 글자는 문구 뒤가 쉼표로 이어질 때('…제조, 간장')만 잇고,
     문장으로 끝나면 원재료 구역도 거기서 끝낸다(뒤에 오는 안내문을 원재료로 읽지 않게).
     """
-    found = list(FACILITY_RE.finditer(s))
-    for m in reversed(found):
-        goes_on = s[m.end():].lstrip().startswith(",")
-        s = _cut(s, m.start(), m.end(), "\x00" if text_mode and not goes_on else ", ")
-    return s, " ".join(m.group(0).strip() for m in found) or None
+    spans = [(m.start(), m.end()) for m in FACILITY_RE.finditer(s)]
+    spans = _merge(spans + [x for x in _listed_facility(s) if not _overlaps(x, spans)])
+    texts = [s[a:b].strip() for a, b in spans]
+    for a, b in reversed(spans):
+        goes_on = s[b:].lstrip().startswith(",")
+        s = _cut(s, a, b, "\x00" if text_mode and not goes_on else ", ")
+    return s, " ".join(texts) or None
+
+
+def _listed_facility(s):
+    """'이 제품은'이 없는 같은 시설 문구의 [(시작, 끝)]. 앞에 표시란 낱말이 하나도 없으면 문구로 보지 않는다
+    ('이물질이 혼입되지 않도록'은 원재료 뒤라도 건드리지 않는다)."""
+    out = []
+    for rx in (MIX_RE, SAME_PLANT_RE):
+        for m in rx.finditer(s):
+            if _depth_at(s, m.start()) > 0:
+                continue
+            got = _items_before(s, m.start())
+            if got:
+                out.append((got[0], m.end()))
+    return out
+
+
+def _overlaps(x, spans):
+    return any(x[0] < b and a < x[1] for a, b in spans)
+
+
+def _merge(spans):
+    """겹치는 구간을 합친다(같은 문장에 '사용한 제품과 같은 시설'과 '혼입'이 함께 있는 경우)."""
+    out = []
+    for a, b in sorted(spans):
+        if out and a <= out[-1][1]:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
 
 
 def _take_box(s, filler):

@@ -54,9 +54,9 @@ def test_dictionary_evidence_is_preferred_as_representative():
 
 
 def test_llm_guess_marks():
-    table = {"헤즐너트페이스트": Lookup(name="헤즐너트페이스트", sources=(("tree_nut", "I"),), via="fallback"),
+    table = {"웰가에스피": Lookup(name="웰가에스피", sources=(("tree_nut", "I"),), via="fallback"),
              "알에프비케이": Lookup(name="알에프비케이", sources=(("sesame", "P"),), via="fallback")}
-    got = by_allergen(judge(parse_label(ingredients="헤즐너트페이스트, 알에프비케이"), resolve=resolver_with(table)))
+    got = by_allergen(judge(parse_label(ingredients="웰가에스피, 알에프비케이"), resolve=resolver_with(table)))
     assert (got["tree_nut"].verdict, got["tree_nut"].basis) == ("inferable", ("LLM",))
     assert (got["sesame"].verdict, got["sesame"].basis) == ("undecidable", ("LLM",))
 
@@ -85,12 +85,12 @@ class FakeLLM:
 
 
 def test_end_to_end_with_fallback_on(monkeypatch):
-    fake = FakeLLM({unknown("헤즐너트페이스트"): (Allergen.tree_nut, Verdict.confirmed)})
+    fake = FakeLLM({unknown("웰가에스피"): (Allergen.tree_nut, Verdict.confirmed)})
     monkeypatch.setattr(pipeline, "_fallback", lambda: fake)
-    res = analyze_text("원재료명: 설탕, 헤즐너트페이스트, 코코아분말")
+    res = analyze_text("원재료명: 설탕, 웰가에스피, 코코아분말")
     nut = next(a for a in res.allergens if a.allergen.value == "tree_nut")
     assert (nut.verdict.value, nut.basis) == ("inferable", ["LLM"])               # LLM의 확정은 추정으로 낮춘다
-    assert nut.reason_en == ("Likely contains tree nuts: “헤즐너트페이스트” is not in our ingredient dictionary, "
+    assert nut.reason_en == ("Likely contains tree nuts: “웰가에스피” is not in our ingredient dictionary, "
                              "and an AI model judged that it likely contains tree nuts.")
 
 

@@ -63,3 +63,55 @@ def test_fields_input_and_json_shape():
     assert first == {"allergen": "milk", "words": ["우유"], "reason_en": first["reason_en"], "reason_ko": first["reason_ko"]}
     assert "wheat" not in [f["allergen"] for f in body["shared_facility"]]
     assert all(a["explanation_en"] is None and a["read_as"] is None for a in body["allergens"])
+
+
+# ---------- '이 제품은'이 없는 같은 시설 문구 (11/20, EXP-006 사진의 OCR 글자에서 나온 꼴) ----------
+def facility_of(text):
+    res = analyze_text(text)
+    return res, {a.allergen.value: a.verdict.value for a in res.allergens}, [f.allergen.value for f in res.shared_facility]
+
+
+def test_short_mix_form_is_not_read_as_ingredients():
+    # 치토스 라벨: 짧은 꼴을 원재료로 읽으면 우유·땅콩·갑각류가 Contains로 잘못 나왔다
+    res, got, fac = facility_of("원재료명: 설탕, 밀가루, 옥수수전분\n우유,땅콩,새우,돼지고기,토마토 혼입 가능")
+    assert got == {"wheat": "confirmed"}
+    assert fac == ["milk", "crustacean", "peanut"]
+    assert res.ingredients_text == "설탕, 밀가루, 옥수수전분"
+
+
+def test_mix_form_with_particle_and_long_ending():
+    _, got, fac = facility_of("원재료명: 설탕, 소맥분\n땅콩, 호두가 혼입될 수 있습니다.")
+    assert got == {"wheat": "confirmed"} and fac == ["tree_nut", "peanut"]
+
+
+def test_same_plant_sentence_without_this_product():
+    # 오징어짬뽕 OCR: 줄이 나뉘어 '이 제품은'이 빠지고 첫 낱말(메밀)이 '매일'로 깨졌다. 표시란 낱말부터 자른다
+    _, got, fac = facility_of("원재료명: 설탕, 밀가루\n매일, 땅콩, 고등어, 게, 호두를 사용한 제품과 같은 시설에서 제조 하고 있습니다.")
+    assert "peanut" not in got and "crustacean" not in got and "fish" not in got
+    assert fac == ["fish", "crustacean", "tree_nut", "peanut"]
+
+
+def test_only_allergen_words_before_the_notice_are_taken():
+    # 앞의 원재료(설탕, 밀가루)는 남기고 바로 앞의 표시란 낱말만 문구로 본다 ('…, 밀, 대두 함유' 표시란과 같은 방법)
+    res, got, fac = facility_of("원재료명: 설탕, 밀가루, 우유, 땅콩 혼입 가능")
+    assert got == {"wheat": "confirmed"} and fac == ["milk", "peanut"]
+    assert res.ingredients_text == "설탕, 밀가루"
+
+
+def test_notice_ends_at_its_last_word():
+    res, _, fac = facility_of("원재료명: 설탕\n땅콩 혼입 가능 내용량 100g")
+    assert fac == ["peanut"] and "내용량" not in (res.notes[-1] if res.notes else "")
+
+
+def test_other_mix_sentences_are_left_alone():
+    # 표시란 낱말이 앞에 없으면 같은 시설 문구가 아니다
+    _, got, fac = facility_of("원재료명: 설탕, 우유\n이물질이 혼입되지 않도록 주의하세요")
+    assert got == {"milk": "confirmed"} and fac == []
+    _, got, fac = facility_of("원재료명: 설탕, 우유, 땅콩")
+    assert got == {"milk": "confirmed", "peanut": "confirmed"} and fac == []
+
+
+def test_fields_input_short_form():
+    res = analyze_fields("설탕, 밀가루, 땅콩 혼입가능", "밀")
+    assert {a.allergen.value for a in res.allergens} == {"wheat"}
+    assert [f.allergen.value for f in res.shared_facility] == ["peanut"]
