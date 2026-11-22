@@ -208,3 +208,47 @@ def test_openai_call_uses_auto_tool_choice_and_merges(monkeypatch):
     out = ex.openai_call("http://x", "k", "m", 0.0, 20.0)("sys", "{}")
     assert len(out["results"]) == 3 and sent["tool_choice"] == "auto"
     assert sent["client"]["max_retries"] == 0 and sent["client"]["timeout"] == 20.0
+
+
+# ---- #17 리뷰의 '급하지 않은 것' ----
+def test_unusable_answer_is_not_cached():
+    """쓸 설명이 하나도 없던 답은 기억하지 않는다. 같은 라벨을 다음에 다시 시도한다."""
+    bad, good = Fake({"sesame": "It is safe to eat."}), Fake()
+    ex.explain(doc_response(), call=bad)
+    out = ex.explain(doc_response(), call=good)
+    assert len(good.calls) == 1
+    assert {a.allergen.value: a.explanation_en for a in out.allergens}["sesame"] == GOOD["sesame"]
+
+
+def test_failure_is_logged_without_label_text(caplog):
+    import logging
+
+    class Err(RuntimeError):
+        status_code = 402
+
+    with caplog.at_level(logging.WARNING, logger="opensesame.explain"):
+        res = doc_response()
+        assert ex.explain(res, call=Fake(raise_exc=Err("Payment Required"))) is res
+    assert "HTTP 402" in caplog.text
+    assert "해물양념분말" not in caplog.text and "밀가루" not in caplog.text
+
+
+def test_cache_is_safe_under_concurrent_requests():
+    import threading
+
+    fake, errors = Fake(), []
+
+    def work():
+        try:
+            for _ in range(20):
+                ex.explain(doc_response(), call=fake)
+                ex.clear_cache()
+        except Exception as e:  # pragma: no cover
+            errors.append(e)
+
+    threads = [threading.Thread(target=work) for _ in range(8)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert errors == []

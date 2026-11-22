@@ -51,6 +51,7 @@ res.allergens[0].verdict, res.allergens[0].evidence_ingredient, res.allergens[0]
 
 환경 변수 두 가지가 있다. `OPENSESAME_FINAL_FUZZY=0`이면 모르는 이름 맞추기를 끈다(기본은 켬).
 `OPENSESAME_FINAL_FALLBACK=llm`이고 LLM 키가 있으면 끝까지 모르는 이름만 팀 LLM 분류기에 묻는다(기본은 끔). 이때 LLM의 확인됨은 추정으로 낮추고, 관계없다는 답으로 모르는 이름을 지우지는 않는다.
+`OPENSESAME_FINAL_EXPLAIN=llm`이고 LLM 키가 있으면 서버(`/analyze`, `/analyze-text`)가 may contain(추정·판정 불가) 항목의 `explanation_en`에 LLM 설명을 붙인다(기본은 끔, `src/final/explain.py`, docs/10 4절). 판정은 바꾸지 않고 실패하면 null이다. 분석 1번에 LLM 호출 1번(약 25크레딧).
 
 ## 팀 1차와 다른 점
 

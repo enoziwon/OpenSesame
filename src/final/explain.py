@@ -21,13 +21,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import re
+import threading
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from src.final.response import FinalAllergenResult, FinalAnalyzeResponse
+
+log = logging.getLogger("opensesame.explain")
 
 ENV = "OPENSESAME_FINAL_EXPLAIN"
 PROMPT_VERSION = "explain_v1"
@@ -83,6 +87,7 @@ ASSERTIVE = re.compile(r"\b(definitely|certainly|surely|clearly) contains?\b|\bd
 CallFn = Callable[[str, str], Any]  # (system, user) -> {"results": [...]} (못 읽으면 {})
 
 _cache: "OrderedDict[str, Dict[str, Optional[str]]]" = OrderedDict()
+_cache_lock = threading.Lock()   # 여러 요청이 동시에 캐시를 쓴다 (#17 리뷰)
 _default_call: Optional[CallFn] = None
 
 
@@ -220,17 +225,23 @@ def explain(res: FinalAnalyzeResponse, call: Optional[CallFn] = None) -> FinalAn
     payload = build_payload(res, targets)
     user = json.dumps(payload, ensure_ascii=False)
     key = hashlib.sha256(user.encode("utf-8")).hexdigest()
-    got = _cache.get(key)
+    with _cache_lock:
+        got = _cache.get(key)
+        if got is not None:
+            _cache.move_to_end(key)
     if got is None:
         try:
             got = parse(call(PROMPT_PATH.read_text(encoding="utf-8"), user), targets)
-        except Exception:  # 크레딧 소진(402), 시간 초과, 게이트웨이 장애: 설명 없이 간다
+        except Exception as e:  # 크레딧 소진(402), 시간 초과, 게이트웨이 장애: 설명 없이 간다
+            # 실패 종류만 한 줄 남긴다 (라벨 글자·키는 남기지 않는다). 발표 중 크레딧 소진을 바로 알 수 있게 (#17 리뷰)
+            status = getattr(e, "status_code", None)
+            log.warning("explain LLM 호출 실패: %s%s", type(e).__name__, f" (HTTP {status})" if status else "")
             return res
-        _cache[key] = got
-        while len(_cache) > CACHE_SIZE:
-            _cache.popitem(last=False)
-    else:
-        _cache.move_to_end(key)
+        if any(got.values()):  # 쓸 설명이 하나도 없으면 기억하지 않는다. 같은 라벨을 다음에 다시 시도한다 (#17 리뷰)
+            with _cache_lock:
+                _cache[key] = got
+                while len(_cache) > CACHE_SIZE:
+                    _cache.popitem(last=False)
 
     if not any(got.values()):
         return res
@@ -242,7 +253,8 @@ def explain(res: FinalAnalyzeResponse, call: Optional[CallFn] = None) -> FinalAn
 
 
 def clear_cache() -> None:
-    _cache.clear()
+    with _cache_lock:
+        _cache.clear()
 
 
 __all__ = ["ENV", "PROMPT_VERSION", "check", "clear_cache", "enabled", "explain", "openai_call"]
