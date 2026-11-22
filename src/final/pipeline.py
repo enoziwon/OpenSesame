@@ -18,7 +18,7 @@ from functools import lru_cache
 from typing import Dict, List, Optional, Tuple
 
 from src.common.schema import AnalyzeMeta
-from src.final.facility import shared_facility
+from src.final.facility import merge_facility, ocr_facility_pieces, shared_facility
 from src.final.parser import parse_label
 from src.final.resolve import Resolver, fallback_from_env
 from src.final.response import FacilityResult, FinalAllergenResult, FinalAnalyzeResponse
@@ -43,10 +43,15 @@ FUZZY_ENV = "OPENSESAME_FINAL_FUZZY"      # 0·off·false·no면 모르는 이�
 
 
 # ---------- 입력 ----------
-def analyze_text(text: str, ocr_engine: str = "text") -> FinalAnalyzeResponse:
-    """사진에서 읽은 글자 전체(원재료명, 알레르기 표시란, 같은 시설 문구)를 판정한다."""
+def analyze_text(text: str, ocr_engine: str = "text", facility: Optional[str] = None) -> FinalAnalyzeResponse:
+    """사진에서 읽은 글자 전체(원재료명, 알레르기 표시란, 같은 시설 문구)를 판정한다.
+
+    facility: OCR이 원재료 글자와 따로 넘긴 같은 시설 문장(OcrResult.facility). 같은 시설 문구로 보이는 조각만 쓰고,
+    글자 속에서 파서가 찾은 문구와 같은 것은 한 번만 넣는다. 판정에는 쓰지 않는다(shared_facility와 notes만).
+    """
     parsed = parse_label(text)
-    return _respond(parsed, ocr_engine, parsed.facility_text)
+    pieces = ocr_facility_pieces(facility)
+    return _respond(parsed, ocr_engine, merge_facility(parsed.facility_text, pieces))
 
 
 def analyze_fields(ingredients: Optional[str], declaration: Optional[str] = None) -> FinalAnalyzeResponse:
@@ -122,10 +127,9 @@ def _result(v: AllergenVerdict, fixed: Optional[Dict[str, str]] = None) -> Final
     )
 
 
-def _fixed_names(resolver) -> Dict[str, str]:
-    """LLM이 고친 이름 {라벨 이름: 고친 이름}. #15(오인식 보정)가 들어온 Resolver에만 있고, 없으면 빈 dict.
-    #15가 main에 들어오면 Resolver에 공개 속성으로 만들어 바꾼다."""
-    return dict(getattr(resolver, "_fixed", None) or {})
+def _fixed_names(resolver: Resolver) -> Dict[str, str]:
+    """LLM이 고친 이름 {라벨 이름: 고친 이름}. 오인식 보정을 끄면 빈 dict."""
+    return resolver.fixed
 
 
 def _llm_reason(v: AllergenVerdict, read_as: Optional[str]) -> Tuple[str, str]:

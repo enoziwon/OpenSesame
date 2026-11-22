@@ -98,7 +98,8 @@ def analyze_label(file: UploadFile = File(...)) -> FinalAnalyzeResponse:
     except Exception as e:  # OCR 장애: 무엇을 읽었는지 단정하지 않는다
         raise HTTPException(status_code=502, detail="글자를 읽지 못했습니다. 잠시 뒤 다시 시도해 주세요.") from e
     try:
-        res = analyze_text(ocr_result.text, ocr_engine=_ocr.name)
+        # 같은 시설 문장은 OCR이 원재료 글자와 따로 넘긴다(OcrResult.facility). 판정에는 쓰지 않고 안내로만 쓴다
+        res = analyze_text(ocr_result.text, ocr_engine=_ocr.name, facility=getattr(ocr_result, "facility", "") or "")
     except (TypeError, ValueError) as e:     # 읽은 글자가 너무 길거나 글자가 아님
         raise HTTPException(status_code=422, detail=str(e)) from e
     # OCR의 다시 찍기 안내(원재료명 칸 못 찾음, 잘림, 흐림)를 앞에 붙인다. 같은 문구는 한 번만
