@@ -6,7 +6,7 @@
 - 대상: allergens[] 중 verdict가 inferable·undecidable인 항목. confirmed와 shared_facility는 설명하지 않는다.
 - 판정은 건드리지 않는다. verdict, basis, reason_en, allergens 목록, shared_facility는 그대로이고 explanation_en만 채운다.
 - 제품 하나에 LLM 호출 한 번 (대상 항목을 모아서). 크레딧을 아끼려고 같은 입력은 메모리에 기억해 두고 다시 묻지 않는다.
-- 이런 설명은 버리고 null로 둔다: 안심시키는 말(safe, allergen-free 등), 판정 불가인데 '들어 있다'고 단정, LLM-FIX인데 read_as를
+- 이런 설명은 버리고 null로 둔다: 안심시키는 말(safe, allergen-free 등)과 '들어 있지 않다'는 부정문, 판정 불가인데 '들어 있다'고 단정, LLM-FIX인데 read_as를
   설명에 쓰지 않음(다른 이름으로 다시 추측한 것으로 본다), 너무 길거나 빈 글.
 - 꺼져 있거나, 키가 없거나, 호출이 실패하면(크레딧 소진 402 포함) 아무것도 바꾸지 않고 돌려준다. 화면은 reason_en만으로 완성된다.
 - warnings가 있는 응답(원재료나 표시란을 못 읽음)은 설명하지 않는다. 다시 찍기가 먼저다.
@@ -62,6 +62,19 @@ TOOL = {
 REASSURING = re.compile(
     r"\bsafe(ly)?\b|allergen[\s-]*free|\bfree (of|from)\b|\bno risk\b|\bharmless\b|\bguarantee"
     r"|\b(you )?can (safely )?(eat|consume|enjoy)\b|\bok(ay)? to (eat|consume)\b|\bnothing to worry\b",
+    re.IGNORECASE,
+)
+# '들어 있지 않다'는 부정문도 안심시키는 말이다(#17 리뷰 1). may contain 배지 아래에 붙으면 배지와 엇갈린다.
+# 'without'과 'not ... in'은 'Without the full list, …'처럼 정당한 설명에도 쓰여서 좁게 잡는다.
+_ALLERGEN_WORDS = (r"(?:milk|dairy|eggs?|fish|shellfish|crustaceans?|shrimps?|prawns?|crabs?|lobsters?"
+                   r"|tree\s*nuts?|nuts?|almonds?|walnuts?|hazelnuts?|pecans?|cashews?|pistachios?|peanuts?"
+                   r"|wheat|gluten|soy(?:beans?)?|sesame)")
+DENIAL = re.compile(
+    r"\b(?:does|do|did)(?:\s+not|n['’]t)\s+(?:contain|include)\b"     # does not contain, doesn't include
+    r"|\bcontains?\s+no\b"                                             # contains no fish
+    r"|\bno\s+" + _ALLERGEN_WORDS + r"\b"                              # there is no sesame
+    r"|\b(?:made|produced|prepared|manufactured)\s+without\b"          # made without fish
+    r"|(?:\bnot|n['’]t)\s+an?\s+ingredient\b",                         # is not an ingredient, isn't an ingredient
     re.IGNORECASE,
 )
 # 판정 불가인데 들어 있다고 단정하는 말
@@ -167,7 +180,7 @@ def check(text: Any, item: FinalAllergenResult) -> Optional[str]:
     text = re.sub(r"\s+", " ", text).strip()
     if not text or len(text) > MAX_CHARS:
         return None
-    if REASSURING.search(text):
+    if REASSURING.search(text) or DENIAL.search(text):
         return None
     if item.verdict.value == "undecidable" and ASSERTIVE.search(text):
         return None

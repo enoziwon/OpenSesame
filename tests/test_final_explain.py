@@ -112,6 +112,31 @@ def test_reassuring_words_are_dropped(text):
     assert {a.allergen.value: a.explanation_en for a in out.allergens}["tree_nut"] is None
 
 
+@pytest.mark.parametrize("text", [
+    "This product does not contain fish.", "It contains no fish.", "There is no sesame in this seasoning.",
+    "Made without fish.", "Fish is not an ingredient here.", "It doesn't contain tree nuts.",
+    "Hazelnut isn't an ingredient here.",
+])
+def test_denials_are_dropped(text):
+    # '들어 있지 않다'는 부정문도 버린다 (#17 리뷰 1)
+    out = ex.explain(doc_response(), call=Fake({"tree_nut": text}))
+    assert {a.allergen.value: a.explanation_en for a in out.allergens}["tree_nut"] is None
+
+
+@pytest.mark.parametrize("text", [
+    "Hazelnut paste is usually made from hazelnuts, so this product may contain tree nuts.",
+    "The label does not say what the paste is made of, so it may contain tree nuts.",
+    "There is no way to tell from the label alone whether it contains tree nuts.",
+    "Without the full ingredient list, tree nuts cannot be ruled out.",
+    "Korean labels do not have to list every tree nut, so it may be present.",
+    "It may or may not contain tree nuts.",
+])
+def test_uncertain_explanations_are_kept(text):
+    # 부정어가 있어도 '알 수 없다'는 설명은 남긴다
+    out = ex.explain(doc_response(), call=Fake({"tree_nut": text}))
+    assert {a.allergen.value: a.explanation_en for a in out.allergens}["tree_nut"] == text
+
+
 def test_llm_fix_must_explain_read_as_not_a_new_guess():
     out = ex.explain(doc_response(), call=Fake({"fish": "“회류” is probably 회, raw sliced fish."}))
     assert {a.allergen.value: a.explanation_en for a in out.allergens}["fish"] is None
