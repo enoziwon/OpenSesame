@@ -501,5 +501,6 @@ class ClovaOcr:
         info = extract_label(raw)
         # 표시란이 원재료명 칸 밖에 따로 있으면 끝에 붙여서 넘긴다 (1차 파서·최종본 파서 모두 '… 함유'를 표시란으로 읽음)
         text = f"{info['text']} {info['declaration']}".strip() if info["declaration"] else info["text"]
+        # 같은 시설 문장은 text에 붙이지 않고 facility 칸으로 따로 넘긴다 (1차 파서가 원재료로 읽지 않게)
         return OcrResult(text=text, engine=self.name, confidence=(sum(conf) / len(conf)) if conf else None,
-                         warnings=info["warnings"])
+                         warnings=info["warnings"], facility=info["facility"])
