@@ -9,7 +9,7 @@ from src.final.resolve import Resolver
 
 
 @pytest.mark.parametrize("name, wrong", [
-    ("그린콩꼬투리", "soy"), ("밤콩", "soy"), ("통카콩", "soy"), ("오렌지콩크", "soy"),
+    ("그린콩꼬투리", "soy"), ("통카콩", "soy"), ("오렌지콩크", "soy"),
     ("호두유", "soy"),            # 호두 기름: '두유'
     ("대두갈치", "soy"),          # 생선 이름: '대두'
     ("당밀추출물", "wheat"),      # 당밀: '밀추출'
@@ -28,6 +28,7 @@ def test_word_inside_word_is_not_an_allergen(name, wrong):
     ("밀맥아분말", "wheat"), ("강력밀", "wheat"), ("박력밀", "wheat"), ("밀호분층", "wheat"),
     ("흑밀복", "fish"), ("까치복", "fish"), ("자주복", "fish"), ("졸복", "fish"),
     ("대두갈치", "fish"), ("호두유", "tree_nut"),
+    ("밤콩", "soy"), ("속청", "soy"), ("검은콩속청", "soy"),   # 밤콩·속청은 재래 대두 (#27 리뷰)
 ])
 def test_missing_names_are_found(name, allergen):
     assert allergen in lookup(name).us
