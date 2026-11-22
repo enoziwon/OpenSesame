@@ -23,11 +23,20 @@ export interface AllergenResult {
   basis?: string[];
   species?: string[];
   evidence_en?: string | null;
+  read_as?: string | null;
+  explanation_en?: string | null;
+}
+export interface FacilityResult {
+  allergen: Allergen;
+  words: string[];
+  reason_en: string;
+  reason_ko?: string;
 }
 export interface Analysis {
   ingredients_text: string;
   ingredients: Ingredient[];
   allergens: AllergenResult[];
+  shared_facility?: FacilityResult[];
   warnings: string[];
   undecidable_ingredients?: string[];
   declaration_text?: string | null;

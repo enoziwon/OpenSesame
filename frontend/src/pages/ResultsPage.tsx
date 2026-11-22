@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import { Layout, PageTitle, PrimaryButton } from "../components/Layout";
-import { allergens, verdictLabels } from "../constants/allergens";
+import { allergens } from "../constants/allergens";
 import { hasIncompleteAnalysis } from "../utils/analysis";
 import type { Analysis, Allergen } from "../types/analysis";
 import chevron from "../assets/results/chevron.svg";
@@ -44,6 +44,11 @@ export default function ResultsPage({
   const matches = result.allergens.filter((a) => selected.includes(a.allergen));
   const confirmed = matches.filter((a) => a.verdict === "confirmed").length;
   const review = matches.filter((a) => a.verdict !== "confirmed").length;
+  const selectedFacility = displayOrder.filter((id) =>
+    selected.includes(id) &&
+    !result.allergens.some((a) => a.allergen === id) &&
+    result.shared_facility?.some((f) => f.allergen === id),
+  );
   const uncertain =
     incomplete ||
     !!result.undecidable_ingredients?.length ||
@@ -52,7 +57,7 @@ export default function ResultsPage({
     const found = result.allergens.find((a) => a.allergen === id);
     return found
       ? { confirmed: 0, inferable: 1, undecidable: 2 }[found.verdict]
-      : 3;
+      : incomplete ? 2 : result.shared_facility?.some((f) => f.allergen === id) ? 3 : 4;
   };
   const ordered = [...displayOrder].sort((a, b) => rank(a) - rank(b));
 
@@ -78,13 +83,18 @@ export default function ResultsPage({
                 ? "Allergen Warning"
                 : uncertain || review
                   ? "Analysis needs review"
-                  : "No selected allergens detected"}
+                  : selectedFacility.length
+                    ? "Shared facility warning"
+                    : "No selected allergens detected"}
             </strong>
             <p>
               {confirmed || review
                 ? `${confirmed} confirmed · ${review} results need review.`
                 : "Review all results and the original label."}
             </p>
+            {selectedFacility.length > 0 && (
+              <p>Made in a facility that also handles: {selectedFacility.map((id) => allergens.find((a) => a.id === id)!.label || allergens.find((a) => a.id === id)!.name).join(", ")}.</p>
+            )}
           </div>
         </div>
 
@@ -97,10 +107,11 @@ export default function ResultsPage({
           {ordered.map((id) => {
             const allergen = allergens.find((a) => a.id === id)!;
             const found = result.allergens.find((a) => a.allergen === id);
+            const facility = result.shared_facility?.find((f) => f.allergen === id);
             const verdict =
-              found?.verdict || (incomplete ? "undecidable" : "absent");
+              found?.verdict || (incomplete ? "undecidable" : facility ? "shared_facility" : "absent");
             const expandable =
-              verdict === "inferable" || verdict === "undecidable";
+              verdict === "inferable" || verdict === "undecidable" || verdict === "shared_facility";
             const name =
               id === "tree_nut" ? "Tree nuts" : allergen.label || allergen.name;
             const evidence =
@@ -109,9 +120,11 @@ export default function ResultsPage({
                 .filter(Boolean)
                 .join(", ");
             const heading =
-              verdict === "inferable"
-                ? "WHY IT MAY BE PRESENT"
-                : "WHY IT'S UNCLEAR";
+              verdict === "shared_facility"
+                ? "Shared facility"
+                : verdict === "inferable"
+                ? "Likely"
+                : "Cannot determine";
             const identity = (
               <>
                 <span className="result-identity">
@@ -126,10 +139,10 @@ export default function ResultsPage({
                   <span className="result-name">{name}</span>
                 </span>
                 <span className="result-status">
-                  <span className={`badge ${verdict}`}>
-                    {verdict === "absent"
-                      ? "Not detected"
-                      : verdictLabels[verdict]}
+                  <span className="result-status-label">
+                    <span className={`badge ${verdict}`}>
+                      {expandable ? "May contain" : verdict === "absent" ? "Not detected" : "Contains"}
+                    </span>
                   </span>
                   {expandable ? (
                     <img className="result-chevron" src={chevron} alt="" />
@@ -139,18 +152,26 @@ export default function ResultsPage({
                 </span>
               </>
             );
-            const className = `result-row ${found && selected.includes(id) ? "highlighted" : ""}`;
+            const className = `result-row ${(found || verdict === "shared_facility") && selected.includes(id) ? "highlighted" : ""}`;
             return expandable ? (
               <details className={className} key={id}>
                 <summary className="result-row-heading">{identity}</summary>
                 <div className={`result-reason ${verdict}`}>
                   <h2>{heading}</h2>
                   <p>
-                    {found?.reason_en?.trim()
+                    {verdict === "shared_facility" ? facility?.reason_en : found?.reason_en?.trim()
                       ? found.reason_en
-                      : "The reason could not be provided. Please check the original label."}
+                      : !found && incomplete
+                        ? "The label could not be fully analyzed, so this allergen cannot be ruled out. Check the warnings below and the original label."
+                        : "The reason could not be provided. Please check the original label."}
                   </p>
-                  {!found?.reason_en?.trim() && evidence && (
+                  {incomplete && !found && facility && (
+                    <p className="facility-note"><strong>Shared facility: </strong>{facility.reason_en}</p>
+                  )}
+                  {verdict !== "shared_facility" && found?.explanation_en?.trim() && (
+                    <p className="result-explanation"><strong>AI explanation: </strong>{found.explanation_en}</p>
+                  )}
+                  {verdict !== "shared_facility" && !found?.reason_en?.trim() && evidence && (
                     <p className="evidence">Evidence: {evidence}</p>
                   )}
                 </div>
